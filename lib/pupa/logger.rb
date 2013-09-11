@@ -1,0 +1,33 @@
+require 'logger'
+
+require 'colored'
+
+module Pupa
+  class Logger
+    # Returns a configured logger.
+    #
+    # @param [String] progname the name of the program performing the logging
+    # @return [Logger] a configured logger
+    def self.new(progname)
+      logger = ::Logger.new(STDOUT)
+      logger.level = ::Logger::INFO
+      logger.progname = progname
+      logger.formatter = proc do |severity, datetime, progname, msg|
+        message = "#{datetime.strftime('%T')} #{severity} #{progname}: #{msg}\n"
+        case severity
+        when 'DEBUG'
+          message.magenta
+        when 'INFO'
+          message.white
+        when 'WARN'
+          message.yellow
+        when 'ERROR'
+          message.red
+        when 'FATAL'
+          message.bold.red_on_white
+        end
+      end
+      logger
+    end
+  end
+end

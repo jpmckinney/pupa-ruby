@@ -1,0 +1,130 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "id": "http://popoloproject.com/schemas/person.json#",
+  "title": "Person",
+  "description": "A real person, alive or dead",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The person's unique identifier",
+      "type": ["string", "null"]
+    },
+    "name": {
+      "description": "A person's preferred full name",
+      "type": "string",
+      "required": true
+    },
+    "other_names": {
+      "description": "Alternate or former names",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/other_name.json#"
+      }
+    },
+    "identifiers": {
+      "description": "Issued identifiers",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/identifier.json#"
+      }
+    },
+    "family_name": {
+      "description": "One or more family names",
+      "type": ["string", "null"]
+    },
+    "given_name": {
+      "description": "One or more primary given names",
+      "type": ["string", "null"]
+    },
+    "additional_name": {
+      "description": "One or more secondary given names",
+      "type": ["string", "null"]
+    },
+    "honorific_prefix": {
+      "description": "One or more honorifics preceding a person's name",
+      "type": ["string", "null"]
+    },
+    "honorific_suffix": {
+      "description": "One or more honorifics following a person's name",
+      "type": ["string", "null"]
+    },
+    "patronymic_name": {
+      "description": "One or more patronymic names",
+      "type": ["string", "null"]
+    },
+    "sort_name": {
+      "description": "A name to use in an lexicographically ordered list",
+      "type": ["string", "null"]
+    },
+    "email": {
+      "description": "A preferred email address",
+      "type": ["string", "null"],
+      "format": "email"
+    },
+    "gender": {
+      "description": "A gender",
+      "type": ["string", "null"]
+    },
+    "birth_date": {
+      "description": "A date of birth",
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+    },
+    "death_date": {
+      "description": "A date of death",
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+    },
+    "image": {
+      "description": "A URL of a head shot",
+      "type": ["string", "null"],
+      "format": "uri"
+    },
+    "summary": {
+      "description": "A one-line account of a person's life",
+      "type": ["string", "null"]
+    },
+    "biography": {
+      "description": "An extended account of a person's life",
+      "type": ["string", "null"]
+    },
+    "contact_details": {
+      "description": "Means of contacting the person",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/contact_detail.json#"
+      }
+    },
+    "links": {
+      "description": "URLs to documents about the person",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    },
+    "memberships": {
+      "description": "The relationships to which the person is a party",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/membership.json#"
+      }
+    },
+    "created_at": {
+      "description": "The time at which the resource was created",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time at which the resource was last modified",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "sources": {
+      "description": "URLs to documents from which the person is derived",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    }
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "id": "http://popoloproject.com/schemas/organization.json#",
+  "title": "Organization",
+  "description": "A group with a common purpose or reason for existence that goes beyond the set of people belonging to it",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The organization's unique identifier",
+      "type": ["string", "null"]
+    },
+    "name": {
+      "description": "A primary name, e.g. a legally recognized name",
+      "type": "string",
+      "required": true
+    },
+    "other_names": {
+      "description": "Alternate or former names",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/other_name.json#"
+      }
+    },
+    "identifiers": {
+      "description": "Issued identifiers",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/identifier.json#"
+      }
+    },
+    "classification": {
+      "description": "An organization category, e.g. committee",
+      "type": ["string", "null"]
+    },
+    "parent_id": {
+      "description": "The ID of the organization that contains this organization",
+      "type": ["string", "null"]
+    },
+    "parent": {
+      "description": "The organization that contains this organization",
+      "$ref": "http://popoloproject.com/schemas/organization.json#"
+    },
+    "founding_date": {
+      "description": "A date of founding",
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+    },
+    "dissolution_date": {
+      "description": "A date of dissolution",
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+    },
+    "image": {
+      "description": "A URL of an image",
+      "type": ["string", "null"],
+      "format": "uri"
+    },
+    "contact_details": {
+      "description": "Means of contacting the organization",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/contact_detail.json#"
+      }
+    },
+    "links": {
+      "description": "URLs to documents about the organization",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    },
+    "memberships": {
+      "description": "The relationships to which the organization is a party",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/membership.json#"
+      }
+    },
+    "posts": {
+      "description": "Posts within the organization",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/post.json#"
+      }
+    },
+    "created_at": {
+      "description": "The time at which the resource was created",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time at which the resource was last modified",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "sources": {
+      "description": "URLs to documents from which the organization is derived",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    }
+  }
+}

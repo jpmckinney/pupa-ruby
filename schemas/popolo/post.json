@@ -1,0 +1,78 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "id": "http://popoloproject.com/schemas/post.json#",
+  "title": "Post",
+  "description": "A position that exists independent of the person holding it",
+  "type": "object",
+  "properties": {
+    "id": {
+      "description": "The post's unique identifier",
+      "type": ["string", "null"]
+    },
+    "label": {
+      "description": "A label describing the post",
+      "type": "string",
+      "required": true
+    },
+    "role": {
+      "description": "The function that the holder of the post fulfills",
+      "type": ["string", "null"]
+    },
+    "organization_id": {
+      "description": "The ID of the organization in which the post is held",
+      "type": ["string", "null"]
+    },
+    "organization": {
+      "description": "The organization in which the post is held",
+      "$ref": "http://popoloproject.com/schemas/organization.json#"
+    },
+    "start_date": {
+      "description": "The date on which the post was created",
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+    },
+    "end_date": {
+      "description": "The date on which the post was eliminated",
+      "type": ["string", "null"],
+      "pattern": "^[0-9]{4}(-[0-9]{2}){0,2}$"
+    },
+    "contact_details": {
+      "description": "Means of contacting the holder of the post",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/contact_detail.json#"
+      }
+    },
+    "links": {
+      "description": "URLs to documents about the post",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    },
+    "memberships": {
+      "description": "The memberships through which people hold the post in the organization",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/membership.json#"
+      }
+    },
+    "created_at": {
+      "description": "The time at which the resource was created",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time at which the resource was last modified",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "sources": {
+      "description": "URLs to documents from which the post is derived",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    }
+  }
+}

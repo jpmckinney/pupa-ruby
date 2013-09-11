@@ -1,0 +1,44 @@
+{
+  "$schema": "http://json-schema.org/draft-03/schema#",
+  "id": "http://popoloproject.com/schemas/contact_detail.json#",
+  "title": "Contact detail",
+  "description": "A means of contacting an entity",
+  "type": "object",
+  "properties": {
+    "label": {
+      "description": "A human-readable label for the contact detail",
+      "type": ["string", "null"]
+    },
+    "type": {
+      "description": "A type of medium, e.g. 'fax' or 'email'",
+      "type": "string",
+      "required": true
+    },
+    "value": {
+      "description": "A value, e.g. a phone number or email address",
+      "type": "string",
+      "required": true
+    },
+    "note": {
+      "description": "A note, e.g. for grouping contact details by physical location",
+      "type": ["string", "null"]
+    },
+    "created_at": {
+      "description": "The time at which the resource was created",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "updated_at": {
+      "description": "The time at which the resource was last modified",
+      "type": ["string", "null"],
+      "format": "date-time"
+    },
+    "sources": {
+      "description": "URLs to documents from which the contact detail is derived",
+      "type": "array",
+      "items": {
+        "$ref": "http://popoloproject.com/schemas/link.json#"
+      }
+    }
+  }
+}
