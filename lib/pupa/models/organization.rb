@@ -26,5 +26,18 @@ module Pupa
     def to_s
       name
     end
+
+    # Sets the ID of the organization that contains this organization.
+    #
+    # @param [String] parent the ID of the organization that contains this organization
+    def parent=(parent)
+      self.parent_id = parent.id
+    end
+
+    # Returns the ID of the organization that contains this organization.
+    # @return [String] the ID of the organization that contains this organization
+    def parent
+      parent_id
+    end
   end
 end

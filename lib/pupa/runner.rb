@@ -7,7 +7,7 @@ module Pupa
 
     # @todo change base of expand_path
     output_dir = File.expand_path(File.join('.', 'scraped_data'), __dir__)
-    cache_dir = File.expand_path(File.join('.', 'scrape_cache'), __dir__)
+    cache_dir = File.expand_path(File.join('.', 'web_cache'), __dir__)
 
     FileUtils.mkdir_p(output_dir)
     FileUtils.mkdir_p(cache_dir)

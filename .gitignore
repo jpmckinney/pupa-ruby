@@ -4,5 +4,3 @@
 Gemfile.lock
 doc/*
 pkg/*
-/scrape_cache
-/scraped_data

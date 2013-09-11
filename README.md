@@ -5,7 +5,29 @@
 [![Coverage Status](https://coveralls.io/repos/opennorth/pupa-ruby/badge.png?branch=master)](https://coveralls.io/r/opennorth/pupa-ruby)
 [![Code Climate](https://codeclimate.com/github/opennorth/pupa-ruby.png)](https://codeclimate.com/github/opennorth/pupa-ruby)
 
-Pupa-Ruby is a Ruby version of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa). It uses the [Popolo](http://popoloproject.com/) data specification for open government data.
+Pupa-Ruby is a Ruby version of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa).
+
+It uses the [Popolo](http://popoloproject.com/) data specification for open government data.
+
+## Usage
+
+```ruby
+require 'pupa'
+
+class MyScraper < Pupa::Scraper
+  tech = Organization.new('Committee on Technology', classification: 'committee')
+  tech.add_source('https://example.com')
+  Fiber.yield tech
+
+  ecom = Organization.new('Subcommittee on E-Commerce', classification: 'committee', parent: tech)
+  ecom.add_source('https://example.com')
+  Fiber.yield ecom
+
+  p = Person('Paul Tagliamonte')
+  p.add_source('https://example.com')
+  Fiber.yield p
+end
+```
 
 ## Bugs? Questions?
 
