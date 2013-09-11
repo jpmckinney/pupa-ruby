@@ -16,7 +16,7 @@ module Pupa
         data[:scheme] = scheme
       end
       if identifier
-        @identifier << data
+        (@identifiers ||= []) << data
       end
     end
   end

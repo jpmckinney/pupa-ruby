@@ -6,6 +6,13 @@ module Pupa
       attr_accessor :contact_details
     end
 
+    # Sets the contact details.
+    #
+    # @param [Array] contact_details a list of contact details
+    def contact_details=(contact_details)
+      @contact_details = ContactDetailList.new(contact_details)
+    end
+
     # Adds a contact detail.
     #
     # @param [String] type a type of medium, e.g. "fax" or "email"
@@ -17,7 +24,7 @@ module Pupa
         data[:note] = note
       end
       if type && value
-        @contact_details << data
+        (@contact_details ||= ContactDetailList.new) << data
       end
     end
   end

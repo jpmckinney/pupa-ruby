@@ -4,6 +4,7 @@ module Pupa
   class Organization < Base
     self.schema = 'popolo/organization'
 
+    include Metadata
     include Nameable
     include Identifiable
     include Contactable
@@ -11,14 +12,6 @@ module Pupa
 
     attr_accessor :name, :classification, :parent_id, :founding_date,
       :dissolution_date, :image
-
-    def initialize(**kwargs)
-      @other_names     = []
-      @identifiers     = []
-      @contact_details = ContactDetailList.new
-      @links           = []
-      super
-    end
 
     # Returns the name of the organization.
     #

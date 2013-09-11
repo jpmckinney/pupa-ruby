@@ -2,7 +2,7 @@
 require File.expand_path('../lib/pupa/version', __FILE__)
 
 Gem::Specification.new do |s|
-  s.name        = "Pupa-Ruby"
+  s.name        = "pupa"
   s.version     = Pupa::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["Open North"]

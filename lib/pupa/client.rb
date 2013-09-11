@@ -11,8 +11,9 @@ module Pupa
     # Returns a configured Faraday HTTP client.
     #
     # @param [String] cache_dir a directory in which to cache requests
+    # @param [Integer] expires_in the cache's expiration time in seconds
     # @return [Faraday::Connection] a configured Faraday HTTP client
-    def self.new(cache_dir)
+    def self.new(cache_dir: nil, expires_in: 86400) # 1 day
       Faraday.new do |connection|
         connection.response :logger, Logger.new('faraday')
         # @see http://tools.ietf.org/html/rfc2854
@@ -22,8 +23,10 @@ module Pupa
         connection.use FaradayMiddleware::ParseJson, content_type: /\bjson$/
         # @see http://tools.ietf.org/html/rfc3023
         connection.use FaradayMiddleware::ParseXml, content_type: /\bxml$/
-        connection.response :caching do
-          ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: 86400) # 1 day
+        if cache_dir
+          connection.response :caching do
+            ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: expires_in)
+          end
         end
         connection.adapter Faraday.default_adapter # must be last
       end

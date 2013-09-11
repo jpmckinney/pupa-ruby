@@ -1,6 +1,6 @@
 module Pupa
-  class Scraper
-    # Scraper helper methods.
+  class Processor
+    # Processor helper methods.
     module Helper
       # Normalizes all whitespace to spaces, removes consecutive spaces, and
       # strips leading and ending spaces.

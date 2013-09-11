@@ -1,4 +1,5 @@
 require 'fileutils'
+require 'optparse'
 
 module Pupa
   class Runner

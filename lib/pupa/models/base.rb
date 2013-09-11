@@ -1,3 +1,4 @@
+require 'pathname'
 require 'securerandom'
 require 'set'
 
@@ -18,10 +19,20 @@ module Pupa
         super
       end
 
-      def schema=(fragment)
-        @schema = File.expand_path(File.join('..', '..', 'schemas', "#{fragment}.json"), __dir__)
+      # Sets the path to the class' schema.
+      #
+      # @param [String] path a relative or absolute path
+      def schema=(path)
+        @schema = if Pathname.new(path).absolute?
+          path
+        else
+          File.expand_path(File.join('..', '..', '..', 'schemas', "#{path}.json"), __dir__)
+        end
       end
 
+      # Returns the absolute path to the class' schema.
+      #
+      # @return [String] the absolute path to the class' schema
       def schema
         @schema
       end
@@ -35,39 +46,15 @@ module Pupa
       end
     end
 
-    attr_accessor :id, :sources, :extras, :created_at, :updated_at
+    attr_accessor :id, :extras
 
     # @param [Hash] kwargs the object's attributes
     def initialize(**kwargs)
       @id = SecureRandom.uuid
-      @sources = []
       @extras = {}
 
       kwargs.each do |key,value|
         send(key, value)
-      end
-    end
-
-    # Validates an object against a schema.
-    #
-    # @param [Object] an object
-    def validate!(object)
-      if self.class.schema
-        JSON::Validator.validate!(self.class.schema, object.to_h)
-      end
-    end
-
-    # Adds a source to the object.
-    #
-    # @param [String] url a URL
-    # @param [String] note a note
-    def add_source(url, note: nil)
-      data = {url: url}
-      if note
-        data[:note] = note
-      end
-      if url
-        @sources << data
       end
     end
 
@@ -77,6 +64,15 @@ module Pupa
     # @param value a value
     def add_extra(key, value)
       @extras[key] = value
+    end
+
+    # Validates an object against a schema.
+    #
+    # @param [Object] an object
+    def validate!(object)
+      if self.class.schema
+        JSON::Validator.validate!(self.class.schema, object.to_h)
+      end
     end
 
     # Returns the object as a hash.

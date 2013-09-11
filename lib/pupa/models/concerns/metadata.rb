@@ -1,21 +1,22 @@
 module Pupa
-  module Linkable
+  module Metadata
     extend ActiveSupport::Concern
 
     included do
-      attr_accessor :links
+      attr_accessor :sources, :created_at, :updated_at
     end
 
-    # Adds a URL.
+    # Adds a source to the object.
+    #
     # @param [String] url a URL
-    # @param [String] note a note, e.g. "Wikipedia page"
-    def add_link(url, note: nil)
+    # @param [String] note a note
+    def add_source(url, note: nil)
       data = {url: url}
       if note
         data[:note] = note
       end
       if url
-        (@links ||= []) << data
+        (@sources ||= []) << data
       end
     end
   end

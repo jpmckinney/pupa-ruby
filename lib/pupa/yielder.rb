@@ -1,7 +1,7 @@
 require 'fiber'
 
 module Pupa
-  # Using fibers instead of enumerators leads to less coupling in the scraper.
+  # Using fibers instead of enumerators leads to less coupling in the processor.
   # @see https://practicingruby.com/articles/building-enumerable-and-enumerator?u=dc2ab0f9bb
   class Yielder
     # The given block should yield objects to add to the enumerator.

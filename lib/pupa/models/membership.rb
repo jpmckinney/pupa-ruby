@@ -3,23 +3,18 @@ module Pupa
   class Membership < Base
     self.schema = 'popolo/membership'
 
+    include Metadata
     include Contactable
     include Linkable
 
     attr_accessor :label, :role, :person_id, :organization_id, :post_id,
       :start_date, :end_date
 
-    def initialize(**kwargs)
-      @contact_details = ContactDetailList.new
-      @links           = []
-      super
+    # Returns the IDs of the parties to the relationship.
+    #
+    # @return [String] the IDs of the parties to the relationship
+    def to_s
+      "#{person_id} in #{organization_id}"
     end
-  end
-
-  # Returns the IDs of the parties to the relationship.
-  #
-  # @return [String] the IDs of the parties to the relationship
-  def to_s
-    "#{person_id} in #{organization_id}"
   end
 end

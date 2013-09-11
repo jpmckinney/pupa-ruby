@@ -3,6 +3,7 @@ module Pupa
   class Person < Base
     self.schema = 'popolo/person'
 
+    include Metadata
     include Nameable
     include Identifiable
     include Contactable
@@ -12,18 +13,11 @@ module Pupa
       :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name,
       :email, :gender, :birth_date, :death_date, :image, :summary, :biography
 
-    def initialize(**kwargs)
-      @other_names     = []
-      @identifiers     = []
-      @contact_details = ContactDetailList.new
-      @links           = []
-      super
+    # Returns the person's name.
+    #
+    # @return [String] the person's name
+    def to_s
+      name
     end
-
-  # Returns the person's name.
-  #
-  # @return [String] the person's name
-  def to_s
-    name
   end
 end

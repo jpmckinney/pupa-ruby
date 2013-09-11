@@ -24,7 +24,7 @@ module Pupa
         data[:note] = note
       end
       if name
-        @other_names << data
+        (@other_names ||= []) << data
       end
     end
   end
