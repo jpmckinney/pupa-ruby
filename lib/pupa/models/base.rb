@@ -11,12 +11,30 @@ module Pupa
   # The base class from which other primary Popolo classes inherit.
   class Base
     class_attribute :properties
+    class_attribute :foreign_keys
     self.properties = Set.new
+    self.foreign_keys = Set.new
 
     class << self
+      # Declare the class' properties.
+      #
+      # When converting an object to a hash using the `to_h` method, only the
+      # properties declared with `attr_accessor` will be included in the hash.
+      #
+      # @param [Array<Symbol>] the class' properties
       def attr_accessor(*attributes)
         self.properties += attributes # use assignment to not overwrite the parent's attribute
         super
+      end
+
+      # Declare the class' foreign keys.
+      #
+      # When loading extracted objects, the foreign keys will be used to draw
+      # a dependency graph and derive an evaluation order.
+      #
+      # @param [Array<Symbol>] the class' foreign keys
+      def foreign_key(*attributes)
+        self.foreign_keys += attributes
       end
 
       # Sets the path to the class' schema.

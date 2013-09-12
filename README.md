@@ -38,7 +38,7 @@ The [legislature.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/leg
 
 1.  You may want to select the method used to perform an extraction task according to additional criteria. For example, a legislature may publish all legislators before 2000 in one format and all legislators after 2000 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [TODO](https://github.com/opennorth/pupa-ruby/blob/master/docs/TODO.html) for an example.
 
-You may, of course, write a separate processor class for each extraction task, and only ever define a `scrape` method in each class. However, there are often benefits in terms of maintainability to organizing all related tasks into a single class.
+You may, of course, write a separate processor class for each extraction task, and only ever define a `extract` method in each class. However, there are various benefits to organizing all related tasks into a single class.
 
 ## Bugs? Questions?
 

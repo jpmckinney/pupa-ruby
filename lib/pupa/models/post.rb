@@ -8,6 +8,8 @@ module Pupa
 
     attr_accessor :label, :role, :organization_id, :start_date, :end_date
 
+    foreign_keys :organization_id
+
     # Returns the post's label and organization ID.
     #
     # @return [String] the post's label and organization ID

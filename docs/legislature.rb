@@ -15,12 +15,16 @@ class Bill < Pupa::Base
   # each bill with a sponsor and legislative body, e.g. the House of Commons.
   attr_accessor :name, :sponsor_id, :organization_id
 
-  # @todo match with existing person
+  # When loading extracted objects into an end target, like a database, the
+  # foreign keys will be used to derive an evaluation order.
+  foreign_keys :sponsor_id, :organization_id
+
+  # @todo match with existing person during load
   def sponsor=(sponsor)
     @sponsor = sponsor
   end
 
-  # @todo match with existing organization
+  # @todo match with existing organization during load
   def organization=(organization)
     @organization = organization
   end
@@ -70,7 +74,7 @@ class HouseOfCommonsOfCanada < Pupa::Processor
     Fiber.yield(senate)
   end
 
-  # Associate each bill with a sponsor and a legislative body.
+  # Create a relation between each bill and its sponsor and legislative body.
   def extract_bills
     doc = get('http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&ParliamentSession=41-1&Mode=1&download=xml')
     doc.xpath('//Bill').each do |row|

@@ -10,6 +10,8 @@ module Pupa
     attr_accessor :label, :role, :person_id, :organization_id, :post_id,
       :start_date, :end_date
 
+    foreign_keys :person_id, :organization_id, :post_id
+
     # Returns the IDs of the parties to the relationship.
     #
     # @return [String] the IDs of the parties to the relationship
