@@ -1,6 +1,6 @@
 require 'pupa'
 
-# All models should inherit from (or quack like) [Pupa::Base](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/base.rb).
+# All models should inherit from (or quack like) [Pupa::Base](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/base.rb#files).
 class Cat < Pupa::Base
   # If you would like Pupa.rb to validate your objects, assign to `self.schema`
   # an absolute path to a [JSON Schema](http://json-schema.org/). You may want
@@ -19,7 +19,7 @@ class Cat < Pupa::Base
   end
 end
 
-# All processors should inherit from [Pupa::Processor](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb).
+# All processors should inherit from [Pupa::Processor](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#files).
 class CatProcessor < Pupa::Processor
   # For simple processors like this one, you may put all your code in a generic
   # `extract` method.

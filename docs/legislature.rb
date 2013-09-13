@@ -1,8 +1,7 @@
 require 'pupa'
 
-# The [cat.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/cat.html)
-# example goes over the basics of using Pupa.rb. This example covers some more
-# advanced topics.
+# The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
+# over the basics of using Pupa.rb. This covers some more advanced topics.
 
 # Define a new class to model legislative bills.
 class Bill < Pupa::Base
@@ -50,7 +49,7 @@ class HouseOfCommonsOfCanada < Pupa::Processor
   # schedule. Bill data is updated more frequently than person data; we would
   # therefore run the bills task more frequently.
   #
-  # See the [`extract_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/scraper.rb#L108)
+  # See the [`extract_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158)
   # documentation for more information on the naming of these methods.
   def extract_people
     doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Current&Language=E')
