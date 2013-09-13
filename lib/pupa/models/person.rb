@@ -3,11 +3,11 @@ module Pupa
   class Person < Base
     self.schema = 'popolo/person'
 
-    include Metadata
-    include Nameable
-    include Identifiable
-    include Contactable
-    include Linkable
+    include Concerns::Metadata
+    include Concerns::Nameable
+    include Concerns::Identifiable
+    include Concerns::Contactable
+    include Concerns::Linkable
 
     attr_accessor :name, :family_name, :given_name, :additional_name,
       :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name,

@@ -8,7 +8,7 @@ require 'pupa/processor/persistence'
 require 'pupa/processor/yielder'
 
 module Pupa
-  class MissingTargetIdError < Error; end
+  class MissingDatabaseIdError < Error; end
   class DuplicateObjectIdError < Error; end
 
   # An abstract processor class from which specific processors inherit.
@@ -77,7 +77,7 @@ module Pupa
     # objects to populate the lazy enumerator. Alternatively, you may override
     # `extract_task_method` to change the method selected to perform the task.
     #
-    # The `people` method can then be called by transformation tasks.
+    # The `people` method can then be called by transformation and load tasks.
     #
     # @param [Symbol] task_name a task name
     # @see Pupa::Processor#extract_task_method
@@ -92,10 +92,10 @@ module Pupa
       end
     end
 
-    # Loads extracted objects into an end target.
+    # Loads extracted objects into a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
-    # @raises [MissingTargetIdError] if a foreign key cannot be resolved
+    # @raises [Pupa::MissingDatabaseIdError] if a foreign key cannot be resolved
     def load
       objects = load_extracted_objects
 
@@ -110,46 +110,42 @@ module Pupa
 
       # Swap the IDs of losers for the IDs of winners and build a dependency graph.
       objects.each do |id,object|
-        if dependency_graph.key?(id)
-          raise DuplicateObjectIdError, "duplicate object ID: #{id}"
-        else
-          dependency_graph[id] = []
-          object.foreign_keys.each do |foreign_key|
-            foreign_id = object[foreign_key]
-            if losers_to_winners.key?(foreign_id)
-              foreign_id = losers_to_winners[foreign_id]
-              object[foreign_key] = foreign_id
-            end
-            dependency_graph[id] << foreign_id
+        dependency_graph[id] = [] # no duplicate IDs
+        object.foreign_keys.each do |foreign_key|
+          object_id = object[foreign_key]
+          if losers_to_winners.key?(object_id)
+            object_id = losers_to_winners[object_id]
+            object[foreign_key] = object_id
           end
+          dependency_graph[id] << object_id
         end
       end
 
-      object_id_to_target_id = {}
+      object_id_to_database_id = {}
 
       # Replace object IDs with database IDs in foreign keys and save objects.
       dependency_graph.tsort.each do |id|
         objects[id].foreign_keys.each do |foreign_key|
           object_id = object[foreign_key]
-          if object_id_to_target_id.key?(object_id)
-            object[foreign_key] = object_id_to_target_id[object_id]
+          if object_id_to_database_id.key?(object_id)
+            object[foreign_key] = object_id_to_database_id[object_id]
           else
-            raise MissingTargetIdError, "missing target ID: #{foreign_key} #{object_id} of #{id}"
+            raise MissingDatabaseIdError, "missing database ID: #{foreign_key} #{object_id} of #{id}"
           end
         end
-        object_id_to_target_id[id] = Persistence.new(objects[id]).save
+        object_id_to_database_id[id] = Persistence.new(objects[id]).save
       end
 
       # Ensure that fingerprints uniquely identified objects.
       counts = {}
-      object_id_to_target_id.each do |object_id,target_id|
-        (counts[target_id] ||= []) << object_id
+      object_id_to_database_id.each do |object_id,database_id|
+        (counts[database_id] ||= []) << object_id
       end
       duplicates = counts.select do |_,object_ids|
         object_ids.size > 1
       end
       unless duplicates.empty?
-        raise "multiple objects saved to same target:\n" + duplicates.map{|target_id,object_ids| "  #{target_id} <- #{object_ids.join(' ')}"}.join("\n")
+        raise "multiple objects written to same document:\n" + duplicates.map{|database_id,object_ids| "  #{database_id} <- #{object_ids.join(' ')}"}.join("\n")
       end
     end
 
@@ -202,12 +198,19 @@ module Pupa
     # Dumps an extracted object to disk.
     #
     # @param [Object] object an extracted object
+    # @raises [Pupa::DuplicateObjectIdError] if two objects have the same ID
     def dump_extracted_object(object)
       type = object.class.to_s.demodulize.underscore
       basename = "#{type}_#{object._id}.json"
+      path = File.join(@output_dir, basename)
+
+      if File.exist?(path)
+        raise DuplicateObjectIdError, "duplicate object ID: #{id} (was the same objected yielded twice?)"
+      end
+
       info("save #{type} #{object.to_s} as #{basename}")
 
-      File.open(File.join(@output_dir, basename), 'w') do |f|
+      File.open(path, 'w') do |f|
         f.write(JSON.dump(object.to_h))
       end
 

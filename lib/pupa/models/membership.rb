@@ -3,9 +3,9 @@ module Pupa
   class Membership < Base
     self.schema = 'popolo/membership'
 
-    include Metadata
-    include Contactable
-    include Linkable
+    include Concerns::Metadata
+    include Concerns::Contactable
+    include Concerns::Linkable
 
     attr_accessor :label, :role, :person_id, :organization_id, :post_id,
       :start_date, :end_date

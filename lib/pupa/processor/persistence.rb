@@ -11,6 +11,7 @@ module Pupa
     # Saves an object to MongoDB.
     #
     # @return [String] the object's database ID
+    # @raises [Pupa::TooManyMatches] if multiple documents would be updated
     def save
       @object.run_callbacks(:save) do
         selector = @object.fingerprint
@@ -26,7 +27,7 @@ module Pupa
           query.update(@object.to_h)
           document._id.to_s
         else
-          raise TooManyMatches, selector.inspect
+          raise TooManyMatches, "selector matches multiple documents: #{selector.inspect}"
         end
       end
     end

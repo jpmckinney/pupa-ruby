@@ -4,11 +4,11 @@ module Pupa
   class Organization < Base
     self.schema = 'popolo/organization'
 
-    include Metadata
-    include Nameable
-    include Identifiable
-    include Contactable
-    include Linkable
+    include Concerns::Metadata
+    include Concerns::Nameable
+    include Concerns::Identifiable
+    include Concerns::Contactable
+    include Concerns::Linkable
 
     attr_accessor :name, :classification, :parent_id, :founding_date,
       :dissolution_date, :image

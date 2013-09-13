@@ -20,9 +20,11 @@ module Pupa
     class_attribute :schema
     class_attribute :properties
     class_attribute :foreign_keys
+    class_attribute :foreign_objects
 
     self.properties = Set.new
     self.foreign_keys = Set.new
+    self.foreign_objects = Set.new
 
     class << self
       # Declare the class' properties.
@@ -44,6 +46,16 @@ module Pupa
       # @param [Array<Symbol>] the class' foreign keys
       def foreign_key(*attributes)
         self.foreign_keys += attributes
+      end
+
+      # Declare the class' foreign objects.
+      #
+      # If some cases, you may not know the ID of an existing foreign object,
+      # but you may have other information to identify the object.
+      #
+      # @param [Array<Symbol>] the class' foreign objects
+      def foreign_object(*attributes)
+        self.foreign_object += attributes
       end
 
       # Sets the path to the class' schema.
@@ -74,7 +86,7 @@ module Pupa
     # Returns the value of a property.
     #
     # @param [Symbol] property a property name
-    # @raises [MissingAttributeError] if class is missing the property
+    # @raises [Pupa::MissingAttributeError] if class is missing the property
     def [](property)
       if properties.include?(property)
         send(property)
@@ -87,7 +99,7 @@ module Pupa
     #
     # @param [Symbol] property a property name
     # @param value a value
-    # @raises [MissingAttributeError] if class is missing the property
+    # @raises [Pupa::MissingAttributeError] if class is missing the property
     def []=(property, value)
       if properties.include?(property)
         send("#{property}=", value)

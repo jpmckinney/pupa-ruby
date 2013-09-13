@@ -5,23 +5,21 @@
 [![Coverage Status](https://coveralls.io/repos/opennorth/pupa-ruby/badge.png?branch=master)](https://coveralls.io/r/opennorth/pupa-ruby)
 [![Code Climate](https://codeclimate.com/github/opennorth/pupa-ruby.png)](https://codeclimate.com/github/opennorth/pupa-ruby)
 
-Pupa.rb is a Ruby 2.0 fork of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa).
-
-It uses the [Popolo](http://popoloproject.com/) data specification for open government data.
+Pupa.rb is a Ruby 2.0 fork of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa). It implements an Extract, Transform and Load (ETL) process to scrape data from online sources, transform it, and write it to a database.
 
 ## Usage
 
-You can use Pupa.rb to author scrapers that create people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) specification. If you need to scrape other types of data, you can also use your own models with Pupa.rb.
+You can use Pupa.rb to author scrapers that create people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) open government data specification. If you need to scrape other types of data, you can also use your own models with Pupa.rb.
 
 The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows you how to:
 
-* write a Cat class that is compatible with Pupa.rb
-* write a processor to extract and load Cat objects from the Internet
-* [TODO] run the processor
+* write a simple Cat class that is compatible with Pupa.rb
+* write a processor to extract Cat objects from the Internet
+* [TODO] run the processor to write the Cat objects to MongoDB
 
 The [legislature.rb](http://opennorth.github.io/pupa-ruby/docs/legislature.html) example shows you how to:
 
-* reuse Popolo properties in your classes
+* use Popolo properties in your classes
 * register an extraction task with Pupa.rb
 * write individual extraction tasks
 * [TODO] create relations between objects

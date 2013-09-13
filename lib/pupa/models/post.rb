@@ -2,9 +2,9 @@ module Pupa
   class Post < Base
     self.schema = 'popolo/post'
 
-    include Metadata
-    include Contactable
-    include Linkable
+    include Concerns::Metadata
+    include Concerns::Contactable
+    include Concerns::Linkable
 
     attr_accessor :label, :role, :organization_id, :start_date, :end_date
 
