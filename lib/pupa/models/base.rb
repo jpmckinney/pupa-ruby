@@ -143,7 +143,7 @@ module Pupa
     # @return [Hash] the object as a hash
     def to_h
       {}.tap do |hash|
-        properties.each do |property|
+        (properties - foreign_objects).each do |property|
           value = self[property]
           if value == false || value.present?
             hash[property] = value

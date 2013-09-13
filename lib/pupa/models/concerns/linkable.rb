@@ -9,6 +9,7 @@ module Pupa
       end
 
       # Adds a URL.
+      #
       # @param [String] url a URL
       # @param [String] note a note, e.g. "Wikipedia page"
       def add_link(url, note: nil)

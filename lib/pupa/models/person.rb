@@ -3,7 +3,8 @@ module Pupa
   class Person < Base
     self.schema = 'popolo/person'
 
-    include Concerns::Metadata
+    include Concerns::Timestamps
+    include Concerns::Sourceable
     include Concerns::Nameable
     include Concerns::Identifiable
     include Concerns::Contactable

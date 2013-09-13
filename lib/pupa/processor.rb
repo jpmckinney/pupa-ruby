@@ -15,7 +15,7 @@ module Pupa
 
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
-    # @param [String] output_dir the directory in which to save JSON documents
+    # @param [String] output_dir the directory in which to dump JSON documents
     # @param [String] cache_dir the directory in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
     # @param [Hash] kwargs criteria for selecting the methods to run
@@ -89,7 +89,7 @@ module Pupa
       end
     end
 
-    # Loads extracted objects into a database.
+    # Saves extracted objects to a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
     # @raises [Pupa::Errors::MissingDatabaseIdError]
@@ -170,7 +170,7 @@ module Pupa
       end
     end
 
-    # Loads extracted objects from an intermediate data store.
+    # Loads extracted objects from disk.
     #
     # @return [Hash] a hash of extracted objects keyed by ID
     def load_extracted_objects
@@ -183,7 +183,7 @@ module Pupa
       objects
     end
 
-    # Dumps extracted objects to an intermediate data store.
+    # Dumps extracted objects to disk.
     #
     # @param [Symbol] task_name the name of the extraction task to perform
     def dump_extracted_objects(task_name)

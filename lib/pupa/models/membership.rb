@@ -3,7 +3,8 @@ module Pupa
   class Membership < Base
     self.schema = 'popolo/membership'
 
-    include Concerns::Metadata
+    include Concerns::Timestamps
+    include Concerns::Sourceable
     include Concerns::Contactable
     include Concerns::Linkable
 

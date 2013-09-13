@@ -3,7 +3,8 @@ module Pupa
   class Post < Base
     self.schema = 'popolo/post'
 
-    include Concerns::Metadata
+    include Concerns::Timestamps
+    include Concerns::Sourceable
     include Concerns::Contactable
     include Concerns::Linkable
 

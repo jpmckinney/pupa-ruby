@@ -1,6 +1,6 @@
 module Pupa
   class Processor
-    # A proxy class to persist plain old Ruby objects to MongoDB.
+    # A proxy class to save plain old Ruby objects to MongoDB.
     class Persistence
       # @param [Object] object an object
       def initialize(object)
@@ -33,16 +33,16 @@ module Pupa
 
     private
 
-      # Returns the name of the collection in which to store the object.
+      # Returns the name of the collection in which to save the object.
       #
-      # @return [String] the name of the collection in which to store the object
+      # @return [String] the name of the collection in which to save the object
       def collection_name
         @object.class.to_s.demodulize.underscore.pluralize.to_sym
       end
 
-      # Returns the collection in which to store the object.
+      # Returns the collection in which to save the object.
       #
-      # @return [Moped::Collection] the collection in which to store the object
+      # @return [Moped::Collection] the collection in which to save the object
       def collection
         Pupa.session[collection_name]
       end

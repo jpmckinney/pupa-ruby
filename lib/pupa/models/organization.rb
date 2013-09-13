@@ -4,7 +4,8 @@ module Pupa
   class Organization < Base
     self.schema = 'popolo/organization'
 
-    include Concerns::Metadata
+    include Concerns::Timestamps
+    include Concerns::Sourceable
     include Concerns::Nameable
     include Concerns::Identifiable
     include Concerns::Contactable
@@ -32,19 +33,6 @@ module Pupa
           hash.merge('other_names.name' => name),
         ],
       }
-    end
-
-    # Sets the ID of the organization that contains this organization.
-    #
-    # @param [String] parent the ID of the organization that contains this organization
-    def parent=(parent)
-      self.parent_id = parent._id
-    end
-
-    # Returns the ID of the organization that contains this organization.
-    # @return [String] the ID of the organization that contains this organization
-    def parent
-      parent_id
     end
   end
 end
