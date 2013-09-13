@@ -108,12 +108,7 @@ database, Pupa.rb will use this information to identify the foreign object.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  foreign_objects <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span>
-
-  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
-    name
-  <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_objects <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
             
         </li>
         
@@ -123,6 +118,33 @@ database, Pupa.rb will use this information to identify the foreign object.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Overrides the <code>sponsor=</code> setter to automatically add the <code>_type</code> property,
+instead of having to add it each time in the processor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">sponsor=</span><span class="params">(sponsor)</span></span>
+    <span class="variable">@sponsor</span> = {<span class="string">'_type'</span> =&gt; <span class="string">'pupa/person'</span>}.merge(sponsor)
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">organization=</span><span class="params">(organization)</span></span>
+    <span class="variable">@organization</span> = {<span class="string">'_type'</span> =&gt; <span class="string">'pupa/organization'</span>}.merge(organization)
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    name
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Registers an extraction (scraping) task. This will define a <code>bills</code> method on
 each processor, which will return a lazy enumerator of all Bill objects
@@ -136,11 +158,11 @@ people, organizations, memberships and posts.</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Scrapes legislative information about the Parliament of Canada.</p>
 
@@ -151,11 +173,11 @@ people, organizations, memberships and posts.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Instead of defining a single <code>extract</code> method to perform all the extraction,
 we define an extraction task for each type of data we want to extract:
@@ -181,11 +203,11 @@ documentation for more information on the naming of extraction methods.</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Hardcodes the top-level organizations within Parliament.</p>
 
@@ -211,11 +233,11 @@ documentation for more information on the naming of extraction methods.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>Here, we tell the Bill everything we know about the sponsor and the
 legislative body. Pupa.rb will later determine which objects match the

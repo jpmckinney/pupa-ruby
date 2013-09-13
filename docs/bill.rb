@@ -21,6 +21,16 @@ class Bill < Pupa::Base
   # database, Pupa.rb will use this information to identify the foreign object.
   foreign_objects :sponsor, :organization
 
+  # Overrides the `sponsor=` setter to automatically add the `_type` property,
+  # instead of having to add it each time in the processor.
+  def sponsor=(sponsor)
+    @sponsor = {'_type' => 'pupa/person'}.merge(sponsor)
+  end
+
+  def organization=(organization)
+    @organization = {'_type' => 'pupa/organization'}.merge(organization)
+  end
+
   def to_s
     name
   end
