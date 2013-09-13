@@ -108,7 +108,7 @@ module Pupa
 
       dependency_graph = DependencyGraph.new
 
-      # Swap the IDs of losers for the IDs of winners.
+      # Swap the IDs of losers for the IDs of winners and build a dependency graph.
       objects.each do |id,object|
         if dependency_graph.key?(id)
           raise DuplicateObjectIdError, "duplicate object ID: #{id}"
