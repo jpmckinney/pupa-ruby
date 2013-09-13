@@ -48,7 +48,9 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              
+              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
+over the basics of using Pupa.rb. This covers some more advanced topics.</p>
+
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'pupa'</span></pre></div></div>
@@ -62,9 +64,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
-over the basics of using Pupa.rb. This covers some more advanced topics.</p>
-<p>Define a new class to model legislative bills.</p>
+              <p>Define a new class to model legislative bills.</p>
 
             </div>
             
@@ -80,7 +80,8 @@ over the basics of using Pupa.rb. This covers some more advanced topics.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Add the <code>sources</code>, <code>created_at</code> and <code>updated_at</code> properties from Popolo.</p>
+              <p>Add the <code>sources</code>, <code>created_at</code> and <code>updated_at</code> metadata properties from
+the Popolo data specification.</p>
 
             </div>
             
@@ -96,7 +97,7 @@ over the basics of using Pupa.rb. This covers some more advanced topics.</p>
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
               <p>In this example, we will simply extract the names of bills and associate
-each bill with a sponsor and legislative body, e.g. the House of Commons.</p>
+each bill with a sponsor and a legislative body, e.g. the House of Commons.</p>
 
             </div>
             
@@ -111,7 +112,7 @@ each bill with a sponsor and legislative body, e.g. the House of Commons.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>When loading extracted objects into an end target, like a database, the
+              <p>When loading extracted objects into an end target (like a database), these
 foreign keys will be used to derive an evaluation order.</p>
 
             </div>
@@ -133,6 +134,10 @@ foreign keys will be used to derive an evaluation order.</p>
             
             <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">sponsor=</span><span class="params">(sponsor)</span></span>
     <span class="variable">@sponsor</span> = sponsor
+  <span class="keyword">end</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">sponsor</span></span>
+    <span class="variable">@sponsor</span>
   <span class="keyword">end</span></pre></div></div>
             
         </li>
@@ -152,6 +157,10 @@ foreign keys will be used to derive an evaluation order.</p>
     <span class="variable">@organization</span> = organization
   <span class="keyword">end</span>
 
+  <span class="function"><span class="keyword">def</span> <span class="title">organization</span></span>
+    <span class="variable">@organization</span>
+  <span class="keyword">end</span>
+
   <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
     name
   <span class="keyword">end</span>
@@ -166,10 +175,10 @@ foreign keys will be used to derive an evaluation order.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Register an extraction (scraping) task. This defines a <code>bills</code> method on each
-processor, which returns a lazy enumerator of all Bill objects extracted by
-that processor. Pupa.rb already registers extraction tasks for people,
-organizations, memberships and posts.</p>
+              <p>Register an extraction (scraping) task. This will define a <code>bills</code> method on
+each processor, which will return a lazy enumerator of all Bill objects
+extracted by that processor. Pupa.rb already registers extraction tasks for
+people, organizations, memberships and posts.</p>
 
             </div>
             
@@ -188,7 +197,7 @@ organizations, memberships and posts.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">HouseOfCommonsOfCanada</span> <span class="inheritance">&lt; <span class="parent">Pupa::Processor</span></span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">ParliamentOfCanada</span> <span class="inheritance">&lt; <span class="parent">Pupa::Processor</span></span></span></pre></div></div>
             
         </li>
         
@@ -202,11 +211,11 @@ organizations, memberships and posts.</p>
               <p>Instead of defining a single <code>extract</code> method to perform all extraction, we
 define an extraction task for each type of data we want to extract: people,
 organizations and bills.</p>
-<p>This allows us to, for example, run each extraction task on a different
-schedule. Bill data is updated more frequently than person data; we would
-therefore run the bills task more frequently.</p>
+<p>This lets us, for example, run each extraction task on a different schedule.
+Bill data is updated more frequently than person data; we would therefore
+run the bills task more frequently.</p>
 <p>See the <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158"><code>extract_task_method</code></a>
-documentation for more information on the naming of these methods.</p>
+documentation for more information on the naming of extraction methods.</p>
 
             </div>
             
