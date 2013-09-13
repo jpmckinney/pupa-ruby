@@ -62,7 +62,7 @@ class HouseOfCommonsOfCanada < Pupa::Processor
     end
   end
 
-  # Hardcode the top-level organizations within the Parliament of Canada.
+  # Hardcode the top-level organizations within Parliament.
   def extract_organizations
     parliament = Pupa::Organization.new(name: 'Parliament of Canada')
     Fiber.yield(parliament)
