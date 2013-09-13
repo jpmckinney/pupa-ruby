@@ -13,13 +13,13 @@ It uses the [Popolo](http://popoloproject.com/) data specification for open gove
 
 You can use Pupa.rb to author scrapers that create people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) specification. If you need to scrape other types of data, you can also use your own models with Pupa.rb.
 
-The [cat.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/cat.html) example shows you how to:
+The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows you how to:
 
 * Write a Cat class that is compatible with Pupa.rb
 * Write a processor to extract and load Cat objects from the Internet
 * [TODO] Run the processor
 
-The [legislature.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/legislature.html) example shows you how to:
+The [legislature.rb](http://opennorth.github.io/pupa-ruby/docs/legislature.html) example shows you how to:
 
 * Reuse Popolo properties in your classes
 * Register an extraction task with Pupa.rb
@@ -32,11 +32,11 @@ The [legislature.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/leg
 
 ### Extraction method selection
 
-1.  For simpler processors, your processor class need only define a single `extract` method, which will perform all extraction (scraping). See [cat.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/cat.html) for an example.
+1.  For simpler processors, your processor class need only define a single `extract` method, which will perform all extraction (scraping). See [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) for an example.
 
-1.  If you are extracting many types of data from the same source, you may want to split extraction into different tasks according to the type of data being extracted. See [legislature.rb](https://github.com/opennorth/pupa-ruby/blob/master/docs/legislature.html) for an example.
+1.  If you are extracting many types of data from the same source, you may want to split extraction into different tasks according to the type of data being extracted. See [legislature.rb](http://opennorth.github.io/pupa-ruby/docs/legislature.html) for an example.
 
-1.  You may want to select the method used to perform an extraction task according to additional criteria. For example, a legislature may publish all legislators before 2000 in one format and all legislators after 2000 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [TODO](https://github.com/opennorth/pupa-ruby/blob/master/docs/TODO.html) for an example.
+1.  You may want to select the method used to perform an extraction task according to additional criteria. For example, a legislature may publish all legislators before 2000 in one format and all legislators after 2000 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [TODO](http://opennorth.github.io/pupa-ruby/docs/TODO.html) for an example.
 
 You may, of course, write a separate processor class for each extraction task, and only ever define a `extract` method in each class. However, there are various benefits to organizing all related tasks into a single class.
 
