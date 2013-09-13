@@ -3,8 +3,8 @@ require 'pupa'
 # All models should inherit from (or quack like) [Pupa::Base](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/base.rb#files).
 class Cat < Pupa::Base
   # If you would like Pupa.rb to validate your objects, assign to `self.schema`
-  # an absolute path to a [JSON Schema](http://json-schema.org/). You may want
-  # to consult [Popolo's JSON Schema files](https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo).
+  # an absolute path to a [JSON Schema](http://json-schema.org/). See for
+  # example [Popolo's JSON Schema files](https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo).
   self.schema = '/path/to/json-schema/cat.json'
 
   # When converting an object to a hash using the `to_h` method (e.g. when
