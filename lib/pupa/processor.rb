@@ -140,7 +140,7 @@ module Pupa
         object_id_to_target_id[id] = Persistence.new(objects[id]).save
       end
 
-      # Ensure that fingerprints uniquely identify objects.
+      # Ensure that fingerprints uniquely identified objects.
       counts = {}
       object_id_to_target_id.each do |object_id,target_id|
         (counts[target_id] ||= []) << object_id

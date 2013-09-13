@@ -15,20 +15,20 @@ You can use Pupa.rb to author scrapers that create people, organizations, member
 
 The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows you how to:
 
-* Write a Cat class that is compatible with Pupa.rb
-* Write a processor to extract and load Cat objects from the Internet
-* [TODO] Run the processor
+* write a Cat class that is compatible with Pupa.rb
+* write a processor to extract and load Cat objects from the Internet
+* [TODO] run the processor
 
 The [legislature.rb](http://opennorth.github.io/pupa-ruby/docs/legislature.html) example shows you how to:
 
-* Reuse Popolo properties in your classes
-* Register an extraction task with Pupa.rb
-* Write individual extraction tasks
-* [TODO] Create relations between objects
-* [TODO] Run individual tasks in the processor
+* reuse Popolo properties in your classes
+* register an extraction task with Pupa.rb
+* write individual extraction tasks
+* [TODO] create relations between objects
+* [TODO] run individual tasks in the processor
 
-* [TODO] Register a transformation task with Pupa.rb
-* [TODO] Run the processor's transformation task
+* [TODO] register a transformation task with Pupa.rb
+* [TODO] run the processor's transformation task
 
 ### Extraction method selection
 
