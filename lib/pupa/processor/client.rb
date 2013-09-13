@@ -5,6 +5,8 @@ require 'pupa/processor/middleware/parse_html'
 
 module Pupa
   class Processor
+    # A refinement for the Faraday caching middleware to cache all requests, not
+    # only GET requests.
     module CacheAllRequests
       refine FaradayMiddleware::Caching do
         def call(env)
@@ -32,6 +34,7 @@ module Pupa
       end
     end
 
+    # An HTTP client factory.
     class Client
       using CacheAllRequests
 
