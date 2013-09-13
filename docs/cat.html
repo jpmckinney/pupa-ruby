@@ -94,13 +94,14 @@ example <a href="https://github.com/opennorth/pupa-ruby/tree/master/schemas/popo
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>When converting an object to a hash using the <code>to_h</code> method (e.g. when
-saving an object to disk), only the properties declared with <code>attr_accessor</code>
-will be included in the hash.</p>
+              <p>Adds the <code>created_at</code> and <code>updated_at</code> metadata properties from <a href="http://popoloproject.com/specs/">Popolo</a>.
+<code>created_at</code> and <code>updated_at</code> will be set by Pupa.rb before writing to the
+database. See <a href="http://rdoc.info/gems/pupa/Pupa/Concerns">Pupa::Concerns</a>
+for more mixins.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  attr_accessor <span class="symbol">:image</span>, <span class="symbol">:name</span>, <span class="symbol">:breed</span>, <span class="symbol">:age</span>, <span class="symbol">:sex</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">include</span> <span class="constant">Pupa::Concerns::Timestamps</span></pre></div></div>
             
         </li>
         
@@ -111,7 +112,24 @@ will be included in the hash.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>Add a <code>to_s</code> method so that it is easier to see which objects are being
+              <p>When converting an object to a hash with the <code>to_h</code> method (e.g. before
+saving an object to disk), only the properties declared with <code>attr_accessor</code>
+will be included in the hash.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  attr_accessor <span class="symbol">:image</span>, <span class="symbol">:name</span>, <span class="symbol">:breed</span>, <span class="symbol">:age</span>, <span class="symbol">:sex</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Adds a <code>to_s</code> method so that it&#39;s easier to see which objects are being
 saved in the processor&#39;s log.</p>
 
             </div>
@@ -124,11 +142,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>All processors should inherit from <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#files">Pupa::Processor</a>.</p>
 
@@ -139,11 +157,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>For simple processors like this one, you may put all your code in a generic
 <code>extract</code> method.</p>
@@ -155,11 +173,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>The <code>get</code> and <code>post</code> helpers take a URL as a first argument, and a query
 string or request body as a second argument.</p>
@@ -176,11 +194,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>HTML responses are parsed by <a href="http://nokogiri.org/">Nokogiri</a>.</p>
 
@@ -191,13 +209,13 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>Create a new Cat object.</p>
+              <p>Creates a new Cat object.</p>
 
             </div>
             
@@ -206,11 +224,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>The <code>clean</code> helper removes extra whitespace from a string.</p>
 
@@ -224,13 +242,13 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
-              <p>Yield the Cat object to the transformation task for processing, e.g.
+              <p>Yields the Cat object to the transformation task for processing, e.g.
 saving to disk, printing to CSV, etc.</p>
 
             </div>
@@ -243,11 +261,11 @@ saving to disk, printing to CSV, etc.</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Ready to move on? Check out the next example: <a href="http://opennorth.github.io/pupa-ruby/docs/legislature.html">legislature.rb</a>.</p>
 

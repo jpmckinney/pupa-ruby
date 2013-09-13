@@ -2,58 +2,43 @@
 # over the basics of using Pupa.rb. This covers some more advanced topics.
 require 'pupa'
 
-# Define a new class to model legislative bills.
+# Defines a new class to model legislative bills. In this example, we will
+# simply extract the names of bills and associate each bill with a sponsor and a
+# legislative body.
 class Bill < Pupa::Base
   self.schema = '/path/to/json-schema/bill.json'
 
-  # Add the `sources`, `created_at` and `updated_at` metadata properties from
-  # the Popolo data specification.
-  include Pupa::Metadata
+  attr_accessor :name, :sponsor_id, :organization_id, :sponsor, :organization
 
-  # In this example, we will simply extract the names of bills and associate
-  # each bill with a sponsor and a legislative body, e.g. the House of Commons.
-  attr_accessor :name, :sponsor_id, :organization_id
-
-  # When loading extracted objects into an end target (like a database), these
-  # foreign keys will be used to derive an evaluation order.
+  # When saving extracted objects to a database, these foreign keys will be used
+  # to derive an evaluation order.
   foreign_keys :sponsor_id, :organization_id
 
-  # @todo match with existing person during load
-  def sponsor=(sponsor)
-    @sponsor = sponsor
-  end
-
-  def sponsor
-    @sponsor
-  end
-
-  # @todo match with existing organization during load
-  def organization=(organization)
-    @organization = organization
-  end
-
-  def organization
-    @organization
-  end
+  # Sometimes, you may not know the ID of an existing foreign object, but you
+  # may have other information to identify it. In that case, put the information
+  # you have in a property named after the foreign key without the `_id` suffix:
+  # for example, `sponsor` for `sponsor_id`. Before saving the object to the
+  # database, Pupa.rb will use this information to identify the foreign object.
+  foreign_objects :sponsor, :organization
 
   def to_s
     name
   end
 end
 
-# Register an extraction (scraping) task. This will define a `bills` method on
+# Registers an extraction (scraping) task. This will define a `bills` method on
 # each processor, which will return a lazy enumerator of all Bill objects
 # extracted by that processor. Pupa.rb already registers extraction tasks for
 # people, organizations, memberships and posts.
 Pupa::Processor.add_extract_task(:bills)
 
-# Scrape legislative information about the Parliament of Canada.
+# Scrapes legislative information about the Parliament of Canada.
 class ParliamentOfCanada < Pupa::Processor
-  # Instead of defining a single `extract` method to perform all extraction, we
-  # define an extraction task for each type of data we want to extract: people,
-  # organizations and bills.
+  # Instead of defining a single `extract` method to perform all the extraction,
+  # we define an extraction task for each type of data we want to extract:
+  # people, organizations and bills.
   #
-  # This lets us, for example, run each extraction task on a different schedule.
+  # This will let us later, for example, run each task on a different schedule.
   # Bill data is updated more frequently than person data; we would therefore
   # run the bills task more frequently.
   #
@@ -69,7 +54,7 @@ class ParliamentOfCanada < Pupa::Processor
     end
   end
 
-  # Hardcode the top-level organizations within Parliament.
+  # Hardcodes the top-level organizations within Parliament.
   def extract_organizations
     parliament = Pupa::Organization.new(name: 'Parliament of Canada')
     Fiber.yield(parliament)
@@ -81,13 +66,14 @@ class ParliamentOfCanada < Pupa::Processor
     Fiber.yield(senate)
   end
 
-  # Create a relation between each bill and its sponsor and legislative body.
   def extract_bills
     doc = get('http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&ParliamentSession=41-1&Mode=1&download=xml')
     doc.xpath('//Bill').each do |row|
       bill = Bill.new
       bill.name = row.at_xpath('./BillTitle/Title[@language="en"]').text
-      # @todo docs
+      # Here, we tell the Bill everything we know about the sponsor and the
+      # legislative body. Pupa.rb will later determine which objects match the
+      # given information.
       bill.sponsor = {
         name: row.at_xpath('./SponsorAffiliation/Person/FullName').text,
       }

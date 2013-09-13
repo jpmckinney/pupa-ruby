@@ -64,12 +64,16 @@ over the basics of using Pupa.rb. This covers some more advanced topics.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>Define a new class to model legislative bills.</p>
+              <p>Defines a new class to model legislative bills. In this example, we will
+simply extract the names of bills and associate each bill with a sponsor and a
+legislative body.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Bill</span> <span class="inheritance">&lt; <span class="parent">Pupa::Base</span></span></span>
-  <span class="keyword">self</span>.schema = <span class="string">'/path/to/json-schema/bill.json'</span></pre></div></div>
+  <span class="keyword">self</span>.schema = <span class="string">'/path/to/json-schema/bill.json'</span>
+
+  attr_accessor <span class="symbol">:name</span>, <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span>, <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
             
         </li>
         
@@ -80,12 +84,12 @@ over the basics of using Pupa.rb. This covers some more advanced topics.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>Add the <code>sources</code>, <code>created_at</code> and <code>updated_at</code> metadata properties from
-the Popolo data specification.</p>
+              <p>When saving extracted objects to a database, these foreign keys will be used
+to derive an evaluation order.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">include</span> <span class="constant">Pupa::Metadata</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_keys <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span></pre></div></div>
             
         </li>
         
@@ -96,12 +100,20 @@ the Popolo data specification.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>In this example, we will simply extract the names of bills and associate
-each bill with a sponsor and a legislative body, e.g. the House of Commons.</p>
+              <p>Sometimes, you may not know the ID of an existing foreign object, but you
+may have other information to identify it. In that case, put the information
+you have in a property named after the foreign key without the <code>_id</code> suffix:
+for example, <code>sponsor</code> for <code>sponsor_id</code>. Before saving the object to the
+database, Pupa.rb will use this information to identify the foreign object.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  attr_accessor <span class="symbol">:name</span>, <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_objects <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span>
+
+  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+    name
+  <span class="keyword">end</span>
+<span class="keyword">end</span></pre></div></div>
             
         </li>
         
@@ -112,70 +124,7 @@ each bill with a sponsor and a legislative body, e.g. the House of Commons.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
-              <p>When loading extracted objects into an end target (like a database), these
-foreign keys will be used to derive an evaluation order.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  foreign_keys <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-6">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
-              </div>
-              <p>@todo match with existing person during load</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">sponsor=</span><span class="params">(sponsor)</span></span>
-    <span class="variable">@sponsor</span> = sponsor
-  <span class="keyword">end</span>
-
-  <span class="function"><span class="keyword">def</span> <span class="title">sponsor</span></span>
-    <span class="variable">@sponsor</span>
-  <span class="keyword">end</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
-              <p>@todo match with existing organization during load</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">organization=</span><span class="params">(organization)</span></span>
-    <span class="variable">@organization</span> = organization
-  <span class="keyword">end</span>
-
-  <span class="function"><span class="keyword">def</span> <span class="title">organization</span></span>
-    <span class="variable">@organization</span>
-  <span class="keyword">end</span>
-
-  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
-    name
-  <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>Register an extraction (scraping) task. This will define a <code>bills</code> method on
+              <p>Registers an extraction (scraping) task. This will define a <code>bills</code> method on
 each processor, which will return a lazy enumerator of all Bill objects
 extracted by that processor. Pupa.rb already registers extraction tasks for
 people, organizations, memberships and posts.</p>
@@ -187,13 +136,13 @@ people, organizations, memberships and posts.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Scrape legislative information about the Parliament of Canada.</p>
+              <p>Scrapes legislative information about the Parliament of Canada.</p>
 
             </div>
             
@@ -202,16 +151,16 @@ people, organizations, memberships and posts.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Instead of defining a single <code>extract</code> method to perform all extraction, we
-define an extraction task for each type of data we want to extract: people,
-organizations and bills.</p>
-<p>This lets us, for example, run each extraction task on a different schedule.
+              <p>Instead of defining a single <code>extract</code> method to perform all the extraction,
+we define an extraction task for each type of data we want to extract:
+people, organizations and bills.</p>
+<p>This will let us later, for example, run each task on a different schedule.
 Bill data is updated more frequently than person data; we would therefore
 run the bills task more frequently.</p>
 <p>See the <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158"><code>extract_task_method</code></a>
@@ -232,13 +181,13 @@ documentation for more information on the naming of extraction methods.</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Hardcode the top-level organizations within Parliament.</p>
+              <p>Hardcodes the top-level organizations within Parliament.</p>
 
             </div>
             
@@ -251,22 +200,9 @@ documentation for more information on the naming of extraction methods.</p>
 
     senate = <span class="constant">Pupa::Organization</span>.new(<span class="symbol">name:</span> <span class="string">'Senate'</span>, <span class="symbol">parent:</span> parliament)
     <span class="constant">Fiber</span>.<span class="keyword">yield</span>(senate)
-  <span class="keyword">end</span></pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-12">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
-              </div>
-              <p>Create a relation between each bill and its sponsor and legislative body.</p>
+  <span class="keyword">end</span>
 
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract_bills</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">extract_bills</span></span>
     doc = get(<span class="string">'http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&amp;ParliamentSession=41-1&amp;Mode=1&amp;download=xml'</span>)
     doc.xpath(<span class="string">'//Bill'</span>).each <span class="keyword">do</span> |row|
       bill = <span class="constant">Bill</span>.new
@@ -275,13 +211,15 @@ documentation for more information on the naming of extraction methods.</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>@todo docs</p>
+              <p>Here, we tell the Bill everything we know about the sponsor and the
+legislative body. Pupa.rb will later determine which objects match the
+given information.</p>
 
             </div>
             
