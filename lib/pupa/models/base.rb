@@ -10,8 +10,6 @@ require 'active_support/core_ext/object/try'
 require 'json-schema'
 
 module Pupa
-  class MissingAttributeError < Error; end
-
   # The base class from which other primary Popolo classes inherit.
   class Base
     include ActiveSupport::Callbacks
@@ -86,12 +84,12 @@ module Pupa
     # Returns the value of a property.
     #
     # @param [Symbol] property a property name
-    # @raises [Pupa::MissingAttributeError] if class is missing the property
+    # @raises [Pupa::Errors::MissingAttributeError] if class is missing the property
     def [](property)
       if properties.include?(property)
         send(property)
       else
-        raise MissingAttributeError, "missing attribute: #{property}"
+        raise Errors::MissingAttributeError, "missing attribute: #{property}"
       end
     end
 
@@ -99,12 +97,12 @@ module Pupa
     #
     # @param [Symbol] property a property name
     # @param value a value
-    # @raises [Pupa::MissingAttributeError] if class is missing the property
+    # @raises [Pupa::Errors::MissingAttributeError] if class is missing the property
     def []=(property, value)
       if properties.include?(property)
         send("#{property}=", value)
       else
-        raise MissingAttributeError, "missing attribute: #{property}"
+        raise Errors::MissingAttributeError, "missing attribute: #{property}"
       end
     end
 

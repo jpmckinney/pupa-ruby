@@ -8,9 +8,6 @@ require 'pupa/processor/persistence'
 require 'pupa/processor/yielder'
 
 module Pupa
-  class MissingDatabaseIdError < Error; end
-  class DuplicateObjectIdError < Error; end
-
   # An abstract processor class from which specific processors inherit.
   class Processor
     extend Forwardable
@@ -95,7 +92,7 @@ module Pupa
     # Loads extracted objects into a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
-    # @raises [Pupa::MissingDatabaseIdError] if a foreign key cannot be resolved
+    # @raises [Pupa::Errors::MissingDatabaseIdError]
     def load
       objects = load_extracted_objects
 
@@ -130,7 +127,7 @@ module Pupa
           if object_id_to_database_id.key?(object_id)
             object[foreign_key] = object_id_to_database_id[object_id]
           else
-            raise MissingDatabaseIdError, "missing database ID: #{foreign_key} #{object_id} of #{id}"
+            raise Errors::MissingDatabaseIdError, "missing database ID: #{foreign_key} #{object_id} of #{id}"
           end
         end
         object_id_to_database_id[id] = Persistence.new(objects[id]).save
@@ -198,14 +195,14 @@ module Pupa
     # Dumps an extracted object to disk.
     #
     # @param [Object] object an extracted object
-    # @raises [Pupa::DuplicateObjectIdError] if two objects have the same ID
+    # @raises [Pupa::Errors::DuplicateObjectIdError]
     def dump_extracted_object(object)
       type = object.class.to_s.demodulize.underscore
       basename = "#{type}_#{object._id}.json"
       path = File.join(@output_dir, basename)
 
       if File.exist?(path)
-        raise DuplicateObjectIdError, "duplicate object ID: #{id} (was the same objected yielded twice?)"
+        raise Errors::DuplicateObjectIdError, "duplicate object ID: #{id} (was the same objected yielded twice?)"
       end
 
       info("save #{type} #{object.to_s} as #{basename}")

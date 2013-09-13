@@ -3,6 +3,7 @@ require 'forwardable'
 require 'active_support/concern'
 require 'active_support/inflector'
 
+require 'pupa/errors'
 require 'pupa/logger'
 require 'pupa/processor'
 require 'pupa/runner'
@@ -21,8 +22,6 @@ require 'pupa/models/person'
 require 'pupa/models/post'
 
 module Pupa
-  class Error < StandardError; end
-
   class << self
     attr_accessor :session
   end
