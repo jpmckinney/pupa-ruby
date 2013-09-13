@@ -1,20 +1,20 @@
-require 'forwardable'
 require 'json'
 
 require 'nokogiri'
 
-require 'pupa/client'
-require 'pupa/logger'
-require 'pupa/yielder'
+require 'pupa/processor/client'
+require 'pupa/processor/dependency_graph'
+require 'pupa/processor/persistence'
+require 'pupa/processor/yielder'
 
 module Pupa
+  class MissingTargetIdError < Error; end
+  class DuplicateObjectIdError < Error; end
+
   # An abstract processor class from which specific processors inherit.
-  # @todo go through Python Pupa's importers/base.py
   class Processor
     extend Forwardable
     include Helper
-
-    attr_reader :output_dir, :cache_dir, :expires_in, :options
 
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
@@ -24,8 +24,6 @@ module Pupa
     # @param [Hash] kwargs criteria for selecting the methods to run
     def initialize(output_dir, cache_dir: nil, expires_in: 86400, **kwargs)
       @output_dir = output_dir
-      @cache_dir  = cache_dir
-      @expires_in = expires_in
       @options    = kwargs
       @logger     = Logger.new('pupa')
       @client     = Client.new(cache_dir, expires_in)
@@ -94,6 +92,69 @@ module Pupa
       end
     end
 
+    # Loads extracted objects into an end target.
+    #
+    # @raises [TSort::Cyclic] if the dependency graph is cyclic
+    # @raises [MissingTargetIdError] if a foreign key cannot be resolved
+    def load
+      objects = load_extracted_objects
+
+      losers_to_winners = build_losers_to_winners_map(objects)
+
+      # Remove all losers.
+      losers_to_winners.each_key do |key|
+        objects.delete(key)
+      end
+
+      dependency_graph = DependencyGraph.new
+
+      # Swap the IDs of losers for the IDs of winners.
+      objects.each do |id,object|
+        if dependency_graph.key?(id)
+          raise DuplicateObjectIdError, "duplicate object ID: #{id}"
+        else
+          dependency_graph[id] = []
+          object.foreign_keys.each do |foreign_key|
+            foreign_id = object[foreign_key]
+            if losers_to_winners.key?(foreign_id)
+              foreign_id = losers_to_winners[foreign_id]
+              object[foreign_key] = foreign_id
+            end
+            dependency_graph[id] << foreign_id
+          end
+        end
+      end
+
+      object_id_to_target_id = {}
+
+      # Replace object IDs with database IDs in foreign keys and save objects.
+      dependency_graph.tsort.each do |id|
+        objects[id].foreign_keys.each do |foreign_key|
+          object_id = object[foreign_key]
+          if object_id_to_target_id.key?(object_id)
+            object[foreign_key] = object_id_to_target_id[object_id]
+          else
+            raise MissingTargetIdError, "missing target ID: #{foreign_key} #{object_id} of #{id}"
+          end
+        end
+        object_id_to_target_id[id] = Persistence.new(objects[id]).save
+      end
+
+      # Ensure that fingerprints uniquely identify objects.
+      counts = {}
+      object_id_to_target_id.each do |object_id,target_id|
+        (counts[target_id] ||= []) << object_id
+      end
+      duplicates = counts.select do |_,object_ids|
+        object_ids.size > 1
+      end
+      unless duplicates.empty?
+        raise "multiple objects saved to same target:\n" + duplicates.map{|target_id,object_ids| "  #{target_id} <- #{object_ids.join(' ')}"}.join("\n")
+      end
+    end
+
+  private
+
     # Returns the name of the method that would be used to perform the given
     # extraction task.
     #
@@ -106,8 +167,7 @@ module Pupa
     # additional `options` passed from the command-line to the processor.
     #
     # @param [Symbol] task_name a task name
-    # @return [String] the name of the method that would be used to perform the
-    #   given extraction task
+    # @return [String] the name of the method to perform the extraction task
     def extract_task_method(task_name)
       method_name = "extract_#{task_name}"
       if respond_to?(method_name)
@@ -117,31 +177,34 @@ module Pupa
       end
     end
 
-    # Returns the name of the method that would be used to perform the given
-    # load task.
+    # Loads extracted objects from an intermediate data store.
     #
-    # @param [Symbol] task_name a task name
-    # @return [String] the name of the method that would be used to perform the
-    #   given load task
-    def load_task_method(task_name)
-      'save_to_file'
+    # @return [Hash] a hash of extracted objects keyed by ID
+    def load_extracted_objects
+      objects = {}
+      Dir[File.join(@output_dir, '*.json')].each do |path|
+        data = JSON.load(File.read(path))
+        object = data['_type'].camelize.constantize.new(data)
+        objects[object._id] = object
+      end
+      objects
     end
 
-    # Loads extracted objects into an end target.
+    # Dumps extracted objects to an intermediate data store.
     #
-    # @param [Symbol] task_name the name of the task to perform
-    def load(task_name)
+    # @param [Symbol] task_name the name of the extraction task to perform
+    def dump_extracted_objects(task_name)
       send(task_name).each do |object|
-        method(load_task_method(task_name)).call(object)
+        dump_extracted_object(object)
       end
     end
 
-    # Saves an extracted object to disk.
+    # Dumps an extracted object to disk.
     #
     # @param [Object] object an extracted object
-    def save_to_file(object)
-      type = object.class.to_s.demodulize.downcase
-      basename = "#{type}_#{object.id}.json"
+    def dump_extracted_object(object)
+      type = object.class.to_s.demodulize.underscore
+      basename = "#{type}_#{object._id}.json"
       info("save #{type} #{object.to_s} as #{basename}")
 
       File.open(File.join(@output_dir, basename), 'w') do |f|
@@ -153,6 +216,24 @@ module Pupa
       rescue JSON::Schema::ValidationError => e
         warn(e)
       end
+    end
+
+    # For each object, map its ID to the ID of its duplicate, if any.
+    #
+    # @param [Hash] objects a hash of extracted objects keyed by ID
+    # @return [Hash] a mapping from an object ID to the ID of its duplicate
+    def build_losers_to_winners_map(objects)
+      map = {}
+      objects.each_with_index do |(id1,object1),index|
+        unless map.key?(id1) # Don't search for duplicates of duplicates.
+          objects.drop(index + 1).each do |id2,object2|
+            if object1 == object2
+              map[id2] = id1
+            end
+          end
+        end
+      end
+      map
     end
   end
 end

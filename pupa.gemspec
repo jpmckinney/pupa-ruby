@@ -20,7 +20,9 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('colored', '~> 1.2')
   s.add_runtime_dependency('faraday_middleware', '~> 0.9.0')
   s.add_runtime_dependency('json-schema', '~> 2.1.3')
+  s.add_runtime_dependency('moped', '~> 1.5.1')
   s.add_runtime_dependency('nokogiri', '~> 1.6.0')
+  s.add_runtime_dependency('orm_adapter', '~> 0.4')
 
   s.add_development_dependency('coveralls')
   s.add_development_dependency('json', '~> 1.7.7') # to silence coveralls warning

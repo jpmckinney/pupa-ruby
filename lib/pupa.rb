@@ -1,6 +1,11 @@
-require 'active_support/concern'
+require 'forwardable'
 
+require 'active_support/concern'
+require 'active_support/inflector'
+
+require 'pupa/logger'
 require 'pupa/processor'
+require 'pupa/runner'
 
 require 'pupa/models/concerns/contactable'
 require 'pupa/models/concerns/identifiable'
@@ -14,6 +19,14 @@ require 'pupa/models/membership'
 require 'pupa/models/organization'
 require 'pupa/models/person'
 require 'pupa/models/post'
+
+module Pupa
+  class Error < StandardError; end
+
+  class << self
+    attr_accessor :session
+  end
+end
 
 Pupa::Processor.add_extract_task(:memberships)
 Pupa::Processor.add_extract_task(:organizations)

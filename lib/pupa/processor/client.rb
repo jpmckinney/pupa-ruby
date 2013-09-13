@@ -1,13 +1,39 @@
 require 'active_support/cache'
 require 'faraday_middleware'
 
-require 'faraday_middleware_ext/caching'
-require 'pupa/middleware/parse_html'
-
-using FaradayMiddewareExt
+require 'pupa/processor/middleware/parse_html'
 
 module Pupa
+  module CacheAllRequests
+    refine FaradayMiddleware::Caching do
+      def call(env)
+        # Remove if-statement to cache any request, not only GET.
+        if env[:parallel_manager]
+          # callback mode
+          cache_on_complete(env)
+        else
+          # synchronous mode
+          response = cache.fetch(cache_key(env)) { @app.call(env) }
+          finalize_response(response, env)
+        end
+      end
+
+      def cache_key(env)
+        url = env[:url].dup
+        if url.query && params_to_ignore.any?
+          params = parse_query url.query
+          params.reject! {|k,| params_to_ignore.include? k }
+          url.query = build_query params
+        end
+        url.normalize!
+        url.request_uri + env[:body].to_s # Add for POST requests.
+      end
+    end
+  end
+
   class Client
+    using CacheAllRequests
+
     # Returns a configured Faraday HTTP client.
     #
     # @param [String] cache_dir a directory in which to cache requests

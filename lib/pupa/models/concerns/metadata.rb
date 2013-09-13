@@ -4,6 +4,14 @@ module Pupa
 
     included do
       attr_accessor :sources, :created_at, :updated_at
+
+      set_callback(:create, :before) do |object|
+        object.created_at = Time.now.utc
+      end
+
+      set_callback(:save, :before) do |object|
+        object.updated_at = Time.now.utc
+      end
     end
 
     # Adds a source to the object.

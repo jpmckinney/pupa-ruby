@@ -22,11 +22,23 @@ module Pupa
       name
     end
 
+    # @todo Parentless organizations in different jurisdictions can have the
+    #   same name. Add a `jurisdiction` property?
+    def fingerprint
+      hash = to_h.slice(:classification, :parent_id)
+      {
+        '$or' => [
+          hash.merge('name' => name),
+          hash.merge('other_names.name' => name),
+        ],
+      }
+    end
+
     # Sets the ID of the organization that contains this organization.
     #
     # @param [String] parent the ID of the organization that contains this organization
     def parent=(parent)
-      self.parent_id = parent.id
+      self.parent_id = parent._id
     end
 
     # Returns the ID of the organization that contains this organization.

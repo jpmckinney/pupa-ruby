@@ -1,6 +1,8 @@
 require 'fileutils'
 require 'optparse'
 
+require 'moped'
+
 module Pupa
   class Runner
     # @todo see ocd-division-ids scripts
@@ -16,5 +18,7 @@ module Pupa
     Dir[File.join(output_dir, '*.json')].each do |path|
       FileUtils.rm(path)
     end
+
+    Pupa.session = Moped::Session.new([host_with_port], database: database)
   end
 end

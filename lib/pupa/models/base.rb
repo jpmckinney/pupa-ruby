@@ -2,16 +2,25 @@ require 'pathname'
 require 'securerandom'
 require 'set'
 
+require 'active_support/callbacks'
 require 'active_support/core_ext/class/attribute'
+require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 require 'json-schema'
 
 module Pupa
+  class MissingAttributeError < Error; end
+
   # The base class from which other primary Popolo classes inherit.
   class Base
+    include ActiveSupport::Callbacks
+    define_callbacks :create, :save
+
+    class_attribute :schema
     class_attribute :properties
     class_attribute :foreign_keys
+
     self.properties = Set.new
     self.foreign_keys = Set.new
 
@@ -47,33 +56,51 @@ module Pupa
           File.expand_path(File.join('..', '..', '..', 'schemas', "#{path}.json"), __dir__)
         end
       end
-
-      # Returns the absolute path to the class' schema.
-      #
-      # @return [String] the absolute path to the class' schema
-      def schema
-        @schema
-      end
-
-      # Converts a hash into an object.
-      #
-      # @param [Hash] hash an object as a hash
-      # @return [Object] an object
-      def from_h(hash)
-        new(hash)
-      end
     end
 
-    attr_accessor :id, :extras
+    attr_accessor :_id, :_type, :extras
 
     # @param [Hash] kwargs the object's attributes
     def initialize(**kwargs)
-      @id = SecureRandom.uuid
+      @_type = self.class.to_s.underscore
+      @_id = "ocd-#{self.class.to_s.demodulize.underscore}/#{SecureRandom.uuid}"
       @extras = {}
 
       kwargs.each do |key,value|
-        send(key, value)
+        self[key] = value
       end
+    end
+
+    # Returns the value of a property.
+    #
+    # @param [Symbol] property a property name
+    # @raises [MissingAttributeError] if class is missing the property
+    def [](property)
+      if properties.include?(property)
+        send(property)
+      else
+        raise MissingAttributeError, "missing attribute: #{property}"
+      end
+    end
+
+    # Sets the value of a property.
+    #
+    # @param [Symbol] property a property name
+    # @param value a value
+    # @raises [MissingAttributeError] if class is missing the property
+    def []=(property, value)
+      if properties.include?(property)
+        send("#{property}=", value)
+      else
+        raise MissingAttributeError, "missing attribute: #{property}"
+      end
+    end
+
+    # Sets the object's ID.
+    #
+    # @param [String,Moped::BSON::ObjectId] id an ID
+    def _id=(id)
+      @_id = id.to_s # in case of Moped::BSON::ObjectId
     end
 
     # Adds a key-value pair to the object.
@@ -82,6 +109,14 @@ module Pupa
     # @param value a value
     def add_extra(key, value)
       @extras[key] = value
+    end
+
+    # Returns a subset of the object's properties that should uniquely identify
+    # the object.
+    #
+    # @return [Hash] a subset of the object's properties
+    def fingerprint
+      to_h
     end
 
     # Validates an object against a schema.
@@ -99,7 +134,7 @@ module Pupa
     def to_h
       {}.tap do |hash|
         properties.each do |property|
-          value = send(property)
+          value = self[property]
           if value == false || value.present?
             hash[property] = value
           end
@@ -115,8 +150,8 @@ module Pupa
     def ==(other)
       a = to_h
       b = other.to_h
-      a.delete(:id)
-      b.delete(:id)
+      a.delete(:_id)
+      b.delete(:_id)
       a == b
     end
   end
