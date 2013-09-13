@@ -5,7 +5,6 @@ require 'set'
 require 'active_support/callbacks'
 require 'active_support/core_ext/class/attribute'
 require 'active_support/core_ext/hash/slice'
-require 'active_support/core_ext/object/blank'
 require 'active_support/core_ext/object/try'
 require 'json-schema'
 
@@ -49,7 +48,11 @@ module Pupa
       # Declare the class' foreign objects.
       #
       # If some cases, you may not know the ID of an existing foreign object,
-      # but you may have other information to identify the object.
+      # but you may have other information to identify the object. In that case,
+      # put the information you have in a property named after the foreign key
+      # without the `_id` suffix: for example, `person` for `person_id`. Before
+      # saving the object to the database, Pupa.rb will use this information to
+      # identify the foreign object.
       #
       # @param [Array<Symbol>] the class' foreign objects
       def foreign_object(*attributes)

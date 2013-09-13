@@ -7,6 +7,26 @@ module Pupa
         @object = object
       end
 
+      # Finds a document matching the selection criteria.
+      #
+      # The selection criteria *must* set a `_type` key in order to determine
+      # the collection to query.
+      #
+      # @param [Hash] selector the selection criteria
+      # @return [Hash,nil] the matched document, or nil
+      # @raises [Pupa::Errors::TooManyMatches] if multiple documents are found
+      def self.find(selector)
+        query = Pupa.session[collection_name_from_class_name(selector['_type'].camelize)].find(selector)
+        case query.count
+        when 0
+          nil
+        when 1
+          query.first
+        else
+          raise Errors::TooManyMatches, "selector matches multiple documents during find: #{selector.inspect}"
+        end
+      end
+
       # Saves an object to MongoDB.
       #
       # @return [String] the object's database ID
@@ -26,7 +46,7 @@ module Pupa
             query.update(@object.to_h)
             document._id.to_s
           else
-            raise Errors::TooManyMatches, "selector matches multiple documents: #{selector.inspect}"
+            raise Errors::TooManyMatches, "selector matches multiple documents during save: #{selector.inspect}"
           end
         end
       end
@@ -35,9 +55,16 @@ module Pupa
 
       # Returns the name of the collection in which to save the object.
       #
+      # @return [String] the name of the object's class
+      def self.collection_name_from_class_name(class_name)
+        class_name.demodulize.underscore.pluralize.to_sym
+      end
+
+      # Returns the name of the collection in which to save the object.
+      #
       # @return [String] the name of the collection in which to save the object
       def collection_name
-        @object.class.to_s.demodulize.underscore.pluralize.to_sym
+        self.class.collection_name_from_class_name(@object.class.to_s)
       end
 
       # Returns the collection in which to save the object.

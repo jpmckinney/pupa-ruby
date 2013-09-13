@@ -92,7 +92,6 @@ module Pupa
     # Saves extracted objects to a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
-    # @raises [Pupa::Errors::MissingDatabaseIdError]
     def load
       objects = load_extracted_objects
 
@@ -103,34 +102,60 @@ module Pupa
         objects.delete(key)
       end
 
-      dependency_graph = DependencyGraph.new
-
-      # Swap the IDs of losers for the IDs of winners and build a dependency graph.
+      # Swap the IDs of losers for the IDs of winners.
       objects.each do |id,object|
-        dependency_graph[id] = [] # no duplicate IDs
-        object.foreign_keys.each do |foreign_key|
-          object_id = object[foreign_key]
-          if losers_to_winners.key?(object_id)
-            object_id = losers_to_winners[object_id]
-            object[foreign_key] = object_id
+        object.foreign_keys.each do |property|
+          value = object[property]
+          if value && losers_to_winners.key?(value)
+            object[property] = losers_to_winners[value]
           end
-          dependency_graph[id] << object_id
         end
       end
 
       object_id_to_database_id = {}
 
-      # Replace object IDs with database IDs in foreign keys and save objects.
-      dependency_graph.tsort.each do |id|
-        objects[id].foreign_keys.each do |foreign_key|
-          object_id = object[foreign_key]
-          if object_id_to_database_id.key?(object_id)
-            object[foreign_key] = object_id_to_database_id[object_id]
-          else
-            raise Errors::MissingDatabaseIdError, "missing database ID: #{foreign_key} #{object_id} of #{id}"
-          end
+      if use_dependency_graph?(objects)
+        dependency_graph = build_dependency_graph(objects)
+
+        # Replace object IDs with database IDs in foreign keys and save objects.
+        dependency_graph.tsort.each do |id|
+          object = objects[id]
+          resolve_foreign_keys(object, object_id_to_database_id)
+          # The dependency graph strategy only works if there are no foreign objects.
+          object_id_to_database_id[id] = Persistence.new(object).save
         end
-        object_id_to_database_id[id] = Persistence.new(objects[id]).save
+      else
+        # Should be O(n²).
+        loop do
+          progress_made = false
+
+          objects.delete_if do |id,object|
+            resolvable = false
+
+            resolvable |= object.foreign_keys.all? do |property|
+              value = object[property]
+              value.nil? || object_id_to_database_id.key?(value)
+            end
+
+            resolvable |= object.foreign_objects.all? do |property|
+              selector = object[property]
+              selector.blank? || Persistence.find(selector)
+            end
+
+            if resolvable
+              progress_made = true
+              resolve_foreign_keys(object, object_id_to_database_id)
+              resolve_foreign_objects(object)
+              object_id_to_database_id[id] = Persistence.new(object).save
+            end
+          end
+
+          break if objects.empty? || !progress_made
+        end
+
+        unless objects.empty?
+          raise "couldn't resolve objects: #{objects.inspect}"
+        end
       end
 
       # Ensure that fingerprints uniquely identified objects.
@@ -174,13 +199,13 @@ module Pupa
     #
     # @return [Hash] a hash of extracted objects keyed by ID
     def load_extracted_objects
-      objects = {}
-      Dir[File.join(@output_dir, '*.json')].each do |path|
-        data = JSON.load(File.read(path))
-        object = data['_type'].camelize.constantize.new(data)
-        objects[object._id] = object
+      {}.tap do |objects|
+        Dir[File.join(@output_dir, '*.json')].each do |path|
+          data = JSON.load(File.read(path))
+          object = data['_type'].camelize.constantize.new(data)
+          objects[object._id] = object
+        end
       end
-      objects
     end
 
     # Dumps extracted objects to disk.
@@ -223,17 +248,85 @@ module Pupa
     # @param [Hash] objects a hash of extracted objects keyed by ID
     # @return [Hash] a mapping from an object ID to the ID of its duplicate
     def build_losers_to_winners_map(objects)
-      map = {}
-      objects.each_with_index do |(id1,object1),index|
-        unless map.key?(id1) # Don't search for duplicates of duplicates.
-          objects.drop(index + 1).each do |id2,object2|
-            if object1 == object2
-              map[id2] = id1
+      {}.tap do |map|
+        objects.each_with_index do |(id1,object1),index|
+          unless map.key?(id1) # Don't search for duplicates of duplicates.
+            objects.drop(index + 1).each do |id2,object2|
+              if object1 == object2
+                map[id2] = id1
+              end
             end
           end
         end
       end
-      map
+    end
+
+    # If any objects have unresolved foreign objects, we cannot derive an
+    # evaluation order using a dependency graph.
+    #
+    # @param [Hash] objects a hash of extracted objects keyed by ID
+    # @return [Boolean] whether a dependency graph can be used to derive an
+    #   evaluation order
+    def use_dependency_graph?(objects)
+      objects.each do |id,object|
+        object.foreign_objects.each do |property|
+          if object[property].present?
+            return false
+          end
+        end
+      end
+      true
+    end
+
+    # Builds a dependency graph.
+    #
+    # @param [Hash] objects a hash of extracted objects keyed by ID
+    # @return [DependencyGraph] the dependency graph
+    def build_dependency_graph(objects)
+      DependencyGraph.new.tap do |graph|
+        objects.each do |id,object|
+          graph[id] = [] # no duplicate IDs
+          object.foreign_keys.each do |property|
+            graph[id] << object[property]
+          end
+        end
+      end
+    end
+
+    # Resolves an object's foreign keys from object IDs to database IDs.
+    #
+    # @param [Object] an object
+    # @param [Hash] a map from object ID to database ID
+    # @raises [Pupa::Errors::MissingDatabaseIdError]
+    def resolve_foreign_keys(object, map)
+      object.foreign_keys.each do |property|
+        value = object[property]
+        if value
+          if map.key?(value)
+            object[property] = map[value]
+          else
+            raise Errors::MissingDatabaseIdError, "missing database ID: #{property} #{value} of #{object._id}"
+          end
+        end
+      end
+    end
+
+    # Resolves an object's foreign objects to database IDs.
+    #
+    # @param [Object] an object
+    # @raises [Pupa::Errors::MissingDatabaseIdError]
+    def resolve_foreign_objects(object)
+      object.foreign_objects.each do |property|
+        value = object[property]
+        if value.present?
+          document = Persistence.find(selector)
+          if document
+            object["#{property}_id"] = document['_id']
+          else
+            raise Errors::MissingDatabaseIdError, "missing database ID: #{property} #{selector.inspect} of #{object._id}"
+          end
+        end
+      end
     end
   end
 end
