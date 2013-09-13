@@ -59,4 +59,4 @@ class CatProcessor < Pupa::Processor
   end
 end
 
-# Ready to move on? Check out the next example: [legislature.rb](http://opennorth.github.io/pupa-ruby/docs/legislature.html).
+# Ready to move on? Check out the next example: [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html).
