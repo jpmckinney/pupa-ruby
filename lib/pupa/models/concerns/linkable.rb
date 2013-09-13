@@ -1,5 +1,6 @@
 module Pupa
   module Concerns
+    # Adds the Popolo `links` property to a model.
     module Linkable
       extend ActiveSupport::Concern
 

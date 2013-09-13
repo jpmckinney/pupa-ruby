@@ -1,5 +1,6 @@
 module Pupa
   module Concerns
+    # Adds the Popolo `other_names` property to a model.
     module Nameable
       extend ActiveSupport::Concern
 

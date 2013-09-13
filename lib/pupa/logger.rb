@@ -3,6 +3,7 @@ require 'logger'
 require 'colored'
 
 module Pupa
+  # A logger factory.
   class Logger
     # Returns a configured logger.
     #

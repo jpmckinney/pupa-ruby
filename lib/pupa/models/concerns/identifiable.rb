@@ -1,5 +1,6 @@
 module Pupa
   module Concerns
+    # Adds the Popolo `identifiers` property to a model.
     module Identifiable
       extend ActiveSupport::Concern
 

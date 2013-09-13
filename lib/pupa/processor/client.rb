@@ -45,7 +45,7 @@ module Pupa
           connection.response :logger, Logger.new('faraday')
           # @see http://tools.ietf.org/html/rfc2854
           # @see http://tools.ietf.org/html/rfc3236
-          connection.use Pupa::Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
+          connection.use Pupa::Processor::Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
           # @see http://tools.ietf.org/html/rfc4627
           connection.use FaradayMiddleware::ParseJson, content_type: /\bjson$/
           # @see http://tools.ietf.org/html/rfc3023

@@ -1,5 +1,6 @@
 module Pupa
   module Concerns
+    # Adds the Popolo `sources`, `created_at` and `updated_at` properties to a model.
     module Metadata
       extend ActiveSupport::Concern
 

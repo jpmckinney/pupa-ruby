@@ -1,5 +1,6 @@
 module Pupa
   module Concerns
+    # Adds the Popolo `contact_details` property to a model.
     module Contactable
       extend ActiveSupport::Concern
 

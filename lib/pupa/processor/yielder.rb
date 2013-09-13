@@ -1,9 +1,10 @@
+# Using fibers instead of enumerators leads to less coupling in the processor.
+# @see https://practicingruby.com/articles/building-enumerable-and-enumerator?u=dc2ab0f9bb
 require 'fiber'
 
 module Pupa
   class Processor
-    # Using fibers instead of enumerators leads to less coupling in the processor.
-    # @see https://practicingruby.com/articles/building-enumerable-and-enumerator?u=dc2ab0f9bb
+    # A lazy enumerator.
     class Yielder
       # The given block should yield objects to add to the enumerator.
       def initialize

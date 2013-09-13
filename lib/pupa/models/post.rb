@@ -1,4 +1,5 @@
 module Pupa
+  # A position that exists independent of the person holding it.
   class Post < Base
     self.schema = 'popolo/post'
 
