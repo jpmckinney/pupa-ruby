@@ -1,20 +1,20 @@
-require 'pupa'
-
 # The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
 # over the basics of using Pupa.rb. This covers some more advanced topics.
+require 'pupa'
 
 # Define a new class to model legislative bills.
 class Bill < Pupa::Base
   self.schema = '/path/to/json-schema/bill.json'
 
-  # Add the `sources`, `created_at` and `updated_at` properties from Popolo.
+  # Add the `sources`, `created_at` and `updated_at` metadata properties from
+  # the Popolo data specification.
   include Pupa::Metadata
 
   # In this example, we will simply extract the names of bills and associate
-  # each bill with a sponsor and legislative body, e.g. the House of Commons.
+  # each bill with a sponsor and a legislative body, e.g. the House of Commons.
   attr_accessor :name, :sponsor_id, :organization_id
 
-  # When loading extracted objects into an end target, like a database, the
+  # When loading extracted objects into an end target (like a database), these
   # foreign keys will be used to derive an evaluation order.
   foreign_keys :sponsor_id, :organization_id
 
@@ -23,9 +23,17 @@ class Bill < Pupa::Base
     @sponsor = sponsor
   end
 
+  def sponsor
+    @sponsor
+  end
+
   # @todo match with existing organization during load
   def organization=(organization)
     @organization = organization
+  end
+
+  def organization
+    @organization
   end
 
   def to_s
@@ -33,24 +41,24 @@ class Bill < Pupa::Base
   end
 end
 
-# Register an extraction (scraping) task. This defines a `bills` method on each
-# processor, which returns a lazy enumerator of all Bill objects extracted by
-# that processor. Pupa.rb already registers extraction tasks for people,
-# organizations, memberships and posts.
+# Register an extraction (scraping) task. This will define a `bills` method on
+# each processor, which will return a lazy enumerator of all Bill objects
+# extracted by that processor. Pupa.rb already registers extraction tasks for
+# people, organizations, memberships and posts.
 Pupa::Processor.add_extract_task(:bills)
 
 # Scrape legislative information about the Parliament of Canada.
-class HouseOfCommonsOfCanada < Pupa::Processor
+class ParliamentOfCanada < Pupa::Processor
   # Instead of defining a single `extract` method to perform all extraction, we
   # define an extraction task for each type of data we want to extract: people,
   # organizations and bills.
   #
-  # This allows us to, for example, run each extraction task on a different
-  # schedule. Bill data is updated more frequently than person data; we would
-  # therefore run the bills task more frequently.
+  # This lets us, for example, run each extraction task on a different schedule.
+  # Bill data is updated more frequently than person data; we would therefore
+  # run the bills task more frequently.
   #
   # See the [`extract_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158)
-  # documentation for more information on the naming of these methods.
+  # documentation for more information on the naming of extraction methods.
   def extract_people
     doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Current&Language=E')
     doc.css('#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)').each do |row|
