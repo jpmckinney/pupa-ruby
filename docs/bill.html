@@ -70,7 +70,7 @@ over the basics of using Pupa.rb. This covers some more advanced topics.</p>
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
               <p>Defines a new class to model legislative bills. In this example, we will
-simply extract the names of bills and associate each bill with a sponsor and a
+simply scrape the names of bills and associate each bill with a sponsor and a
 legislative body.</p>
 
             </div>
@@ -89,7 +89,7 @@ legislative body.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
-              <p>When saving extracted objects to a database, these foreign keys will be used
+              <p>When saving scraped objects to a database, these foreign keys will be used
 to derive an evaluation order.</p>
 
             </div>
@@ -170,18 +170,18 @@ instead of having to add it each time in the processor.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Instead of defining a single <code>extract_objects</code> method to perform all the
-extraction, we define an extraction task for each type of data we want to
-extract: people, organizations and bills.</p>
+              <p>Instead of defining a single <code>scrape_objects</code> method to perform all the
+scraping, we define a scraping task for each type of data we want to scrape:
+people, organizations and bills.</p>
 <p>This will let us later, for example, run each task on a different schedule.
 Bill data is updated more frequently than person data; we would therefore
 run the bills task more frequently.</p>
-<p>See the <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158"><code>extract_task_method</code></a>
-documentation for more information on the naming of extraction methods.</p>
+<p>See the <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158"><code>scraping_task_method</code></a>
+documentation for more information on the naming of scraping methods.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract_people</span></span>
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_people</span></span>
     doc = get(<span class="string">'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&amp;Language=E'</span>)
     doc.css(<span class="string">'#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)'</span>).each <span class="keyword">do</span> |row|
       person = <span class="constant">Pupa::Person</span>.new
@@ -221,7 +221,7 @@ omits any middle names.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract_organizations</span></span>
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_organizations</span></span>
     parliament = <span class="constant">Pupa::Organization</span>.new(<span class="symbol">name:</span> <span class="string">'Parliament of Canada'</span>)
     <span class="constant">Fiber</span>.<span class="keyword">yield</span>(parliament)
 
@@ -232,7 +232,7 @@ omits any middle names.</p>
     <span class="constant">Fiber</span>.<span class="keyword">yield</span>(senate)
   <span class="keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">extract_bills</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">scrape_bills</span></span>
     doc = get(<span class="string">'http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&amp;ParliamentSession=41-1&amp;Mode=1&amp;download=xml'</span>)
     doc[<span class="string">'Bills'</span>][<span class="string">'Bill'</span>].each <span class="keyword">do</span> |row|</pre></div></div>
             
@@ -284,9 +284,9 @@ given information.</p>
   <span class="keyword">end</span>
 <span class="keyword">end</span>
 
-<span class="constant">ParliamentOfCanada</span>.add_extract_task(<span class="symbol">:bills</span>)
-<span class="constant">ParliamentOfCanada</span>.add_extract_task(<span class="symbol">:organizations</span>)
-<span class="constant">ParliamentOfCanada</span>.add_extract_task(<span class="symbol">:people</span>)</pre></div></div>
+<span class="constant">ParliamentOfCanada</span>.add_scraping_task(<span class="symbol">:bills</span>)
+<span class="constant">ParliamentOfCanada</span>.add_scraping_task(<span class="symbol">:organizations</span>)
+<span class="constant">ParliamentOfCanada</span>.add_scraping_task(<span class="symbol">:people</span>)</pre></div></div>
             
         </li>
         
@@ -297,8 +297,8 @@ given information.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>By default, if you run <code>bill.rb</code>, it will perform all extraction tasks and
-load all the extracted objects into the database. Use the <code>--action</code> and
+              <p>By default, if you run <code>bill.rb</code>, it will perform all scraping tasks and
+import all the scraped objects into the database. Use the <code>--action</code> and
 <code>--task</code> switches to control the processor&#39;s behavior.</p>
 
             </div>

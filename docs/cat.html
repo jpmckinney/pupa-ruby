@@ -190,11 +190,11 @@ saved in the processor&#39;s log.</p>
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>For simple processors like this one, you may put all your code in a generic
-<code>extract_objects</code> method.</p>
+<code>scrape_objects</code> method.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract_objects</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_objects</span></span></pre></div></div>
             
         </li>
         
@@ -308,13 +308,13 @@ saving to disk, printing to CSV, etc.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
-              <p>Registers an extraction (scraping) task. This will define a <code>objects</code> method on
-the processor, which will return a lazy enumerator of all objects extracted by
-the processor.</p>
+              <p>Registers a scraping task. This will define an <code>objects</code> method on the
+processor, which will return a lazy enumerator of all objects scraped by the
+processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="constant">CatProcessor</span>.add_extract_task(<span class="symbol">:objects</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="constant">CatProcessor</span>.add_scraping_task(<span class="symbol">:objects</span>)</pre></div></div>
             
         </li>
         

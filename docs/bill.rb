@@ -3,14 +3,14 @@
 require 'pupa'
 
 # Defines a new class to model legislative bills. In this example, we will
-# simply extract the names of bills and associate each bill with a sponsor and a
+# simply scrape the names of bills and associate each bill with a sponsor and a
 # legislative body.
 class Bill < Pupa::Base
   self.schema = '/path/to/json-schema/bill.json'
 
   attr_accessor :name, :sponsor_id, :organization_id, :sponsor, :organization
 
-  # When saving extracted objects to a database, these foreign keys will be used
+  # When saving scraped objects to a database, these foreign keys will be used
   # to derive an evaluation order.
   foreign_key :sponsor_id, :organization_id
 
@@ -42,17 +42,17 @@ end
 
 # Scrapes legislative information about the Parliament of Canada.
 class ParliamentOfCanada < Pupa::Processor
-  # Instead of defining a single `extract_objects` method to perform all the
-  # extraction, we define an extraction task for each type of data we want to
-  # extract: people, organizations and bills.
+  # Instead of defining a single `scrape_objects` method to perform all the
+  # scraping, we define a scraping task for each type of data we want to scrape:
+  # people, organizations and bills.
   #
   # This will let us later, for example, run each task on a different schedule.
   # Bill data is updated more frequently than person data; we would therefore
   # run the bills task more frequently.
   #
-  # See the [`extract_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158)
-  # documentation for more information on the naming of extraction methods.
-  def extract_people
+  # See the [`scraping_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158)
+  # documentation for more information on the naming of scraping methods.
+  def scrape_people
     doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&Language=E')
     doc.css('#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)').each do |row|
       person = Pupa::Person.new
@@ -67,7 +67,7 @@ class ParliamentOfCanada < Pupa::Processor
   end
 
   # Hardcodes the top-level organizations within Parliament.
-  def extract_organizations
+  def scrape_organizations
     parliament = Pupa::Organization.new(name: 'Parliament of Canada')
     Fiber.yield(parliament)
 
@@ -78,7 +78,7 @@ class ParliamentOfCanada < Pupa::Processor
     Fiber.yield(senate)
   end
 
-  def extract_bills
+  def scrape_bills
     doc = get('http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&ParliamentSession=41-1&Mode=1&download=xml')
     doc['Bills']['Bill'].each do |row|
       # Skip Senate bills, since we currently only scrape Members of Parliament.
@@ -104,12 +104,12 @@ class ParliamentOfCanada < Pupa::Processor
   end
 end
 
-ParliamentOfCanada.add_extract_task(:bills)
-ParliamentOfCanada.add_extract_task(:organizations)
-ParliamentOfCanada.add_extract_task(:people)
+ParliamentOfCanada.add_scraping_task(:bills)
+ParliamentOfCanada.add_scraping_task(:organizations)
+ParliamentOfCanada.add_scraping_task(:people)
 
-# By default, if you run `bill.rb`, it will perform all extraction tasks and
-# load all the extracted objects into the database. Use the `--action` and
+# By default, if you run `bill.rb`, it will perform all scraping tasks and
+# import all the scraped objects into the database. Use the `--action` and
 # `--task` switches to control the processor's behavior.
 Pupa::Runner.new(ParliamentOfCanada).run(ARGV)
 

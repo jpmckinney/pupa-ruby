@@ -90,12 +90,12 @@ particularly useful if a data source changes format from year to year.</p>
                 <a class="pilcrow" href="#section-3">&#182;</a>
               </div>
               <p>The data source publishes information from different parliaments in
-different formats. We override <code>extract_task_method</code> to select the method
-used to extract legislators according to the parliament.</p>
+different formats. We override <code>scraping_task_method</code> to select the method
+used to scrape legislators according to the parliament.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract_task_method</span><span class="params">(task_name)</span></span>
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scraping_task_method</span><span class="params">(task_name)</span></span>
     <span class="keyword">if</span> task_name == <span class="symbol">:people</span></pre></div></div>
             
         </li>
@@ -107,16 +107,16 @@ used to extract legislators according to the parliament.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-4">&#182;</a>
               </div>
-              <p>If the task is to extract people and a parliament is given, we select a
+              <p>If the task is to scrape people and a parliament is given, we select a
 method according to the parliament.</p>
 
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> <span class="variable">@options</span>.key?(<span class="string">'parliament'</span>)
         <span class="keyword">if</span> <span class="variable">@options</span>[<span class="string">'parliament'</span>].to_i &gt;= <span class="number">36</span>
-          <span class="string">"extract_people_36th_to_date"</span>
+          <span class="string">"scrape_people_36th_to_date"</span>
         <span class="keyword">else</span>
-          <span class="string">"extract_people_1st_to_35th"</span>
+          <span class="string">"scrape_people_1st_to_35th"</span>
         <span class="keyword">end</span></pre></div></div>
             
         </li>
@@ -134,7 +134,7 @@ more common to scrape current data than historical data.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      <span class="keyword">else</span>
-        <span class="string">"extract_people_36th_to_date"</span>
+        <span class="string">"scrape_people_36th_to_date"</span>
       <span class="keyword">end</span></pre></div></div>
             
         </li>
@@ -146,8 +146,8 @@ more common to scrape current data than historical data.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Otherwise, we use <code>extract_task_method</code>&#39;s default behavior for other
-extraction tasks.</p>
+              <p>Otherwise, we use <code>scraping_task_method</code>&#39;s default behavior for other
+scraping tasks.</p>
 
             </div>
             
@@ -174,7 +174,7 @@ extraction tasks.</p>
       reverse.map{|component| component.strip.squeeze(<span class="string">' '</span>)}.join(<span class="string">' '</span>)
   <span class="keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">extract_people_36th_to_date</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">scrape_people_36th_to_date</span></span>
     url = <span class="string">'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&amp;Language=E'</span>
     doc = <span class="keyword">if</span> <span class="variable">@options</span>.key?(<span class="string">'parliament'</span>)</pre></div></div>
             
@@ -208,7 +208,7 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
     <span class="keyword">end</span>
   <span class="keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">extract_people_1st_to_35th</span></span>
+  <span class="function"><span class="keyword">def</span> <span class="title">scrape_people_1st_to_35th</span></span>
     list_url = <span class="string">'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E'</span>
     page_url = <span class="string">'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E&amp;Parliament=%s&amp;Riding=&amp;Name=&amp;Party=&amp;Province=&amp;Gender=&amp;New=False&amp;Current=False&amp;First=False&amp;Picture=False&amp;Section=False&amp;ElectionDate='</span>
     doc = get(list_url)
@@ -223,7 +223,7 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
   <span class="keyword">end</span>
 <span class="keyword">end</span>
 
-<span class="constant">LegislatorProcessor</span>.add_extract_task(<span class="symbol">:people</span>)</pre></div></div>
+<span class="constant">LegislatorProcessor</span>.add_scraping_task(<span class="symbol">:people</span>)</pre></div></div>
             
         </li>
         
@@ -234,13 +234,13 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>To add extraction method selection criteria when running the processor, call
+              <p>To add scraping method selection criteria when running the processor, call
 <code>legislator.rb</code> following the pattern:</p>
 <pre><code>ruby legislator.rb [options] -- [criteria]</code></pre>
-<p>So, for example, to extract and load legislators from the 37th parliament:</p>
+<p>So, for example, to scrape and import legislators from the 37th parliament:</p>
 <pre><code>ruby legislator.rb -- parliament 37</code></pre>
-<p>Or, to extract but not load legislators from the 12th parliament:</p>
-<pre><code>ruby legislator.rb --action extract -- parliament 12</code></pre>
+<p>Or, to scrape but not import legislators from the 12th parliament:</p>
+<pre><code>ruby legislator.rb --action scrape -- parliament 12</code></pre>
 
             </div>
             

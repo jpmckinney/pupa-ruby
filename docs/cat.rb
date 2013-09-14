@@ -37,8 +37,8 @@ end
 # All processors should inherit from [Pupa::Processor](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#files).
 class CatProcessor < Pupa::Processor
   # For simple processors like this one, you may put all your code in a generic
-  # `extract_objects` method.
-  def extract_objects
+  # `scrape_objects` method.
+  def scrape_objects
     # The `get` and `post` helpers take a URL as a first argument, and a query
     # string or request body as a second argument.
     #
@@ -71,10 +71,10 @@ class CatProcessor < Pupa::Processor
   end
 end
 
-# Registers an extraction (scraping) task. This will define a `objects` method on
-# the processor, which will return a lazy enumerator of all objects extracted by
-# the processor.
-CatProcessor.add_extract_task(:objects)
+# Registers a scraping task. This will define an `objects` method on the
+# processor, which will return a lazy enumerator of all objects scraped by the
+# processor.
+CatProcessor.add_scraping_task(:objects)
 
 # Tells the Pupa command-line parser which processor to use, and then parses
 # command-line options. Run `cat.rb --help` to see a full list of options.

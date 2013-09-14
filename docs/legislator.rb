@@ -10,25 +10,25 @@ require 'mechanize'
 
 class LegislatorProcessor < Pupa::Processor
   # The data source publishes information from different parliaments in
-  # different formats. We override `extract_task_method` to select the method
-  # used to extract legislators according to the parliament.
-  def extract_task_method(task_name)
+  # different formats. We override `scraping_task_method` to select the method
+  # used to scrape legislators according to the parliament.
+  def scraping_task_method(task_name)
     if task_name == :people
-      # If the task is to extract people and a parliament is given, we select a
+      # If the task is to scrape people and a parliament is given, we select a
       # method according to the parliament.
       if @options.key?('parliament')
         if @options['parliament'].to_i >= 36
-          "extract_people_36th_to_date"
+          "scrape_people_36th_to_date"
         else
-          "extract_people_1st_to_35th"
+          "scrape_people_1st_to_35th"
         end
       # If no parliament is given, we assume the parliament is recent, as it is
       # more common to scrape current data than historical data.
       else
-        "extract_people_36th_to_date"
+        "scrape_people_36th_to_date"
       end
-    # Otherwise, we use `extract_task_method`'s default behavior for other
-    # extraction tasks.
+    # Otherwise, we use `scraping_task_method`'s default behavior for other
+    # scraping tasks.
     else
       super
     end
@@ -40,7 +40,7 @@ class LegislatorProcessor < Pupa::Processor
       reverse.map{|component| component.strip.squeeze(' ')}.join(' ')
   end
 
-  def extract_people_36th_to_date
+  def scrape_people_36th_to_date
     url = 'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&Language=E'
     doc = if @options.key?('parliament')
       # Since we aren't using the default Faraday HTTP client, we manually
@@ -61,7 +61,7 @@ class LegislatorProcessor < Pupa::Processor
     end
   end
 
-  def extract_people_1st_to_35th
+  def scrape_people_1st_to_35th
     list_url = 'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E'
     page_url = 'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E&Parliament=%s&Riding=&Name=&Party=&Province=&Gender=&New=False&Current=False&First=False&Picture=False&Section=False&ElectionDate='
     doc = get(list_url)
@@ -76,20 +76,20 @@ class LegislatorProcessor < Pupa::Processor
   end
 end
 
-LegislatorProcessor.add_extract_task(:people)
+LegislatorProcessor.add_scraping_task(:people)
 
-# To add extraction method selection criteria when running the processor, call
+# To add scraping method selection criteria when running the processor, call
 # `legislator.rb` following the pattern:
 #
 #     ruby legislator.rb [options] -- [criteria]
 #
-# So, for example, to extract and load legislators from the 37th parliament:
+# So, for example, to scrape and import legislators from the 37th parliament:
 #
 #     ruby legislator.rb -- parliament 37
 #
-# Or, to extract but not load legislators from the 12th parliament:
+# Or, to scrape but not import legislators from the 12th parliament:
 #
-#     ruby legislator.rb --action extract -- parliament 12
+#     ruby legislator.rb --action scrape -- parliament 12
 Pupa::Runner.new(LegislatorProcessor).run(ARGV)
 
 # You've won at Pupa.rb!
