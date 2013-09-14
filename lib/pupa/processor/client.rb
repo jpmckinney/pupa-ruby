@@ -42,10 +42,11 @@ module Pupa
       #
       # @param [String] cache_dir a directory in which to cache requests
       # @param [Integer] expires_in the cache's expiration time in seconds
+      # @param [String] level the log level
       # @return [Faraday::Connection] a configured Faraday HTTP client
-      def self.new(cache_dir: nil, expires_in: 86400) # 1 day
+      def self.new(cache_dir: nil, expires_in: 86400, level: 'INFO') # 1 day
         Faraday.new do |connection|
-          connection.response :logger, Logger.new('faraday')
+          connection.response :logger, Logger.new('faraday', level: level)
           # @see http://tools.ietf.org/html/rfc2854
           # @see http://tools.ietf.org/html/rfc3236
           connection.use Pupa::Processor::Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)

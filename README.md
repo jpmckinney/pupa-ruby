@@ -16,14 +16,14 @@ The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows y
 * write a simple Cat class that is compatible with Pupa.rb
 * use mixins to add Popolo properties to your class
 * write a processor to extract Cat objects from the Internet
-* [TODO] run the processor to save the Cat objects to MongoDB
+* run the processor to save the Cat objects to MongoDB
 
 The [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) example shows you how to:
 
 * create relations between objects
 * register an extraction task with Pupa.rb
 * write individual extraction tasks
-* [TODO] run each task in the processor
+* run each task in the processor
 
 * [TODO] register a transformation task with Pupa.rb
 * [TODO] run the processor's transformation task

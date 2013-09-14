@@ -13,17 +13,21 @@ module Pupa
     extend Forwardable
     include Helper
 
+    class_attribute :tasks
+    self.tasks = []
+
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
     # @param [String] output_dir the directory in which to dump JSON documents
     # @param [String] cache_dir the directory in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
+    # @param [String] level the log level
     # @param [Hash] kwargs criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, **kwargs)
+    def initialize(output_dir, cache_dir: nil, expires_in: 86400, level: 'INFO', **kwargs)
       @output_dir = output_dir
       @options    = kwargs
-      @logger     = Logger.new('pupa')
-      @client     = Client.new(cache_dir, expires_in)
+      @logger     = Logger.new('pupa', level: level)
+      @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
     end
 
     # Retrieves and parses a document with a GET request.
@@ -79,6 +83,7 @@ module Pupa
     # @param [Symbol] task_name a task name
     # @see Pupa::Processor#extract_task_method
     def self.add_extract_task(task_name)
+      self.tasks += [task_name]
       define_method(task_name) do
         ivar = "@#{task_name}"
         if instance_variable_defined?(ivar)
@@ -86,6 +91,15 @@ module Pupa
         else
           instance_variable_set(ivar, Yielder.new(&method(extract_task_method(task_name)))
         end
+      end
+    end
+
+    # Dumps extracted objects to disk.
+    #
+    # @param [Symbol] task_name the name of the extraction task to perform
+    def dump_extracted_objects(task_name)
+      send(task_name).each do |object|
+        dump_extracted_object(object)
       end
     end
 
@@ -125,7 +139,13 @@ module Pupa
           object_id_to_database_id[id] = Persistence.new(object).save
         end
       else
-        # Should be O(n²).
+        # Should be O(n²). If there are foreign objects, we do not know all the
+        # edges in the graph, and therefore cannot build a dependency graph or
+        # derive any evaluation order.
+        #
+        # An exception is raised if a foreign object matches multiple documents
+        # in the database. However, if a matching object is not yet saved, this
+        # exception may not be raised.
         loop do
           progress_made = false
 
@@ -195,28 +215,6 @@ module Pupa
       end
     end
 
-    # Loads extracted objects from disk.
-    #
-    # @return [Hash] a hash of extracted objects keyed by ID
-    def load_extracted_objects
-      {}.tap do |objects|
-        Dir[File.join(@output_dir, '*.json')].each do |path|
-          data = JSON.load(File.read(path))
-          object = data['_type'].camelize.constantize.new(data)
-          objects[object._id] = object
-        end
-      end
-    end
-
-    # Dumps extracted objects to disk.
-    #
-    # @param [Symbol] task_name the name of the extraction task to perform
-    def dump_extracted_objects(task_name)
-      send(task_name).each do |object|
-        dump_extracted_object(object)
-      end
-    end
-
     # Dumps an extracted object to disk.
     #
     # @param [Object] object an extracted object
@@ -230,7 +228,7 @@ module Pupa
         raise Errors::DuplicateObjectIdError, "duplicate object ID: #{id} (was the same objected yielded twice?)"
       end
 
-      info("save #{type} #{object.to_s} as #{basename}")
+      info {"save #{type} #{object.to_s} as #{basename}"}
 
       File.open(path, 'w') do |f|
         f.write(JSON.dump(object.to_h))
@@ -239,7 +237,20 @@ module Pupa
       begin
         object.validate!
       rescue JSON::Schema::ValidationError => e
-        warn(e)
+        warn {e.message}
+      end
+    end
+
+    # Loads extracted objects from disk.
+    #
+    # @return [Hash] a hash of extracted objects keyed by ID
+    def load_extracted_objects
+      {}.tap do |objects|
+        Dir[File.join(@output_dir, '*.json')].each do |path|
+          data = JSON.load(File.read(path))
+          object = data['_type'].camelize.constantize.new(data)
+          objects[object._id] = object
+        end
       end
     end
 
