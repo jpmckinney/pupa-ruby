@@ -89,7 +89,7 @@ to derive an evaluation order.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  foreign_keys <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_key <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span></pre></div></div>
             
         </li>
         
@@ -108,7 +108,7 @@ database, Pupa.rb will use this information to identify the foreign object.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  foreign_objects <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_object <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
             
         </li>
         
@@ -146,24 +146,6 @@ instead of having to add it each time in the processor.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Registers an extraction (scraping) task. This will define a <code>bills</code> method on
-each processor, which will return a lazy enumerator of all Bill objects
-extracted by that processor. Pupa.rb already registers extraction tasks for
-people, organizations, memberships and posts.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Processor</span>.add_extract_task(<span class="symbol">:bills</span>)</pre></div></div>
-            
-        </li>
-        
-        
-        <li id="section-7">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
-              </div>
               <p>Scrapes legislative information about the Parliament of Canada.</p>
 
             </div>
@@ -173,11 +155,11 @@ people, organizations, memberships and posts.</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>Instead of defining a single <code>extract</code> method to perform all the extraction,
 we define an extraction task for each type of data we want to extract:
@@ -203,11 +185,11 @@ documentation for more information on the naming of extraction methods.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Hardcodes the top-level organizations within Parliament.</p>
 
@@ -233,11 +215,11 @@ documentation for more information on the naming of extraction methods.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>Here, we tell the Bill everything we know about the sponsor and the
 legislative body. Pupa.rb will later determine which objects match the
@@ -254,7 +236,28 @@ given information.</p>
       <span class="constant">Fiber</span>.<span class="keyword">yield</span>(bill)
     <span class="keyword">end</span>
   <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div></div>
+<span class="keyword">end</span>
+
+<span class="constant">ParliamentOfCanada</span>.add_extract_task(<span class="symbol">:bills</span>)
+<span class="constant">ParliamentOfCanada</span>.add_extract_task(<span class="symbol">:organizations</span>)
+<span class="constant">ParliamentOfCanada</span>.add_extract_task(<span class="symbol">:people</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>By default, if you run <code>bill.rb</code>, it will perform all extraction tasks and
+load all the extracted objects into the database. Use the <code>--action</code> and
+<code>--task</code> switches to control the processors behavior.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Runner</span>.new(<span class="constant">ParliamentOfCanada</span>).run(<span class="constant">ARGV</span>)</pre></div></div>
             
         </li>
         

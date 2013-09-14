@@ -113,8 +113,8 @@ for more mixins.</p>
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>When converting an object to a hash with the <code>to_h</code> method (e.g. before
-saving an object to disk), only the properties declared with <code>attr_accessor</code>
-will be included in the hash.</p>
+saving an object to the database), only the properties declared with
+<code>attr_accessor</code> will be included in the hash.</p>
 
             </div>
             
@@ -129,6 +129,28 @@ will be included in the hash.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
+              <p>When saving an object to the database, Pupa.rb will check if the object had
+been saved to the database in a previous run. It relies on a &quot;fingerprint&quot;
+of the object: a subset of the object&#39;s properties that should uniquely
+identify the object within the context of the scraping task. In this case,
+the image is not an identifying property, because the image can change
+without changing the cat.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">fingerprint</span></span>
+    to_h.slice(<span class="symbol">:name</span>, <span class="symbol">:breed</span>, <span class="symbol">:age</span>, <span class="symbol">:sex</span>)
+  <span class="keyword">end</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
               <p>Adds a <code>to_s</code> method so that it&#39;s easier to see which objects are being
 saved in the processor&#39;s log.</p>
 
@@ -142,11 +164,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>All processors should inherit from <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#files">Pupa::Processor</a>.</p>
 
@@ -157,39 +179,18 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-8">
-            <div class="annotation">
-              
-              <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
-              </div>
-              <p>For simple processors like this one, you may put all your code in a generic
-<code>extract</code> method.</p>
-
-            </div>
-            
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract</span></span></pre></div></div>
-            
-        </li>
-        
-        
         <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>The <code>get</code> and <code>post</code> helpers take a URL as a first argument, and a query
-string or request body as a second argument.</p>
-<p>These methods return the parsed response if the response is HTML, XML or
-JSON, and the raw response otherwise.</p>
-<p>Responses are by default cached for one day to avoid repeat requests while
-developing and testing a processor.</p>
+              <p>For simple processors like this one, you may put all your code in a generic
+<code>extract_objects</code> method.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    doc = post(<span class="string">'http://www.iams.ca/en-ca/rescue-pets/adopt-a-pet'</span>,
-      <span class="string">'petName=Cat&amp;petLocation=H2Y 1C6&amp;nextPetSeachFlag=true'</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">extract_objects</span></span></pre></div></div>
             
         </li>
         
@@ -200,11 +201,17 @@ developing and testing a processor.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>HTML responses are parsed by <a href="http://nokogiri.org/">Nokogiri</a>.</p>
+              <p>The <code>get</code> and <code>post</code> helpers take a URL as a first argument, and a query
+string or request body as a second argument.</p>
+<p>These methods return the parsed response if the response is HTML, XML or
+JSON, and the raw response otherwise.</p>
+<p>Responses are by default cached for one day to avoid repeat requests while
+developing and testing a processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    doc.css(<span class="string">'#show-result ul:gt(1)'</span>).each <span class="keyword">do</span> |row|</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    doc = post(<span class="string">'http://www.iams.ca/en-ca/rescue-pets/pet-finder'</span>,
+      <span class="string">'petName=Cat&amp;petLocation=H2Y 1C6&amp;nextPetSeachFlag=true'</span>)</pre></div></div>
             
         </li>
         
@@ -215,11 +222,11 @@ developing and testing a processor.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
-              <p>Creates a new Cat object.</p>
+              <p>HTML responses are parsed by <a href="http://nokogiri.org/">Nokogiri</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      cat = <span class="constant">Cat</span>.new</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    doc.css(<span class="string">'#show-result ul:gt(1)'</span>).each <span class="keyword">do</span> |row|</pre></div></div>
             
         </li>
         
@@ -230,14 +237,11 @@ developing and testing a processor.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
-              <p>The <code>clean</code> helper removes extra whitespace from a string.</p>
+              <p>Skips multiple unnamed kittens.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      cat.name = clean(row.at_css(<span class="string">'.name'</span>).text)
-      cat.breed, cat.age, cat.sex =
-        clean(row.at_css(<span class="string">'.features'</span>).text).split(<span class="string">', '</span>)
-      cat.photo = row.at_css(<span class="string">'img'</span>)[<span class="symbol">:src</span>]</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="keyword">next</span> <span class="keyword">if</span> clean(row.at_css(<span class="string">'.name'</span>).text) == <span class="string">'Chatons pour adoption'</span></pre></div></div>
             
         </li>
         
@@ -247,6 +251,39 @@ developing and testing a processor.</p>
               
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-13">&#182;</a>
+              </div>
+              <p>Creates a new Cat object.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      cat = <span class="constant">Cat</span>.new</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-14">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-14">&#182;</a>
+              </div>
+              <p>The <code>clean</code> helper removes extra whitespace from a string.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>      cat.image = row.at_css(<span class="string">'img'</span>)[<span class="symbol">:src</span>]
+      cat.name = clean(row.at_css(<span class="string">'.name'</span>).text)
+      cat.breed, cat.age, cat.sex =
+        clean(row.at_css(<span class="string">'.features'</span>).text).split(<span class="string">', '</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-15">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>Yields the Cat object to the transformation task for processing, e.g.
 saving to disk, printing to CSV, etc.</p>
@@ -261,11 +298,44 @@ saving to disk, printing to CSV, etc.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
+              </div>
+              <p>Registers an extraction (scraping) task. This will define a <code>objects</code> method on
+the processor, which will return a lazy enumerator of all objects extracted by
+the processor.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="constant">CatProcessor</span>.add_extract_task(<span class="symbol">:objects</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-17">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-17">&#182;</a>
+              </div>
+              <p>Tells the Pupa command-line parser which processor to use, and then parses
+command-line options. Run <code>cat.rb --help</code> to see a full list of options.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Runner</span>.new(<span class="constant">CatProcessor</span>).run(<span class="constant">ARGV</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-18">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Ready to move on? Check out the next example: <a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a>.</p>
 

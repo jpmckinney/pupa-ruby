@@ -12,14 +12,14 @@ class Bill < Pupa::Base
 
   # When saving extracted objects to a database, these foreign keys will be used
   # to derive an evaluation order.
-  foreign_keys :sponsor_id, :organization_id
+  foreign_key :sponsor_id, :organization_id
 
   # Sometimes, you may not know the ID of an existing foreign object, but you
   # may have other information to identify it. In that case, put the information
   # you have in a property named after the foreign key without the `_id` suffix:
   # for example, `sponsor` for `sponsor_id`. Before saving the object to the
   # database, Pupa.rb will use this information to identify the foreign object.
-  foreign_objects :sponsor, :organization
+  foreign_object :sponsor, :organization
 
   # Overrides the `sponsor=` setter to automatically add the `_type` property,
   # instead of having to add it each time in the processor.
@@ -35,12 +35,6 @@ class Bill < Pupa::Base
     name
   end
 end
-
-# Registers an extraction (scraping) task. This will define a `bills` method on
-# each processor, which will return a lazy enumerator of all Bill objects
-# extracted by that processor. Pupa.rb already registers extraction tasks for
-# people, organizations, memberships and posts.
-Pupa::Processor.add_extract_task(:bills)
 
 # Scrapes legislative information about the Parliament of Canada.
 class ParliamentOfCanada < Pupa::Processor
@@ -94,3 +88,12 @@ class ParliamentOfCanada < Pupa::Processor
     end
   end
 end
+
+ParliamentOfCanada.add_extract_task(:bills)
+ParliamentOfCanada.add_extract_task(:organizations)
+ParliamentOfCanada.add_extract_task(:people)
+
+# By default, if you run `bill.rb`, it will perform all extraction tasks and
+# load all the extracted objects into the database. Use the `--action` and
+# `--task` switches to control the processors behavior.
+Pupa::Runner.new(ParliamentOfCanada).run(ARGV)
