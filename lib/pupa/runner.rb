@@ -9,7 +9,8 @@ module Pupa
     attr_accessor :options
 
     # @param [Pupa::Processor] a processor class
-    def initialize(processor_class)
+    # @param [Hash] defaults change any default options
+    def initialize(processor_class, defaults: {})
       @processor_class = processor_class
 
       @options = OpenStruct.new({
@@ -17,11 +18,11 @@ module Pupa
         tasks:          [],
         output_dir:     File.expand_path('scraped_data', Dir.pwd),
         cache_dir:      File.expand_path('web_cache', Dir.pwd),
-        expires_in:     86400 # 1 day,
+        expires_in:     86400, # 1 day
         host_with_port: 'localhost:27017',
         database:       'pupa',
         level:          'INFO',
-      })
+      }.merge(defaults))
 
       @available = {
         'scrape' => 'Scrapes data from online sources',
@@ -105,13 +106,22 @@ module Pupa
       end
     end
 
-    # Runs the action. Most often run from a command-line script as:
+    # Runs the action.
+    #
+    # @example Run from a command-line script
     #
     #     runner.run(ARGV)
     #
+    # @example Override the command-line options
+    #
+    #     runner.run(ARGV, expires_in: 3600) # 1 hour
+    #
     # @param [Array] args command-line arguments
-    def run(args)
+    # @param [Hash] overrides any overridden options
+    def run(args, overrides: {})
       rest = opts.parse!(args)
+
+      options = OpenStruct.new(options.to_h.merge(defaults))
 
       if options.actions.empty?
         options.actions = %w(scrape import)
