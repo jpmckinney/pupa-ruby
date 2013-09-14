@@ -26,7 +26,7 @@ module Pupa
     def fingerprint
       hash = to_h
       {
-        '$or': [
+        '$or' => [
           'name' => name,
           'other_names.name' => name,
         ],

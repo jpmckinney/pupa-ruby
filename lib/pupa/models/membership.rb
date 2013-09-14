@@ -11,7 +11,7 @@ module Pupa
     attr_accessor :label, :role, :person_id, :organization_id, :post_id,
       :start_date, :end_date
 
-    foreign_keys :person_id, :organization_id, :post_id
+    foreign_key :person_id, :organization_id, :post_id
 
     # Returns the IDs of the parties to the relationship.
     #
@@ -27,7 +27,7 @@ module Pupa
     def fingerprint
       hash = to_h
       {
-        '$or': [
+        '$or' => [
           hash.slice(:label, :person_id, :organization_id, :end_date),
           hash.slice(:person_id, :organization_id, :post_id, :end_date),
         ],

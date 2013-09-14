@@ -4,6 +4,7 @@ require 'nokogiri'
 
 require 'pupa/processor/client'
 require 'pupa/processor/dependency_graph'
+require 'pupa/processor/helper'
 require 'pupa/processor/persistence'
 require 'pupa/processor/yielder'
 
@@ -68,15 +69,15 @@ module Pupa
     # objects extracted by the selected method. The selected method must yield
     # objects to populate this lazy enumerator.
     #
-    # For example, `Pupa::Processor.add_extract_task(:people)` defines a `people`
-    # method on `Pupa::Processor`, which all subclasses inherit. This `people`
-    # method returns a lazy enumerator of objects (presumably Person objects in
-    # this case, but the enumerator can contain any object in the general case).
+    # For example, `MyProcessor.add_extract_task(:people)` defines a `people`
+    # method on `MyProcessor`. This `people` method returns a lazy enumerator of
+    # objects (presumably Person objects in this case, but the enumerator can
+    # contain any object in the general case).
     #
-    # In a subclass of `Pupa::Processor`, you would define either a specific
-    # `extract_people` method or a generic `extract` method, which must yield
-    # objects to populate the lazy enumerator. Alternatively, you may override
-    # `extract_task_method` to change the method selected to perform the task.
+    # In `MyProcessor`, you would define an `extract_people` method, which must
+    # yield objects to populate the lazy enumerator. Alternatively, you may
+    # override `extract_task_method` to change the method selected to perform
+    # the extraction task.
     #
     # The `people` method can then be called by transformation and load tasks.
     #
@@ -89,7 +90,7 @@ module Pupa
         if instance_variable_defined?(ivar)
           instance_variable_get(ivar)
         else
-          instance_variable_set(ivar, Yielder.new(&method(extract_task_method(task_name)))
+          instance_variable_set(ivar, Yielder.new(&method(extract_task_method(task_name))))
         end
       end
     end
@@ -193,12 +194,8 @@ module Pupa
 
   private
 
-    # Returns the name of the method that would be used to perform the given
-    # extraction task.
-    #
-    # If your processor defines a `extract_<task_name>` method, that method will
-    # be selected to perform the task. Otherwise, the generic `extract` method
-    # will be selected.
+    # Returns the name of the method - `extract_<task_name>` by default - that
+    # would be used to perform the given extraction task.
     #
     # If you would like to change this default behavior, override this method in
     # a subclass. For example, you may want to select a method according to the
@@ -207,12 +204,7 @@ module Pupa
     # @param [Symbol] task_name a task name
     # @return [String] the name of the method to perform the extraction task
     def extract_task_method(task_name)
-      method_name = "extract_#{task_name}"
-      if respond_to?(method_name)
-        method_name
-      else
-        'extract'
-      end
+      "extract_#{task_name}"
     end
 
     # Dumps an extracted object to disk.
@@ -221,7 +213,7 @@ module Pupa
     # @raises [Pupa::Errors::DuplicateObjectIdError]
     def dump_extracted_object(object)
       type = object.class.to_s.demodulize.underscore
-      basename = "#{type}_#{object._id}.json"
+      basename = "#{object._id.sub('/', '_')}.json"
       path = File.join(@output_dir, basename)
 
       if File.exist?(path)

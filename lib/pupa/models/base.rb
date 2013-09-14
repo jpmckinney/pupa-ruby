@@ -3,6 +3,7 @@ require 'securerandom'
 require 'set'
 
 require 'active_support/callbacks'
+require 'active_support/core_ext/hash/except'
 require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/try'
 require 'json-schema'
@@ -72,13 +73,13 @@ module Pupa
 
     attr_accessor :_id, :_type, :extras
 
-    # @param [Hash] kwargs the object's attributes
-    def initialize(**kwargs)
+    # @param [Hash] properties the object's properties
+    def initialize(properties = {})
       @_type = self.class.to_s.underscore
       @_id = "ocd-#{self.class.to_s.demodulize.underscore}/#{SecureRandom.uuid}"
       @extras = {}
 
-      kwargs.each do |key,value|
+      properties.each do |key,value|
         self[key] = value
       end
     end
@@ -88,7 +89,7 @@ module Pupa
     # @param [Symbol] property a property name
     # @raises [Pupa::Errors::MissingAttributeError] if class is missing the property
     def [](property)
-      if properties.include?(property)
+      if properties.include?(property.to_sym)
         send(property)
       else
         raise Errors::MissingAttributeError, "missing attribute: #{property}"
@@ -101,7 +102,7 @@ module Pupa
     # @param value a value
     # @raises [Pupa::Errors::MissingAttributeError] if class is missing the property
     def []=(property, value)
-      if properties.include?(property)
+      if properties.include?(property.to_sym)
         send("#{property}=", value)
       else
         raise Errors::MissingAttributeError, "missing attribute: #{property}"
@@ -128,15 +129,13 @@ module Pupa
     #
     # @return [Hash] a subset of the object's properties
     def fingerprint
-      to_h
+      to_h.except(:_id)
     end
 
-    # Validates an object against a schema.
-    #
-    # @param [Object] an object
-    def validate!(object)
+    # Validates the object against the schema.
+    def validate!
       if self.class.schema
-        JSON::Validator.validate!(self.class.schema, object.to_h)
+        JSON::Validator.validate!(self.class.schema, to_h)
       end
     end
 

@@ -19,7 +19,6 @@ module Pupa
       @level           = 'INFO'
 
       @available = {
-        'tasks'   => "List the processor's available tasks",
         'extract' => 'Scrapes data from online sources',
         'load'    => 'Loads scraped data into a database',
       }.map do |name,description|
@@ -40,7 +39,7 @@ module Pupa
     def opts
       @opts ||= OptionParser.new do |opts|
         opts.program_name = File.basename($PROGRAM_NAME)
-        opts.banner = "Usage: #{opts.program_name} PROCESSOR"
+        opts.banner = "Usage: #{opts.program_name}"
 
         opts.separator ''
         opts.separator 'Actions:'
@@ -60,10 +59,10 @@ module Pupa
 
         opts.separator ''
         opts.separator 'Specific options:'
-        opts.on('-a', '--action ACTION', names, 'Select an action to run', "  (#{names})") do |v|
+        opts.on('-a', '--action ACTION', names, 'Select an action to run', "  (#{names.join(', ')})") do |v|
           @actions << v
         end
-        opts.on('-t', '--task TASK', @processor_class.tasks, 'Select an extraction task to run') do |v|
+        opts.on('-t', '--task TASK', @processor_class.tasks, 'Select an extraction task to run', "  (#{@processor_class.tasks.join(', ')})") do |v|
           @tasks << v
         end
         opts.on('-o', '--output_dir PATH', 'The directory in which to dump JSON documents') do |v|
@@ -75,7 +74,7 @@ module Pupa
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           @expires_in = v
         end
-        opts.on('-h', '--host HOST:PORT', 'The host and port to MongoDB') do |v|
+        opts.on('-H', '--host HOST:PORT', 'The host and port to MongoDB') do |v|
           @host_with_port = v
         end
         opts.on('-d', '--database NAME', 'The name of the MongoDB database') do |v|
@@ -87,6 +86,8 @@ module Pupa
         opts.on('-s', '--silent', 'Show no messages') do
           @level = 'UNKNOWN'
         end
+
+        # @todo swallow all other options and pass them to the processor
 
         opts.separator ''
         opts.separator 'Common options:'
@@ -113,8 +114,10 @@ module Pupa
         @actions = %w(extract load)
       end
       if @tasks.empty?
-        @tasks = @processor_tasks.tasks
+        @tasks = @processor_class.tasks
       end
+
+      processor = @processor_class.new(@output_dir, cache_dir: @cache_dir, expires_in: @expires_in, level: @level)
 
       @actions.each do |action|
         unless action == 'extract' || processor.respond_to?(action)
@@ -132,8 +135,6 @@ module Pupa
       puts "tasks: #{@tasks.join(', ')}"
 
       Pupa.session = Moped::Session.new([@host_with_port], database: @database)
-
-      processor = @processor_class.new(@output_dir, cache_dir: @cache_dir, expires_in: @expires_in, level: @level)
 
       if @actions.delete('extract')
         FileUtils.mkdir_p(@output_dir)

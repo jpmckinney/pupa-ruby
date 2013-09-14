@@ -29,8 +29,3 @@ module Pupa
     attr_accessor :session
   end
 end
-
-Pupa::Processor.add_extract_task(:memberships)
-Pupa::Processor.add_extract_task(:organizations)
-Pupa::Processor.add_extract_task(:people)
-Pupa::Processor.add_extract_task(:posts)

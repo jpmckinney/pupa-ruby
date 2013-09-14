@@ -1,5 +1,3 @@
-require 'faraday_middleware/response_middleware'
-
 module Pupa
   class Processor
     module Middleware

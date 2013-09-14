@@ -30,13 +30,15 @@ The [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) example shows
 
 ### Extraction method selection
 
-1.  For simple processing, your processor class need only define a single `extract` method, which will perform all extraction (scraping). See [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) for an example.
+1.  For simple processing, your processor class need only define a single `extract_objects` method, which will perform all extraction (scraping). See [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) for an example.
 
 1.  If you extract many types of data from the same source, you may want to split the extraction into separate tasks according to the type of data being extracted. See [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) for an example.
 
 1.  You may want more control over the method used to perform an extraction task. For example, a legislature may publish all legislators before 2000 in one format and all legislators after 2000 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html) for an example.
 
 You may, of course, write a separate processor class for each extraction task, and only ever define a `extract` method in each class. However, there are various benefits to organizing all related tasks into a single class.
+
+[TODO] Add a link to a wiki page that describes the framework's step-by-step process.
 
 ## Bugs? Questions?
 

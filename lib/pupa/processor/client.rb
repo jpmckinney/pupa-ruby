@@ -1,13 +1,15 @@
 require 'active_support/cache'
 require 'faraday_middleware'
+require 'faraday_middleware/response_middleware'
 
+require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
 
 module Pupa
   class Processor
     # A refinement for the Faraday caching middleware to cache all requests, not
     # only GET requests.
-    module CacheAllRequests
+    module FaradayPatch
       refine FaradayMiddleware::Caching do
         def call(env)
           # Remove if-statement to cache any request, not only GET.
@@ -33,11 +35,15 @@ module Pupa
         end
       end
     end
+  end
+end
 
+using Pupa::Processor::FaradayPatch
+
+module Pupa
+  class Processor
     # An HTTP client factory.
     class Client
-      using CacheAllRequests
-
       # Returns a configured Faraday HTTP client.
       #
       # @param [String] cache_dir a directory in which to cache requests
@@ -46,10 +52,11 @@ module Pupa
       # @return [Faraday::Connection] a configured Faraday HTTP client
       def self.new(cache_dir: nil, expires_in: 86400, level: 'INFO') # 1 day
         Faraday.new do |connection|
-          connection.response :logger, Logger.new('faraday', level: level)
+          connection.request :url_encoded
+          connection.use Middleware::Logger, Logger.new('faraday', level: level)
           # @see http://tools.ietf.org/html/rfc2854
           # @see http://tools.ietf.org/html/rfc3236
-          connection.use Pupa::Processor::Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
+          connection.use Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
           # @see http://tools.ietf.org/html/rfc4627
           connection.use FaradayMiddleware::ParseJson, content_type: /\bjson$/
           # @see http://tools.ietf.org/html/rfc3023

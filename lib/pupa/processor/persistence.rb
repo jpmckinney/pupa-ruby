@@ -32,9 +32,11 @@ module Pupa
       # @return [String] the object's database ID
       # @raises [Pupa::Errors::TooManyMatches] if multiple documents would be updated
       def save
+        selector = @object.fingerprint
+        query = collection.find(selector)
+
+        # Run query before callbacks to avoid e.g. timestamps in the selector.
         @object.run_callbacks(:save) do
-          selector = @object.fingerprint
-          query = collection.find(selector)
           case query.count
           when 0
             @object.run_callbacks(:create) do
@@ -44,7 +46,7 @@ module Pupa
           when 1
             document = query.first
             query.update(@object.to_h)
-            document._id.to_s
+            document['_id'].to_s
           else
             raise Errors::TooManyMatches, "selector matches multiple documents during save: #{selector.inspect}"
           end

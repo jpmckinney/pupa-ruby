@@ -14,7 +14,7 @@ module Pupa
     attr_accessor :name, :classification, :parent_id, :founding_date,
       :dissolution_date, :image
 
-    foreign_keys :parent_id
+    foreign_key :parent_id
 
     # Returns the name of the organization.
     #
