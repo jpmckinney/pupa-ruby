@@ -32,8 +32,10 @@ The [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html) e
 * select a scraping method according to criteria like the legislative term
 * pass selection criteria to the processor before running scraping tasks
 
-* [TODO] register a transformation task with Pupa.rb
-* [TODO] run the processor's transformation task
+The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.html) example shows you how to:
+
+* register a transformation task with Pupa.rb
+* run the processor's transformation task
 
 ### Scraping method selection
 
