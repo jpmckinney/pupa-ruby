@@ -19,11 +19,10 @@ class Cat < Pupa::Base
   attr_accessor :image, :name, :breed, :age, :sex
 
   # When saving an object to the database, Pupa.rb will check if the object had
-  # been saved to the database in a previous run. It relies on a "fingerprint"
-  # of the object: a subset of the object's properties that should uniquely
-  # identify the object within the context of the scraping task. In this case,
-  # the image is not an identifying property, because the image can change
-  # without changing the cat.
+  # been saved in a previous run. It relies on a "fingerprint" of the object: a
+  # subset of the object's properties that should uniquely identify the object
+  # within the context of the scraping task. In this case, the image is not an
+  # identifying property, because the image can change without changing the cat.
   def fingerprint
     to_h.slice(:name, :breed, :age, :sex)
   end
