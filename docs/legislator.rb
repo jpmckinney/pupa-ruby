@@ -1,10 +1,9 @@
-require 'pupa'
-
 # The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
 # over the basics of using Pupa.rb, and [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html)
 # covers some more advanced topics. This will explain how to run, for example,
 # different methods to scrape legislators depending on the legislative term -
 # particularly useful if a data source changes format from year to year.
+require 'pupa'
 
 # parl.gc.ca uses ASP.NET forms, so we need [bigger guns](http://mechanize.rubyforge.org/).
 require 'mechanize'
