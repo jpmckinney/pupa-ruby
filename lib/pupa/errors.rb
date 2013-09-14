@@ -18,5 +18,9 @@ module Pupa
     # This error is raised when saving an object to a database if the object
     # matches more than one document in the database.
     class TooManyMatches < Error; end
+
+    # This error is raised if an object's foreign keys or foreign objects cannot
+    # be resolved.
+    class UnprocessableEntity < Error; end
   end
 end

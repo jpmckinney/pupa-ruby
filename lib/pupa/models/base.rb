@@ -56,7 +56,7 @@ module Pupa
       #
       # @param [Array<Symbol>] the class' foreign objects
       def foreign_object(*attributes)
-        self.foreign_object += attributes
+        self.foreign_objects += attributes
       end
 
       # Sets the path to the class' schema.
@@ -132,6 +132,13 @@ module Pupa
       to_h.except(:_id)
     end
 
+    # Returns the object's foreign keys and foreign objects.
+    #
+    # @return [Hash] the object's foreign keys and foreign objects
+    def foreign_properties
+      to_h(include_foreign_objects: true).slice(*foreign_keys + foreign_objects)
+    end
+
     # Validates the object against the schema.
     def validate!
       if self.class.schema
@@ -141,10 +148,11 @@ module Pupa
 
     # Returns the object as a hash.
     #
+    # @param [Boolean] include_foreign_objects whether to include foreign objects
     # @return [Hash] the object as a hash
-    def to_h
+    def to_h(include_foreign_objects: false)
       {}.tap do |hash|
-        (properties - foreign_objects).each do |property|
+        (include_foreign_objects ? properties : properties - foreign_objects).each do |property|
           value = self[property]
           if value == false || value.present?
             hash[property] = value

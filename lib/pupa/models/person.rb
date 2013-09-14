@@ -27,8 +27,8 @@ module Pupa
       hash = to_h
       {
         '$or' => [
-          'name' => name,
-          'other_names.name' => name,
+          {'name' => name},
+          {'other_names.name' => name},
         ],
       }
     end

@@ -16,14 +16,15 @@ module Pupa
       # @return [Hash,nil] the matched document, or nil
       # @raises [Pupa::Errors::TooManyMatches] if multiple documents are found
       def self.find(selector)
-        query = Pupa.session[collection_name_from_class_name(selector['_type'].camelize)].find(selector)
+        collection_name = collection_name_from_class_name(selector['_type'].camelize)
+        query = Pupa.session[collection_name].find(selector)
         case query.count
         when 0
           nil
         when 1
           query.first
         else
-          raise Errors::TooManyMatches, "selector matches multiple documents during find: #{selector.inspect}"
+          raise Errors::TooManyMatches, "selector matches multiple documents during find: #{collection_name} #{JSON.dump(selector)}"
         end
       end
 
@@ -48,7 +49,7 @@ module Pupa
             query.update(@object.to_h)
             document['_id'].to_s
           else
-            raise Errors::TooManyMatches, "selector matches multiple documents during save: #{selector.inspect}"
+            raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{JSON.dump(selector)}"
           end
         end
       end

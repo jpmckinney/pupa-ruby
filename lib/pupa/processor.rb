@@ -107,6 +107,8 @@ module Pupa
     # Saves extracted objects to a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
+    # @raises [Errors::UnprocessableEntity] if an object's foreign keys or
+    #   foreign objects cannot be resolved.
     def load
       objects = load_extracted_objects
 
@@ -140,6 +142,8 @@ module Pupa
           object_id_to_database_id[id] = Persistence.new(object).save
         end
       else
+        size = objects.size
+
         # Should be O(n²). If there are foreign objects, we do not know all the
         # edges in the graph, and therefore cannot build a dependency graph or
         # derive any evaluation order.
@@ -151,14 +155,14 @@ module Pupa
           progress_made = false
 
           objects.delete_if do |id,object|
-            resolvable = false
+            resolvable = true
 
-            resolvable |= object.foreign_keys.all? do |property|
+            resolvable &= object.foreign_keys.all? do |property|
               value = object[property]
               value.nil? || object_id_to_database_id.key?(value)
             end
 
-            resolvable |= object.foreign_objects.all? do |property|
+            resolvable &= object.foreign_objects.all? do |property|
               selector = object[property]
               selector.blank? || Persistence.find(selector)
             end
@@ -175,7 +179,7 @@ module Pupa
         end
 
         unless objects.empty?
-          raise "couldn't resolve objects: #{objects.inspect}"
+          raise Errors::UnprocessableEntity, "couldn't resolve #{objects.size}/#{size} objects:\n  #{objects.values.map{|object| JSON.dump(object.foreign_properties)}.join("\n  ")}"
         end
       end
 
@@ -223,7 +227,7 @@ module Pupa
       info {"save #{type} #{object.to_s} as #{basename}"}
 
       File.open(path, 'w') do |f|
-        f.write(JSON.dump(object.to_h))
+        f.write(JSON.dump(object.to_h(include_foreign_objects: true)))
       end
 
       begin
@@ -320,13 +324,13 @@ module Pupa
     # @raises [Pupa::Errors::MissingDatabaseIdError]
     def resolve_foreign_objects(object)
       object.foreign_objects.each do |property|
-        value = object[property]
-        if value.present?
+        selector = object[property]
+        if selector.present?
           document = Persistence.find(selector)
           if document
             object["#{property}_id"] = document['_id']
           else
-            raise Errors::MissingDatabaseIdError, "missing database ID: #{property} #{selector.inspect} of #{object._id}"
+            raise Errors::MissingDatabaseIdError, "missing database ID: #{property} #{JSON.dump(selector)} of #{object._id}"
           end
         end
       end
