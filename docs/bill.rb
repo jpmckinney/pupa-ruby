@@ -42,9 +42,9 @@ end
 
 # Scrapes legislative information about the Parliament of Canada.
 class ParliamentOfCanada < Pupa::Processor
-  # Instead of defining a single `extract` method to perform all the extraction,
-  # we define an extraction task for each type of data we want to extract:
-  # people, organizations and bills.
+  # Instead of defining a single `extract_objects` method to perform all the
+  # extraction, we define an extraction task for each type of data we want to
+  # extract: people, organizations and bills.
   #
   # This will let us later, for example, run each task on a different schedule.
   # Bill data is updated more frequently than person data; we would therefore
@@ -58,7 +58,8 @@ class ParliamentOfCanada < Pupa::Processor
       person = Pupa::Person.new
       person.name = row.at_css('td:eq(1)').text.match(/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/)[1..2].
         reverse.map{|component| component.strip.squeeze(' ')}.join(' ')
-      # Some bills omit sponsors' middle names.
+      # Some bills omit sponsors' middle names, so we add an alternate name that
+      # omits any middle names.
       components = person.name.split(' ')
       person.add_name("#{components.first} #{components.last}")
       Fiber.yield(person)
@@ -80,7 +81,7 @@ class ParliamentOfCanada < Pupa::Processor
   def extract_bills
     doc = get('http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&ParliamentSession=41-1&Mode=1&download=xml')
     doc['Bills']['Bill'].each do |row|
-      # Skip Senate bills until we scrape senators above.
+      # Skip Senate bills, since we currently only scrape Members of Parliament.
       next if row['BillNumber']['prefix'] == 'S'
 
       bill = Bill.new
@@ -109,5 +110,5 @@ ParliamentOfCanada.add_extract_task(:people)
 
 # By default, if you run `bill.rb`, it will perform all extraction tasks and
 # load all the extracted objects into the database. Use the `--action` and
-# `--task` switches to control the processors behavior.
+# `--task` switches to control the processor's behavior.
 Pupa::Runner.new(ParliamentOfCanada).run(ARGV)

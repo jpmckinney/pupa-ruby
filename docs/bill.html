@@ -28,6 +28,11 @@
                 cat.rb
               </a>
             
+              
+              <a class="source" href="legislator.html">
+                legislator.rb
+              </a>
+            
           </div>
         </li>
       </ul>
@@ -165,9 +170,9 @@ instead of having to add it each time in the processor.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>Instead of defining a single <code>extract</code> method to perform all the extraction,
-we define an extraction task for each type of data we want to extract:
-people, organizations and bills.</p>
+              <p>Instead of defining a single <code>extract_objects</code> method to perform all the
+extraction, we define an extraction task for each type of data we want to
+extract: people, organizations and bills.</p>
 <p>This will let us later, for example, run each task on a different schedule.
 Bill data is updated more frequently than person data; we would therefore
 run the bills task more frequently.</p>
@@ -192,7 +197,8 @@ documentation for more information on the naming of extraction methods.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Some bills omit sponsors&#39; middle names.</p>
+              <p>Some bills omit sponsors&#39; middle names, so we add an alternate name that
+omits any middle names.</p>
 
             </div>
             
@@ -239,7 +245,7 @@ documentation for more information on the naming of extraction methods.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>Skip Senate bills until we scrape senators above.</p>
+              <p>Skip Senate bills, since we currently only scrape Members of Parliament.</p>
 
             </div>
             
@@ -293,7 +299,7 @@ given information.</p>
               </div>
               <p>By default, if you run <code>bill.rb</code>, it will perform all extraction tasks and
 load all the extracted objects into the database. Use the <code>--action</code> and
-<code>--task</code> switches to control the processors behavior.</p>
+<code>--task</code> switches to control the processor&#39;s behavior.</p>
 
             </div>
             
