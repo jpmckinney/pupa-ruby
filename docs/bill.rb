@@ -112,3 +112,5 @@ ParliamentOfCanada.add_extract_task(:people)
 # load all the extracted objects into the database. Use the `--action` and
 # `--task` switches to control the processor's behavior.
 Pupa::Runner.new(ParliamentOfCanada).run(ARGV)
+
+# Ready for more? Check out the next example: [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).
