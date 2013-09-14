@@ -41,7 +41,7 @@ The [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html) e
 
 1.  If you extract many types of data from the same source, you may want to split the extraction into separate tasks according to the type of data being extracted. See [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) for an example.
 
-1.  You may want more control over the method used to perform an extraction task. For example, a legislature may publish all legislators before 1997 in one format and all legislators after 1997 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).
+1.  You may want more control over the method used to perform an extraction task. For example, a legislature may publish legislators before 1997 in one format and legislators after 1997 in another format. In this case, you may want to select the method used to extract legislators according to the year. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).
 
 ## Bugs? Questions?
 
