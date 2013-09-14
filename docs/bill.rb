@@ -31,6 +31,10 @@ class Bill < Pupa::Base
     @organization = {'_type' => 'pupa/organization'}.merge(organization)
   end
 
+  def fingerprint
+    to_h.slice(:name, :organization_id)
+  end
+
   def to_s
     name
   end
@@ -49,11 +53,14 @@ class ParliamentOfCanada < Pupa::Processor
   # See the [`extract_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158)
   # documentation for more information on the naming of extraction methods.
   def extract_people
-    doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Current&Language=E')
+    doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&Language=E')
     doc.css('#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)').each do |row|
       person = Pupa::Person.new
       person.name = row.at_css('td:eq(1)').text.match(/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/)[1..2].
-        reverse.map{|component| component.strip.squeeze(' ')}
+        reverse.map{|component| component.strip.squeeze(' ')}.join(' ')
+      # Some bills omit sponsors' middle names.
+      components = person.name.split(' ')
+      person.add_name("#{components.first} #{components.last}")
       Fiber.yield(person)
     end
   end
@@ -63,26 +70,33 @@ class ParliamentOfCanada < Pupa::Processor
     parliament = Pupa::Organization.new(name: 'Parliament of Canada')
     Fiber.yield(parliament)
 
-    house_of_commons = Pupa::Organization.new(name: 'House of Commons', parent: parliament)
+    house_of_commons = Pupa::Organization.new(name: 'House of Commons', parent_id: parliament._id)
     Fiber.yield(house_of_commons)
 
-    senate = Pupa::Organization.new(name: 'Senate', parent: parliament)
+    senate = Pupa::Organization.new(name: 'Senate', parent_id: parliament._id)
     Fiber.yield(senate)
   end
 
   def extract_bills
     doc = get('http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&ParliamentSession=41-1&Mode=1&download=xml')
-    doc.xpath('//Bill').each do |row|
+    doc['Bills']['Bill'].each do |row|
+      # Skip Senate bills until we scrape senators above.
+      next if row['BillNumber']['prefix'] == 'S'
+
       bill = Bill.new
-      bill.name = row.at_xpath('./BillTitle/Title[@language="en"]').text
+      bill.name = row['BillTitle']['Title'].find{|x| x['language'] == 'en'}['__content__']
       # Here, we tell the Bill everything we know about the sponsor and the
       # legislative body. Pupa.rb will later determine which objects match the
       # given information.
+      name = row['SponsorAffiliation']['Person']['FullName']
       bill.sponsor = {
-        name: row.at_xpath('./SponsorAffiliation/Person/FullName').text,
+        '$or' => [
+          {'name' => name},
+          {'other_names.name' => name},
+        ],
       }
       bill.organization = {
-        name: row.at_xpath('./BillNumber/@prefix').value == 'C' ? 'House of Commons' : 'Senate',
+        name: row['BillNumber']['prefix'] == 'C' ? 'House of Commons' : 'Senate',
       }
       Fiber.yield(bill)
     end

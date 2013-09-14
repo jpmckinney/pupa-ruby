@@ -19,7 +19,7 @@ class Cat < Pupa::Base
   attr_accessor :image, :name, :breed, :age, :sex
 
   # When saving an object to the database, Pupa.rb will check if the object had
-  # been saved in a previous run. It relies on a "fingerprint" of the object: a
+  # been saved in a previous run. It uses a "fingerprint" of the object: a
   # subset of the object's properties that should uniquely identify the object
   # within the context of the scraping task. In this case, the image is not an
   # identifying property, because the image can change without changing the cat.
@@ -52,7 +52,7 @@ class CatProcessor < Pupa::Processor
 
     # HTML responses are parsed by [Nokogiri](http://nokogiri.org/).
     doc.css('#show-result ul:gt(1)').each do |row|
-      # Skips multiple unnamed kittens.
+      # Skips multiple unnamed kittens. Only individual cats!
       next if clean(row.at_css('.name').text) == 'Chatons pour adoption'
 
       # Creates a new Cat object.
