@@ -111,24 +111,7 @@ module Pupa
     # @raises [Errors::UnprocessableEntity] if an object's foreign keys or
     #   foreign objects cannot be resolved.
     def import
-      objects = load_scraped_objects
-
-      losers_to_winners = build_losers_to_winners_map(objects)
-
-      # Remove all losers.
-      losers_to_winners.each_key do |key|
-        objects.delete(key)
-      end
-
-      # Swap the IDs of losers for the IDs of winners.
-      objects.each do |id,object|
-        object.foreign_keys.each do |property|
-          value = object[property]
-          if value && losers_to_winners.key?(value)
-            object[property] = losers_to_winners[value]
-          end
-        end
-      end
+      objects = deduplicate(load_scraped_objects)
 
       object_id_to_database_id = {}
 
@@ -249,6 +232,31 @@ module Pupa
           objects[object._id] = object
         end
       end
+    end
+
+    # Removes all duplicate objects and corrects any foreign keys.
+    #
+    # @param [Hash] objects a hash of scraped objects keyed by ID
+    # @return [Hash] the objects without duplicates
+    def deduplicate(objects)
+      losers_to_winners = build_losers_to_winners_map(objects)
+
+      # Remove all losers.
+      losers_to_winners.each_key do |key|
+        objects.delete(key)
+      end
+
+      # Swap the IDs of losers for the IDs of winners.
+      objects.each do |id,object|
+        object.foreign_keys.each do |property|
+          value = object[property]
+          if value && losers_to_winners.key?(value)
+            object[property] = losers_to_winners[value]
+          end
+        end
+      end
+
+      objects
     end
 
     # For each object, map its ID to the ID of its duplicate, if any.

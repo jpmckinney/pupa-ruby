@@ -10,7 +10,7 @@ module Pupa
 
     # @param [Pupa::Processor] a processor class
     # @param [Hash] defaults change any default options
-    def initialize(processor_class, defaults: {})
+    def initialize(processor_class, defaults = {})
       @processor_class = processor_class
 
       @options = OpenStruct.new({
@@ -21,6 +21,7 @@ module Pupa
         expires_in:     86400, # 1 day
         host_with_port: 'localhost:27017',
         database:       'pupa',
+        dry_run:        false,
         level:          'INFO',
       }.merge(defaults))
 
@@ -86,6 +87,12 @@ module Pupa
         opts.on('-d', '--database NAME', 'The name of the MongoDB database') do |v|
           options.database = v
         end
+        opts.on('-n', '--dry-run', 'Show the plan without running any actions') do
+          options.dry_run = true
+        end
+        opts.on('-v', '--verbose', 'Show all messages') do
+          options.level = 'DEBUG'
+        end
         opts.on('-q', '--quiet', 'Show only warning and error messages') do
           options.level = 'WARN'
         end
@@ -118,10 +125,10 @@ module Pupa
     #
     # @param [Array] args command-line arguments
     # @param [Hash] overrides any overridden options
-    def run(args, overrides: {})
+    def run(args, overrides = {})
       rest = opts.parse!(args)
 
-      options = OpenStruct.new(options.to_h.merge(defaults))
+      self.options = OpenStruct.new(options.to_h.merge(overrides))
 
       if options.actions.empty?
         options.actions = %w(scrape import)
@@ -146,6 +153,17 @@ module Pupa
       puts "processor: #{@processor_class}"
       puts "actions: #{options.actions.join(', ')}"
       puts "tasks: #{options.tasks.join(', ')}"
+
+      if options.level == 'DEBUG'
+        %w(output_dir cache_dir expires_in host_with_port database level).each do |option|
+          puts "#{option}: #{options[option]}"
+        end
+        unless rest.empty?
+          puts "options: #{rest.join(' ')}"
+        end
+      end
+
+      exit if options.dry_run
 
       Pupa.session = Moped::Session.new([options.host_with_port], database: options.database)
 
