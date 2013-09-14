@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>organization.rb</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+    
+      <ul id="jump_to">
+        <li>
+          <a class="large" href="javascript:void(0);">Jump To &hellip;</a>
+          <a class="small" href="javascript:void(0);">+</a>
+          <div id="jump_wrapper">
+          <div id="jump_page">
+            
+              
+              <a class="source" href="bill.html">
+                bill.rb
+              </a>
+            
+              
+              <a class="source" href="cat.html">
+                cat.rb
+              </a>
+            
+              
+              <a class="source" href="legislator.html">
+                legislator.rb
+              </a>
+            
+              
+              <a class="source" href="organization.html">
+                organization.rb
+              </a>
+            
+          </div>
+        </li>
+      </ul>
+    
+    <ul class="sections">
+        
+          <li id="title">
+              <div class="annotation">
+                  <h1>organization.rb</h1>
+              </div>
+          </li>
+        
+        
+        
+        <li id="section-1">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a>,
+<a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a> and
+<a href="http://opennorth.github.io/pupa-ruby/docs/legislator.html">legislator.rb</a>
+examples show you how to scrape and import data. This example shows you how
+to transform scraped data.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'pupa'</span>
+
+<span class="keyword">require</span> <span class="string">'csv'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-2">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-2">&#182;</a>
+              </div>
+              <p>We&#39;re going to scrape organizations and output them as CSV, which we can then
+upload to the <a href="https://github.com/okfn/publicbodies">Open Knowledge Foundation</a>&#39;s
+<a href="http://publicbodies.org/">Public Bodies</a> project.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">PublicBodyProcessor</span> <span class="inheritance">&lt; <span class="parent">Pupa::Processor</span></span></span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-3">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-3">&#182;</a>
+              </div>
+              <p>This transformation task will write a CSV row for each scraped organization.
+You can name transformation tasks whatever you like.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">csv</span></span>
+    puts <span class="constant">CSV</span>.generate_line <span class="string">%w(
+      title
+      abbr
+      key
+      category
+      parent
+      parent_key
+      description
+      url
+      jurisdiction
+      jurisdiction_code
+      source
+      source_url
+      address
+      contact
+      email
+      tags
+    )</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-4">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-4">&#182;</a>
+              </div>
+              <p><code>organizations</code> is a lazy enumerator of all scraped organizations, so
+we&#39;ll see a CSV row printed as soon as an organization is scraped.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>    organizations.each <span class="keyword">do</span> |organization|
+      puts <span class="constant">CSV</span>.generate_line [
+        organization.name,
+        <span class="keyword">nil</span>,
+        organization._id,
+        organization.classification,
+        <span class="keyword">nil</span>,
+        <span class="keyword">nil</span>,
+        <span class="keyword">nil</span>,
+        <span class="string">'New Brunswick'</span>
+        <span class="string">'ocd-division/country:ca/province:nb'</span>,
+        organization.sources[<span class="number">0</span>][<span class="symbol">:note</span>],
+        organization.sources[<span class="number">0</span>][<span class="symbol">:url</span>],
+        organization.contact_details.address,
+        organization.extras[<span class="symbol">:contact_point</span>],
+        organization.contact_details.email,
+        <span class="keyword">nil</span>,
+        <span class="keyword">nil</span>,
+        <span class="keyword">nil</span>,
+      ]
+    <span class="keyword">end</span>
+  <span class="keyword">end</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>To keep this example short, we&#39;ll just scrape the departments and agencies
+of the Government of New Brunswick.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">organizations</span></span>
+    url = <span class="string">'http://www1.gnb.ca/cnb/DsS/display-e.asp?typyofPublicBodyID=1'</span>
+    doc = get(url)
+
+    doc.xpath(<span class="string">'//table[4]//table'</span>).each <span class="keyword">do</span> |table|
+      organization = <span class="constant">Pupa::Organization</span>.new
+      organization.name = table.at_xpath(<span class="string">'.//u'</span>).text
+      address = table.text.strip[<span class="regexp">/\A<span class="subst">#{<span class="constant">Regexp</span>.escape(organization.name)}</span>(.+?)(?=Co-ordinator:|Email:|Phone:|Fax:)/m</span>, <span class="number">1</span>].gsub(<span class="regexp">/[[:space:]]{2,}/</span>, <span class="string">"\n"</span>).strip
+      email = clean(table.at_xpath(<span class="string">'.//a/@href'</span>).value).sub(<span class="regexp">/\Amailto:/</span>, <span class="string">''</span>)
+      contact_detail = table.at_xpath(<span class="string">'.//u[text()="Co-ordinator"]'</span>).<span class="keyword">next</span>.text.sub(<span class="regexp">/\A: /</span>, <span class="string">''</span>)
+      organization.add_contact_detail(<span class="string">'address'</span>, address)
+      organization.add_extra(<span class="symbol">:contact_detail</span>, contact_detail)
+      organization.add_contact_detail(<span class="string">'email'</span>, email)
+      organization.add_source(url, <span class="symbol">note:</span> <span class="string">'New Brunswick Directory of Public Bodies'</span>)
+      <span class="constant">Fiber</span>.<span class="keyword">yield</span>(organization)
+  <span class="keyword">end</span>
+<span class="keyword">end</span>
+
+<span class="constant">PublicBodyProcessor</span>.add_scraping_task(<span class="symbol">:organizations</span>)
+
+runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">PublicBodyProcessor</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-6">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-6">&#182;</a>
+              </div>
+              <p>Registers the <code>csv</code> action, so that we can run it with:</p>
+<pre><code>ruby organization.rb --action csv &gt; output.csv</code></pre>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>runner.add_action(<span class="symbol">name:</span> <span class="string">'csv'</span>, <span class="symbol">description:</span> <span class="string">'Output organizations as CSV'</span>)
+runner.run(<span class="constant">ARGV</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-7">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-7">&#182;</a>
+              </div>
+              <p>You&#39;ve won at Pupa.rb! Explore the <a href="http://rdoc.info/gems/pupa">class and method documentation</a>
+to learn how to do even more with Pupa.rb.</p>
+
+            </div>
+            
+        </li>
+        
+    </ul>
+  </div>
+</body>
+</html>
