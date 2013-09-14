@@ -23,17 +23,18 @@ class LegislatorProcessor < Pupa::Processor
           "extract_people_1st_to_35th"
         end
       # If no parliament is given, we assume the parliament is recent, as it is
-      # much more common to scrape current data than historical data.
+      # more common to scrape current data than historical data.
       else
         "extract_people_36th_to_date"
       end
-    # Otherwise, it uses the default behavior for other extraction tasks.
+    # Otherwise, we use `extract_task_method`'s default behavior for other
+    # extraction tasks.
     else
       super
     end
   end
 
-  # A little helper method to put name components in a typical order.
+  # A helper method to put name components in a typical order.
   def swap_first_last_name(name)
     name.strip.match(/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/)[1..2].
       reverse.map{|component| component.strip.squeeze(' ')}.join(' ')
@@ -42,8 +43,8 @@ class LegislatorProcessor < Pupa::Processor
   def extract_people_36th_to_date
     url = 'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&Language=E'
     doc = if @options.key?('parliament')
-      # Since we are not using the default Faraday HTTP client, we manually
-      # configure the Mechanize HTTP client to use Pupa.rb's logger.
+      # Since we aren't using the default Faraday HTTP client, we manually
+      # configure the Mechanize client to use Pupa.rb's logger.
       client = Mechanize.new
       client.log = Pupa::Logger.new('mechanize', level: @level)
       page = client.get(url)
@@ -77,7 +78,8 @@ end
 
 LegislatorProcessor.add_extract_task(:people)
 
-# To add extraction method selection criteria, call `legislator.rb` as:
+# To add extraction method selection criteria when running the processor, call
+# `legislator.rb` following the pattern:
 #
 #     ruby legislator.rb [options] -- [criteria]
 #
@@ -89,3 +91,5 @@ LegislatorProcessor.add_extract_task(:people)
 #
 #     ruby legislator.rb --action extract -- parliament 12
 Pupa::Runner.new(LegislatorProcessor).run(ARGV)
+
+# You've won at Pupa.rb!

@@ -53,7 +53,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              
+              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
+over the basics of using Pupa.rb, and <a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a>
+covers some more advanced topics. This will explain how to run, for example,
+different methods to scrape legislators depending on the legislative term -
+particularly useful if a data source changes format from year to year.</p>
+
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'pupa'</span></pre></div></div>
@@ -67,12 +72,7 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-2">&#182;</a>
               </div>
-              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
-over the basics of using Pupa.rb, and <a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a>
-covers some more advanced topics. This will explain how to run, for example,
-different methods to scrape legislators depending on the legislative term -
-particularly useful if a data source changes format from year to year.</p>
-<p>parl.gc.ca uses ASP.NET forms, so we need <a href="http://mechanize.rubyforge.org/">bigger guns</a>.</p>
+              <p>parl.gc.ca uses ASP.NET forms, so we need <a href="http://mechanize.rubyforge.org/">bigger guns</a>.</p>
 
             </div>
             
@@ -129,7 +129,7 @@ method according to the parliament.</p>
                 <a class="pilcrow" href="#section-5">&#182;</a>
               </div>
               <p>If no parliament is given, we assume the parliament is recent, as it is
-much more common to scrape current data than historical data.</p>
+more common to scrape current data than historical data.</p>
 
             </div>
             
@@ -146,7 +146,8 @@ much more common to scrape current data than historical data.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Otherwise, it uses the default behavior for other extraction tasks.</p>
+              <p>Otherwise, we use <code>extract_task_method</code>&#39;s default behavior for other
+extraction tasks.</p>
 
             </div>
             
@@ -164,7 +165,7 @@ much more common to scrape current data than historical data.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
-              <p>A little helper method to put name components in a typical order.</p>
+              <p>A helper method to put name components in a typical order.</p>
 
             </div>
             
@@ -186,8 +187,8 @@ much more common to scrape current data than historical data.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Since we are not using the default Faraday HTTP client, we manually
-configure the Mechanize HTTP client to use Pupa.rb&#39;s logger.</p>
+              <p>Since we aren&#39;t using the default Faraday HTTP client, we manually
+configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
 
             </div>
             
@@ -233,7 +234,8 @@ configure the Mechanize HTTP client to use Pupa.rb&#39;s logger.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>To add extraction method selection criteria, call <code>legislator.rb</code> as:</p>
+              <p>To add extraction method selection criteria when running the processor, call
+<code>legislator.rb</code> following the pattern:</p>
 <pre><code>ruby legislator.rb [options] -- [criteria]</code></pre>
 <p>So, for example, to extract and load legislators from the 37th parliament:</p>
 <pre><code>ruby legislator.rb -- parliament 37</code></pre>
@@ -243,6 +245,19 @@ configure the Mechanize HTTP client to use Pupa.rb&#39;s logger.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Runner</span>.new(<span class="constant">LegislatorProcessor</span>).run(<span class="constant">ARGV</span>)</pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-10">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-10">&#182;</a>
+              </div>
+              <p>You&#39;ve won at Pupa.rb!</p>
+
+            </div>
             
         </li>
         
