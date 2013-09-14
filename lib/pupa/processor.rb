@@ -23,10 +23,11 @@ module Pupa
     # @param [String] cache_dir the directory in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
     # @param [String] level the log level
-    # @param [Hash] kwargs criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, level: 'INFO', **kwargs)
+    # @param [Hash] options criteria for selecting the methods to run
+    def initialize(output_dir, cache_dir: nil, expires_in: 86400, level: 'INFO', options: {})
       @output_dir = output_dir
-      @options    = kwargs
+      @options    = options
+      @level      = level
       @logger     = Logger.new('pupa', level: level)
       @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
     end

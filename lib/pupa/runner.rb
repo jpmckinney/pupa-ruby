@@ -59,10 +59,10 @@ module Pupa
 
         opts.separator ''
         opts.separator 'Specific options:'
-        opts.on('-a', '--action ACTION', names, 'Select an action to run', "  (#{names.join(', ')})") do |v|
+        opts.on('-a', '--action ACTION', names, 'Select an action to run (you may give this switch multiple times)', "  (#{names.join(', ')})") do |v|
           @actions << v
         end
-        opts.on('-t', '--task TASK', @processor_class.tasks, 'Select an extraction task to run', "  (#{@processor_class.tasks.join(', ')})") do |v|
+        opts.on('-t', '--task TASK', @processor_class.tasks, 'Select an extraction task to run (you may give this switch multiple times)', "  (#{@processor_class.tasks.join(', ')})") do |v|
           @tasks << v
         end
         opts.on('-o', '--output_dir PATH', 'The directory in which to dump JSON documents') do |v|
@@ -87,8 +87,6 @@ module Pupa
           @level = 'UNKNOWN'
         end
 
-        # @todo swallow all other options and pass them to the processor
-
         opts.separator ''
         opts.separator 'Common options:'
         opts.on_tail('-h', '--help', 'Show this message') do
@@ -108,7 +106,7 @@ module Pupa
     #
     # @param [Array] args command-line arguments
     def run(args)
-      opts.parse!(args)
+      rest = opts.parse!(args)
 
       if @actions.empty?
         @actions = %w(extract load)
@@ -117,7 +115,7 @@ module Pupa
         @tasks = @processor_class.tasks
       end
 
-      processor = @processor_class.new(@output_dir, cache_dir: @cache_dir, expires_in: @expires_in, level: @level)
+      processor = @processor_class.new(@output_dir, cache_dir: @cache_dir, expires_in: @expires_in, level: @level, options: Hash[*rest])
 
       @actions.each do |action|
         unless action == 'extract' || processor.respond_to?(action)

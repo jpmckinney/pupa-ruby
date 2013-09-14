@@ -16,14 +16,21 @@ The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows y
 * write a simple Cat class that is compatible with Pupa.rb
 * use mixins to add Popolo properties to your class
 * write a processor to extract Cat objects from the Internet
+* register an extraction task with Pupa.rb
 * run the processor to save the Cat objects to MongoDB
 
 The [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) example shows you how to:
 
 * create relations between objects
-* register an extraction task with Pupa.rb
-* write individual extraction tasks
-* run each task in the processor
+* relate two objects, even if you do not know the ID of one object
+* write separate extraction tasks for different types of data
+* run each extraction task separately
+
+The [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html) example shows you how to:
+
+* use a different HTTP client than the default [Faraday](https://github.com/lostisland/faraday)
+* select an extraction method according to criteria like the legislative term
+* pass selection criteria to the processor before running extraction tasks
 
 * [TODO] register a transformation task with Pupa.rb
 * [TODO] run the processor's transformation task
@@ -34,11 +41,9 @@ The [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) example shows
 
 1.  If you extract many types of data from the same source, you may want to split the extraction into separate tasks according to the type of data being extracted. See [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) for an example.
 
-1.  You may want more control over the method used to perform an extraction task. For example, a legislature may publish all legislators before 2000 in one format and all legislators after 2000 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html) for an example.
+1.  You may want more control over the method used to perform an extraction task. For example, a legislature may publish all legislators before 1997 in one format and all legislators after 1997 in another format. In this case, you may want to select the method used to extract legislators according to the date. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html) for an example.
 
 You may, of course, write a separate processor class for each extraction task, and only ever define a `extract` method in each class. However, there are various benefits to organizing all related tasks into a single class.
-
-[TODO] Add a link to a wiki page that describes the framework's step-by-step process.
 
 ## Bugs? Questions?
 
