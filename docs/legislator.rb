@@ -1,8 +1,9 @@
 # The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
 # over the basics of using Pupa.rb, and [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html)
-# covers some more advanced topics. This will explain how to run, for example,
-# different methods to scrape legislators depending on the legislative term -
-# particularly useful if a data source changes format from year to year.
+# covers how to relate objects and how to separate scraping tasks for different
+# types of data. This will explain how to run, for example, different methods to
+# scrape legislators depending on the legislative term - particularly useful if
+# a data source changes format from year to year.
 require 'pupa'
 
 # parl.gc.ca uses ASP.NET forms, so we need [bigger guns](http://mechanize.rubyforge.org/).
@@ -90,6 +91,8 @@ LegislatorProcessor.add_scraping_task(:people)
 # Or, to scrape but not import legislators from the 12th parliament:
 #
 #     ruby legislator.rb --action scrape -- parliament 12
-Pupa::Runner.new(LegislatorProcessor).run(ARGV)
+runner = Pupa::Runner.new(LegislatorProcessor)
+runner.run(ARGV)
 
-# You've won at Pupa.rb!
+# Tired of scraping and importing data? See [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.html)
+# to learn how to transform scraped data with Pupa.rb.

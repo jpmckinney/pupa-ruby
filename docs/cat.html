@@ -33,6 +33,11 @@
                 legislator.rb
               </a>
             
+              
+              <a class="source" href="organization.html">
+                organization.rb
+              </a>
+            
           </div>
         </li>
       </ul>
@@ -330,7 +335,8 @@ command-line options. Run <code>cat.rb --help</code> to see a full list of optio
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Runner</span>.new(<span class="constant">CatProcessor</span>).run(<span class="constant">ARGV</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">CatProcessor</span>)
+runner.run(<span class="constant">ARGV</span>)</pre></div></div>
             
         </li>
         

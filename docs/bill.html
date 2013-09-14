@@ -33,6 +33,11 @@
                 legislator.rb
               </a>
             
+              
+              <a class="source" href="organization.html">
+                organization.rb
+              </a>
+            
           </div>
         </li>
       </ul>
@@ -54,7 +59,8 @@
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
               <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
-over the basics of using Pupa.rb. This covers some more advanced topics.</p>
+over the basics of using Pupa.rb. This covers how to relate objects and how to
+separate scraping tasks for different types of data.</p>
 
             </div>
             
@@ -303,7 +309,8 @@ import all the scraped objects into the database. Use the <code>--action</code> 
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Runner</span>.new(<span class="constant">ParliamentOfCanada</span>).run(<span class="constant">ARGV</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">ParliamentOfCanada</span>)
+runner.run(<span class="constant">ARGV</span>)</pre></div></div>
             
         </li>
         

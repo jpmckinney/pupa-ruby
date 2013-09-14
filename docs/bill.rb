@@ -1,5 +1,6 @@
 # The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
-# over the basics of using Pupa.rb. This covers some more advanced topics.
+# over the basics of using Pupa.rb. This covers how to relate objects and how to
+# separate scraping tasks for different types of data.
 require 'pupa'
 
 # Defines a new class to model legislative bills. In this example, we will
@@ -111,6 +112,7 @@ ParliamentOfCanada.add_scraping_task(:people)
 # By default, if you run `bill.rb`, it will perform all scraping tasks and
 # import all the scraped objects into the database. Use the `--action` and
 # `--task` switches to control the processor's behavior.
-Pupa::Runner.new(ParliamentOfCanada).run(ARGV)
+runner = Pupa::Runner.new(ParliamentOfCanada)
+runner.run(ARGV)
 
 # Ready for more? Check out the next example: [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).

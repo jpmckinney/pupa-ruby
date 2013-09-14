@@ -78,6 +78,7 @@ CatProcessor.add_scraping_task(:objects)
 
 # Tells the Pupa command-line parser which processor to use, and then parses
 # command-line options. Run `cat.rb --help` to see a full list of options.
-Pupa::Runner.new(CatProcessor).run(ARGV)
+runner = Pupa::Runner.new(CatProcessor)
+runner.run(ARGV)
 
 # Ready to move on? Check out the next example: [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html).

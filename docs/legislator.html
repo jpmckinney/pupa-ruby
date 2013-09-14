@@ -33,6 +33,11 @@
                 legislator.rb
               </a>
             
+              
+              <a class="source" href="organization.html">
+                organization.rb
+              </a>
+            
           </div>
         </li>
       </ul>
@@ -55,9 +60,10 @@
               </div>
               <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
 over the basics of using Pupa.rb, and <a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a>
-covers some more advanced topics. This will explain how to run, for example,
-different methods to scrape legislators depending on the legislative term -
-particularly useful if a data source changes format from year to year.</p>
+covers how to relate objects and how to separate scraping tasks for different
+types of data. This will explain how to run, for example, different methods to
+scrape legislators depending on the legislative term - particularly useful if
+a data source changes format from year to year.</p>
 
             </div>
             
@@ -244,7 +250,8 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="constant">Pupa::Runner</span>.new(<span class="constant">LegislatorProcessor</span>).run(<span class="constant">ARGV</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">LegislatorProcessor</span>)
+runner.run(<span class="constant">ARGV</span>)</pre></div></div>
             
         </li>
         
@@ -255,7 +262,8 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
-              <p>You&#39;ve won at Pupa.rb!</p>
+              <p>Tired of scraping and importing data? See <a href="http://opennorth.github.io/pupa-ruby/docs/organization.html">organization.rb</a>
+to learn how to transform scraped data with Pupa.rb.</p>
 
             </div>
             
