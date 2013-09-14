@@ -37,8 +37,8 @@ module Pupa
 
       # Declare the class' foreign keys.
       #
-      # When loading extracted objects, the foreign keys will be used to draw
-      # a dependency graph and derive an evaluation order.
+      # When importing scraped objects, the foreign keys will be used to draw a
+      # dependency graph and derive an evaluation order.
       #
       # @param [Array<Symbol>] the class' foreign keys
       def foreign_key(*attributes)

@@ -7,8 +7,8 @@ module Pupa
     # cannot be resolved.
     class MissingDatabaseIdError < Error; end
 
-    # This error is raised when dumping extracted objects to disk if two of
-    # those objects share an ID.
+    # This error is raised when dumping scraped objects to disk if two of those
+    # objects share an ID.
     class DuplicateObjectIdError < Error; end
 
     # This error is raised when attempting to get or set a property that does

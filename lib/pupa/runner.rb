@@ -6,21 +6,26 @@ require 'moped'
 
 module Pupa
   class Runner
+    attr_accessor :options
+
     # @param [Pupa::Processor] a processor class
     def initialize(processor_class)
       @processor_class = processor_class
-      @actions         = []
-      @tasks           = []
-      @output_dir      = File.expand_path('scraped_data', Dir.pwd)
-      @cache_dir       = File.expand_path('web_cache', Dir.pwd)
-      @expires_in      = 86400 # 1 day
-      @host_with_port  = 'localhost:27017'
-      @database        = 'pupa'
-      @level           = 'INFO'
+
+      @options = OpenStruct.new({
+        actions:        [],
+        tasks:          [],
+        output_dir:     File.expand_path('scraped_data', Dir.pwd),
+        cache_dir:      File.expand_path('web_cache', Dir.pwd),
+        expires_in:     86400 # 1 day,
+        host_with_port: 'localhost:27017',
+        database:       'pupa',
+        level:          'INFO',
+      })
 
       @available = {
-        'extract' => 'Scrapes data from online sources',
-        'load'    => 'Loads scraped data into a database',
+        'scrape' => 'Scrapes data from online sources',
+        'import' => 'Imports scraped data into a database',
       }.map do |name,description|
         OpenStruct.new(name: name, description: description)
       end
@@ -60,31 +65,31 @@ module Pupa
         opts.separator ''
         opts.separator 'Specific options:'
         opts.on('-a', '--action ACTION', names, 'Select an action to run (you may give this switch multiple times)', "  (#{names.join(', ')})") do |v|
-          @actions << v
+          options.actions << v
         end
-        opts.on('-t', '--task TASK', @processor_class.tasks, 'Select an extraction task to run (you may give this switch multiple times)', "  (#{@processor_class.tasks.join(', ')})") do |v|
-          @tasks << v
+        opts.on('-t', '--task TASK', @processor_class.tasks, 'Select a scraping task to run (you may give this switch multiple times)', "  (#{@processor_class.tasks.join(', ')})") do |v|
+          options.tasks << v
         end
         opts.on('-o', '--output_dir PATH', 'The directory in which to dump JSON documents') do |v|
-          @output_dir = v
+          options.output_dir = v
         end
         opts.on('-c', '--cache_dir PATH', 'The directory in which to cache HTTP requests') do |v|
-          @cache_dir = v
+          options.cache_dir = v
         end
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
-          @expires_in = v
+          options.expires_in = v
         end
         opts.on('-H', '--host HOST:PORT', 'The host and port to MongoDB') do |v|
-          @host_with_port = v
+          options.host_with_port = v
         end
         opts.on('-d', '--database NAME', 'The name of the MongoDB database') do |v|
-          @database = v
+          options.database = v
         end
         opts.on('-q', '--quiet', 'Show only warning and error messages') do
-          @level = 'WARN'
+          options.level = 'WARN'
         end
         opts.on('-s', '--silent', 'Show no messages') do
-          @level = 'UNKNOWN'
+          options.level = 'UNKNOWN'
         end
 
         opts.separator ''
@@ -108,46 +113,46 @@ module Pupa
     def run(args)
       rest = opts.parse!(args)
 
-      if @actions.empty?
-        @actions = %w(extract load)
+      if options.actions.empty?
+        options.actions = %w(scrape import)
       end
-      if @tasks.empty?
-        @tasks = @processor_class.tasks
+      if options.tasks.empty?
+        options.tasks = @processor_class.tasks
       end
 
-      processor = @processor_class.new(@output_dir, cache_dir: @cache_dir, expires_in: @expires_in, level: @level, options: Hash[*rest])
+      processor = @processor_class.new(options.output_dir, cache_dir: options.cache_dir, expires_in: options.expires_in, level: options.level, options: Hash[*rest])
 
-      @actions.each do |action|
-        unless action == 'extract' || processor.respond_to?(action)
+      options.actions.each do |action|
+        unless action == 'scrape' || processor.respond_to?(action)
           abort %(`#{action}` is not a #{opts.program_name} action. See `#{opts.program_name} --help` for a list of available actions.)
         end
       end
-      @tasks.each do |task_name|
+      options.tasks.each do |task_name|
         unless processor.respond_to?(task_name)
           abort %(`#{task_name}` is not a #{opts.program_name} task. See `#{opts.program_name} --help` for a list of available tasks.)
         end
       end
 
       puts "processor: #{@processor_class}"
-      puts "actions: #{@actions.join(', ')}"
-      puts "tasks: #{@tasks.join(', ')}"
+      puts "actions: #{options.actions.join(', ')}"
+      puts "tasks: #{options.tasks.join(', ')}"
 
-      Pupa.session = Moped::Session.new([@host_with_port], database: @database)
+      Pupa.session = Moped::Session.new([options.host_with_port], database: options.database)
 
-      if @actions.delete('extract')
-        FileUtils.mkdir_p(@output_dir)
-        FileUtils.mkdir_p(@cache_dir)
+      if options.actions.delete('scrape')
+        FileUtils.mkdir_p(options.output_dir)
+        FileUtils.mkdir_p(options.cache_dir)
 
-        Dir[File.join(@output_dir, '*.json')].each do |path|
+        Dir[File.join(options.output_dir, '*.json')].each do |path|
           FileUtils.rm(path)
         end
 
-        @tasks.each do |task_name|
-          processor.dump_extracted_objects(task_name)
+        options.tasks.each do |task_name|
+          processor.dump_scraped_objects(task_name)
         end
       end
 
-      @actions.each do |action|
+      options.actions.each do |action|
         processor.send(action)
       end
     end

@@ -62,56 +62,56 @@ module Pupa
       @client.post(url, params).body
     end
 
-    # Adds an extraction (scraping) task to Pupa.rb.
+    # Adds a scraping task to Pupa.rb.
     #
     # Defines a method whose name is identical to `task_name`. This method
-    # selects a method to perform the eponymous task using `extract_task_method`
+    # selects a method to perform the scraping task using `scraping_task_method`
     # and memoizes its return value. The return value is a lazy enumerator of
-    # objects extracted by the selected method. The selected method must yield
+    # objects scraped by the selected method. The selected method must yield
     # objects to populate this lazy enumerator.
     #
-    # For example, `MyProcessor.add_extract_task(:people)` defines a `people`
+    # For example, `MyProcessor.add_scraping_task(:people)` defines a `people`
     # method on `MyProcessor`. This `people` method returns a lazy enumerator of
     # objects (presumably Person objects in this case, but the enumerator can
     # contain any object in the general case).
     #
-    # In `MyProcessor`, you would define an `extract_people` method, which must
+    # In `MyProcessor`, you would define an `scrape_people` method, which must
     # yield objects to populate the lazy enumerator. Alternatively, you may
-    # override `extract_task_method` to change the method selected to perform
-    # the extraction task.
+    # override `scraping_task_method` to change the method selected to perform
+    # the scraping task.
     #
-    # The `people` method can then be called by transformation and load tasks.
+    # The `people` method can then be called by transformation and import tasks.
     #
     # @param [Symbol] task_name a task name
-    # @see Pupa::Processor#extract_task_method
-    def self.add_extract_task(task_name)
+    # @see Pupa::Processor#scraping_task_method
+    def self.add_scraping_task(task_name)
       self.tasks += [task_name]
       define_method(task_name) do
         ivar = "@#{task_name}"
         if instance_variable_defined?(ivar)
           instance_variable_get(ivar)
         else
-          instance_variable_set(ivar, Yielder.new(&method(extract_task_method(task_name))))
+          instance_variable_set(ivar, Yielder.new(&method(scraping_task_method(task_name))))
         end
       end
     end
 
-    # Dumps extracted objects to disk.
+    # Dumps scraped objects to disk.
     #
-    # @param [Symbol] task_name the name of the extraction task to perform
-    def dump_extracted_objects(task_name)
+    # @param [Symbol] task_name the name of the scraping task to perform
+    def dump_scraped_objects(task_name)
       send(task_name).each do |object|
-        dump_extracted_object(object)
+        dump_scraped_object(object)
       end
     end
 
-    # Saves extracted objects to a database.
+    # Saves scraped objects to a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
     # @raises [Errors::UnprocessableEntity] if an object's foreign keys or
     #   foreign objects cannot be resolved.
-    def load
-      objects = load_extracted_objects
+    def import
+      objects = load_scraped_objects
 
       losers_to_winners = build_losers_to_winners_map(objects)
 
@@ -199,24 +199,24 @@ module Pupa
 
   private
 
-    # Returns the name of the method - `extract_<task_name>` by default - that
-    # would be used to perform the given extraction task.
+    # Returns the name of the method - `scrape_<task_name>` by default - that
+    # would be used to perform the given scraping task.
     #
     # If you would like to change this default behavior, override this method in
     # a subclass. For example, you may want to select a method according to the
     # additional `options` passed from the command-line to the processor.
     #
     # @param [Symbol] task_name a task name
-    # @return [String] the name of the method to perform the extraction task
-    def extract_task_method(task_name)
-      "extract_#{task_name}"
+    # @return [String] the name of the method to perform the scraping task
+    def scraping_task_method(task_name)
+      "scrape_#{task_name}"
     end
 
-    # Dumps an extracted object to disk.
+    # Dumps an scraped object to disk.
     #
-    # @param [Object] object an extracted object
+    # @param [Object] object an scraped object
     # @raises [Pupa::Errors::DuplicateObjectIdError]
-    def dump_extracted_object(object)
+    def dump_scraped_object(object)
       type = object.class.to_s.demodulize.underscore
       basename = "#{object._id.sub('/', '_')}.json"
       path = File.join(@output_dir, basename)
@@ -238,10 +238,10 @@ module Pupa
       end
     end
 
-    # Loads extracted objects from disk.
+    # Loads scraped objects from disk.
     #
-    # @return [Hash] a hash of extracted objects keyed by ID
-    def load_extracted_objects
+    # @return [Hash] a hash of scraped objects keyed by ID
+    def load_scraped_objects
       {}.tap do |objects|
         Dir[File.join(@output_dir, '*.json')].each do |path|
           data = JSON.load(File.read(path))
@@ -253,7 +253,7 @@ module Pupa
 
     # For each object, map its ID to the ID of its duplicate, if any.
     #
-    # @param [Hash] objects a hash of extracted objects keyed by ID
+    # @param [Hash] objects a hash of scraped objects keyed by ID
     # @return [Hash] a mapping from an object ID to the ID of its duplicate
     def build_losers_to_winners_map(objects)
       {}.tap do |map|
@@ -272,7 +272,7 @@ module Pupa
     # If any objects have unresolved foreign objects, we cannot derive an
     # evaluation order using a dependency graph.
     #
-    # @param [Hash] objects a hash of extracted objects keyed by ID
+    # @param [Hash] objects a hash of scraped objects keyed by ID
     # @return [Boolean] whether a dependency graph can be used to derive an
     #   evaluation order
     def use_dependency_graph?(objects)
@@ -288,7 +288,7 @@ module Pupa
 
     # Builds a dependency graph.
     #
-    # @param [Hash] objects a hash of extracted objects keyed by ID
+    # @param [Hash] objects a hash of scraped objects keyed by ID
     # @return [DependencyGraph] the dependency graph
     def build_dependency_graph(objects)
       DependencyGraph.new.tap do |graph|
