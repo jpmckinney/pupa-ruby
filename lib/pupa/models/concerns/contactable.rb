@@ -5,7 +5,7 @@ module Pupa
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :contact_details
+        attr_reader :contact_details
       end
 
       # Sets the contact details.
