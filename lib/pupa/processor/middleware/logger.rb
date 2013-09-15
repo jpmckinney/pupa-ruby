@@ -16,13 +16,13 @@ module Pupa
         def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
         def call(env)
-          info "#{env[:method]} #{env[:url].to_s} #{env[:body].to_s}" # add POST body
+          info "#{env[:method]} #{env[:url].to_s} #{env[:body].to_s}" # XXX add POST body
           debug('request') { dump_headers env[:request_headers] }
           super
         end
 
         def on_complete(env)
-          debug('Status') { env[:status].to_s } # switch from info
+          debug('Status') { env[:status].to_s } # XXX switch from info
           debug('response') { dump_headers env[:response_headers] }
         end
 

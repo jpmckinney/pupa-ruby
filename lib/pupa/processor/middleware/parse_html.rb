@@ -8,7 +8,7 @@ module Pupa
         dependency 'nokogiri'
 
         define_parser { |body|
-          Nokogiri::HTML body
+          Nokogiri::HTML(body) unless body.empty?
         }
       end
     end

@@ -10,9 +10,10 @@ module Pupa
     # @param [String] progname the name of the program performing the logging
     # @param [String] level the log level, one of "DEBUG", "INFO", "WARN",
     #   "ERROR", "FATAL" or "UNKNOWN"
+    # @param [String,IO] logdev the log device
     # @return [Logger] a configured logger
-    def self.new(progname, level: 'INFO')
-      logger = ::Logger.new(STDOUT)
+    def self.new(progname, level: 'INFO', logdev: STDOUT)
+      logger = ::Logger.new(logdev)
       logger.level = ::Logger.const_get(level)
       logger.progname = progname
       logger.formatter = proc do |severity, datetime, progname, msg|
