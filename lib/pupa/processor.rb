@@ -201,7 +201,7 @@ module Pupa
     # @raises [Pupa::Errors::DuplicateObjectIdError]
     def dump_scraped_object(object)
       type = object.class.to_s.demodulize.underscore
-      basename = "#{object._id.sub('/', '_')}.json"
+      basename = "#{type}_#{object._id.sub('/', '_')}.json"
       path = File.join(@output_dir, basename)
 
       if File.exist?(path)

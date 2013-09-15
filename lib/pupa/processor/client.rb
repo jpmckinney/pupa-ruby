@@ -4,41 +4,9 @@ require 'faraday_middleware/response_middleware'
 
 require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
+require 'pupa/refinements/faraday_middleware'
 
-module Pupa
-  class Processor
-    # A refinement for the Faraday caching middleware to cache all requests, not
-    # only GET requests.
-    module FaradayPatch
-      refine FaradayMiddleware::Caching do
-        def call(env)
-          # Remove if-statement to cache any request, not only GET.
-          if env[:parallel_manager]
-            # callback mode
-            cache_on_complete(env)
-          else
-            # synchronous mode
-            response = cache.fetch(cache_key(env)) { @app.call(env) }
-            finalize_response(response, env)
-          end
-        end
-
-        def cache_key(env)
-          url = env[:url].dup
-          if url.query && params_to_ignore.any?
-            params = parse_query url.query
-            params.reject! {|k,| params_to_ignore.include? k }
-            url.query = build_query params
-          end
-          url.normalize!
-          url.request_uri + env[:body].to_s # Add for POST requests.
-        end
-      end
-    end
-  end
-end
-
-using Pupa::Processor::FaradayPatch
+using Pupa::Refinements::FaradayMiddleware
 
 module Pupa
   class Processor

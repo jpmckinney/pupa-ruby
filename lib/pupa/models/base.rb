@@ -8,13 +8,15 @@ require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/try'
 require 'json-schema'
 
+require 'pupa/refinements/json-schema'
+
 module Pupa
   # The base class from which other primary Popolo classes inherit.
   class Base
     include ActiveSupport::Callbacks
     define_callbacks :create, :save
 
-    class_attribute :schema
+    class_attribute :json_schema
     class_attribute :properties
     class_attribute :foreign_keys
     class_attribute :foreign_objects
@@ -59,14 +61,16 @@ module Pupa
         self.foreign_objects += attributes
       end
 
-      # Sets the path to the class' schema.
+      # Sets the class' schema.
       #
-      # @param [String] path a relative or absolute path
-      def schema=(path)
-        @schema = if Pathname.new(path).absolute?
-          path
+      # @param [Hash,String] value a hash or a relative or absolute path
+      def schema=(value)
+        self.json_schema = if Hash === value
+          value
+        elsif Pathname.new(value).absolute?
+          value
         else
-          File.expand_path(File.join('..', '..', '..', 'schemas', "#{path}.json"), __dir__)
+          File.expand_path(File.join('..', '..', '..', 'schemas', "#{value}.json"), __dir__)
         end
       end
     end
@@ -76,7 +80,7 @@ module Pupa
     # @param [Hash] properties the object's properties
     def initialize(properties = {})
       @_type = self.class.to_s.underscore
-      @_id = "ocd-#{self.class.to_s.demodulize.underscore}/#{SecureRandom.uuid}"
+      @_id = SecureRandom.uuid
       @extras = {}
 
       properties.each do |key,value|
@@ -140,9 +144,11 @@ module Pupa
     end
 
     # Validates the object against the schema.
+    #
+    # @raises [JSON::Schema::ValidationError] if the object is invalid
     def validate!
-      if self.class.schema
-        JSON::Validator.validate!(self.class.schema, to_h)
+      if self.class.json_schema
+        JSON::Validator.validate!(self.class.json_schema, to_h)
       end
     end
 
