@@ -16,8 +16,12 @@ module Pupa
 
       # Yields each object in the enumerator to the given block.
       def each
-        loop do
-          yield self.next
+        if block_given?
+          loop do
+            yield self.next
+          end
+        else
+          to_enum
         end
       end
 
@@ -28,6 +32,17 @@ module Pupa
           @fiber.resume
         else
           raise StopIteration
+        end
+      end
+
+      # Returns a lazy enumerator.
+      #
+      # @return [Enumerator] a lazy enumerator
+      def to_enum
+        Enumerator.new do |y|
+          loop do
+            y << self.next
+          end
         end
       end
     end

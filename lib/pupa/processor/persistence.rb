@@ -16,7 +16,7 @@ module Pupa
       # @return [Hash,nil] the matched document, or nil
       # @raises [Pupa::Errors::TooManyMatches] if multiple documents are found
       def self.find(selector)
-        collection_name = collection_name_from_class_name(selector['_type'].camelize)
+        collection_name = collection_name_from_class_name(selector[:_type].camelize)
         query = Pupa.session[collection_name].find(selector)
         case query.count
         when 0
