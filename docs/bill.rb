@@ -7,8 +7,6 @@ require 'pupa'
 # simply scrape the names of bills and associate each bill with a sponsor and a
 # legislative body.
 class Bill < Pupa::Base
-  self.schema = '/path/to/json-schema/bill.json'
-
   attr_accessor :name, :sponsor_id, :organization_id, :sponsor, :organization
 
   # When saving scraped objects to a database, these foreign keys will be used

@@ -144,7 +144,7 @@ we&#39;ll see a CSV row printed as soon as an organization is scraped.</p>
         <span class="keyword">nil</span>,
         <span class="keyword">nil</span>,
         <span class="keyword">nil</span>,
-        <span class="string">'New Brunswick'</span>
+        <span class="string">'New Brunswick'</span>,
         <span class="string">'ocd-division/country:ca/province:nb'</span>,
         organization.sources[<span class="number">0</span>][<span class="symbol">:note</span>],
         organization.sources[<span class="number">0</span>][<span class="symbol">:url</span>],
@@ -172,7 +172,7 @@ of the Government of New Brunswick.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">organizations</span></span>
+            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_organizations</span></span>
     url = <span class="string">'http://www1.gnb.ca/cnb/DsS/display-e.asp?typyofPublicBodyID=1'</span>
     doc = get(url)
 
@@ -187,6 +187,7 @@ of the Government of New Brunswick.</p>
       organization.add_contact_detail(<span class="string">'email'</span>, email)
       organization.add_source(url, <span class="symbol">note:</span> <span class="string">'New Brunswick Directory of Public Bodies'</span>)
       <span class="constant">Fiber</span>.<span class="keyword">yield</span>(organization)
+    <span class="keyword">end</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>
 
