@@ -15,10 +15,6 @@ describe Pupa::Base do
       attr_accessor :name, :url, :label, :founding_date, :inactive, :label_id, :manager_id
       foreign_key :label_id, :manager_id
       foreign_object :label
-
-      def fingerprint
-        to_h.slice(:name)
-      end
     end
   end
 
@@ -139,7 +135,7 @@ describe Pupa::Base do
 
   describe '#fingerprint' do
     it 'should return the fingerprint' do
-      object.fingerprint.should == {name: 'Moderat'}
+      object.fingerprint.should == {_type: 'music/band', name: 'Moderat', url: 'http://moderat.fm/', inactive: false, manager_id: '1'}
     end
   end
 
