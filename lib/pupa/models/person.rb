@@ -24,7 +24,6 @@ module Pupa
     # @todo This will obviously need to be scoped as in Python Pupa, to a
     #  jurisdiction, post, etc.
     def fingerprint
-      hash = to_h
       {
         '$or' => [
           {'name' => name},

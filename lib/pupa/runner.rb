@@ -6,7 +6,7 @@ require 'moped'
 
 module Pupa
   class Runner
-    attr_accessor :options
+    attr_reader :options, :actions
 
     # @param [Pupa::Processor] a processor class
     # @param [Hash] defaults change any default options
@@ -25,7 +25,7 @@ module Pupa
         level:          'INFO',
       }.merge(defaults))
 
-      @available = {
+      @actions = {
         'scrape' => 'Scrapes data from online sources',
         'import' => 'Imports scraped data into a database',
       }.map do |name,description|
@@ -37,7 +37,7 @@ module Pupa
     # @option attributes [String] :name the action's label
     # @option attributes [String] :description a description of the action
     def add_action(attributes)
-      @available << OpenStruct.new(attributes)
+      @actions << OpenStruct.new(attributes)
     end
 
     # Returns the command-line option parser.
@@ -51,9 +51,9 @@ module Pupa
         opts.separator ''
         opts.separator 'Actions:'
 
-        names = @available.map(&:name)
+        names = @actions.map(&:name)
         padding = names.map(&:size).max
-        @available.each do |action|
+        @actions.each do |action|
           opts.separator "  #{action.name.ljust(padding)}  #{action.description}\n"
         end
 
@@ -128,7 +128,7 @@ module Pupa
     def run(args, overrides = {})
       rest = opts.parse!(args)
 
-      self.options = OpenStruct.new(options.to_h.merge(overrides))
+      @options = OpenStruct.new(options.to_h.merge(overrides))
 
       if options.actions.empty?
         options.actions = %w(scrape import)
@@ -144,15 +144,12 @@ module Pupa
           abort %(`#{action}` is not a #{opts.program_name} action. See `#{opts.program_name} --help` for a list of available actions.)
         end
       end
-      options.tasks.each do |task_name|
-        unless processor.respond_to?(task_name)
-          abort %(`#{task_name}` is not a #{opts.program_name} task. See `#{opts.program_name} --help` for a list of available tasks.)
-        end
-      end
 
-      puts "processor: #{@processor_class}"
-      puts "actions: #{options.actions.join(', ')}"
-      puts "tasks: #{options.tasks.join(', ')}"
+      if %w(DEBUG INFO).include?(options.level)
+        puts "processor: #{@processor_class}"
+        puts "actions: #{options.actions.join(', ')}"
+        puts "tasks: #{options.tasks.join(', ')}"
+      end
 
       if options.level == 'DEBUG'
         %w(output_dir cache_dir expires_in host_with_port database level).each do |option|

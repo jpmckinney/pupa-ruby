@@ -23,12 +23,13 @@ module Pupa
     # @param [String] cache_dir the directory in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
     # @param [String] level the log level
+    # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, level: 'INFO', options: {})
+    def initialize(output_dir, cache_dir: nil, expires_in: 86400, level: 'INFO', logdev: STDOUT, options: {})
       @output_dir = output_dir
       @options    = options
       @level      = level
-      @logger     = Logger.new('pupa', level: level)
+      @logger     = Logger.new('pupa', level: level, logdev: logdev)
       @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
     end
 
@@ -108,8 +109,10 @@ module Pupa
     # Saves scraped objects to a database.
     #
     # @raises [TSort::Cyclic] if the dependency graph is cyclic
-    # @raises [Errors::UnprocessableEntity] if an object's foreign keys or
-    #   foreign objects cannot be resolved.
+    # @raises [Pupa::Errors::UnprocessableEntity] if an object's foreign keys or
+    #   foreign objects cannot be resolved
+    # @raises [Pupa::Errors::DuplicateDocumentError] if duplicate objects were
+    #   inadvertently saved to the database
     def import
       objects = deduplicate(load_scraped_objects)
 
@@ -176,7 +179,7 @@ module Pupa
         object_ids.size > 1
       end
       unless duplicates.empty?
-        raise "multiple objects written to same document:\n" + duplicates.map{|database_id,object_ids| "  #{database_id} <- #{object_ids.join(' ')}"}.join("\n")
+        raise Errors::DuplicateDocumentError, "multiple objects written to same document:\n" + duplicates.map{|database_id,object_ids| "  #{database_id} <- #{object_ids.join(' ')}"}.join("\n")
       end
     end
 
@@ -201,11 +204,11 @@ module Pupa
     # @raises [Pupa::Errors::DuplicateObjectIdError]
     def dump_scraped_object(object)
       type = object.class.to_s.demodulize.underscore
-      basename = "#{type}_#{object._id.sub('/', '_')}.json"
+      basename = "#{type}_#{object._id}.json"
       path = File.join(@output_dir, basename)
 
       if File.exist?(path)
-        raise Errors::DuplicateObjectIdError, "duplicate object ID: #{id} (was the same objected yielded twice?)"
+        raise Errors::DuplicateObjectIdError, "duplicate object ID: #{object._id} (was the same objected yielded twice?)"
       end
 
       info {"save #{type} #{object.to_s} as #{basename}"}
@@ -234,7 +237,7 @@ module Pupa
       end
     end
 
-    # Removes all duplicate objects and corrects any foreign keys.
+    # Removes all duplicate objects and re-assigns any foreign keys.
     #
     # @param [Hash] objects a hash of scraped objects keyed by ID
     # @return [Hash] the objects without duplicates
@@ -303,7 +306,10 @@ module Pupa
         objects.each do |id,object|
           graph[id] = [] # no duplicate IDs
           object.foreign_keys.each do |property|
-            graph[id] << object[property]
+            value = object[property]
+            if value
+              graph[id] << value
+            end
           end
         end
       end
@@ -318,11 +324,12 @@ module Pupa
       object.foreign_keys.each do |property|
         value = object[property]
         if value
-          if map.key?(value)
-            object[property] = map[value]
-          else
-            raise Errors::MissingDatabaseIdError, "missing database ID: #{property} #{value} of #{object._id}"
-          end
+          # If using a dependency graph, any foreign key that cannot be resolved
+          # will cause a key error while building the dependency graph.
+          #
+          # If not using a dependency graph, this method will not be called
+          # unless the foreign key is resolvable.
+          object[property] = map[value]
         end
       end
     end
@@ -335,12 +342,8 @@ module Pupa
       object.foreign_objects.each do |property|
         selector = object[property]
         if selector.present?
-          document = Persistence.find(selector)
-          if document
-            object["#{property}_id"] = document['_id']
-          else
-            raise Errors::MissingDatabaseIdError, "missing database ID: #{property} #{JSON.dump(selector)} of #{object._id}"
-          end
+          # This method will not be called unless the foreign key is resolvable.
+          object["#{property}_id"] = Persistence.find(selector)['_id']
         end
       end
     end

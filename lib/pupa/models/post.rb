@@ -22,7 +22,7 @@ module Pupa
     # A post should have a unique label within an organization, through it may
     # share a label with a historical post.
     def fingerprint
-      to_h.slice(:label, :organization_id, :end_date)
+      super.slice(:label, :organization_id, :end_date)
     end
   end
 end

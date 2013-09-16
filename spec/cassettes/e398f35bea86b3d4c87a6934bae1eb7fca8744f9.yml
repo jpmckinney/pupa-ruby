@@ -22,5 +22,5 @@ http_interactions:
       encoding: UTF-8
       string: hello
     http_version: 
-  recorded_at: Sun, 15 Sep 2013 19:07:19 GMT
+  recorded_at: Sun, 15 Sep 2013 22:37:06 GMT
 recorded_with: VCR 2.5.0

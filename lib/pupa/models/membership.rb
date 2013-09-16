@@ -25,7 +25,7 @@ module Pupa
     # person may hold a post in an organization multiple times historically but
     # not simultaneously.
     def fingerprint
-      hash = to_h
+      hash = super
       {
         '$or' => [
           hash.slice(:label, :person_id, :organization_id, :end_date),

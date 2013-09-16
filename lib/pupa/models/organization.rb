@@ -11,10 +11,12 @@ module Pupa
     include Concerns::Contactable
     include Concerns::Linkable
 
-    attr_accessor :name, :classification, :parent_id, :founding_date,
+    attr_accessor :name, :classification, :parent_id, :parent, :founding_date,
       :dissolution_date, :image
 
     foreign_key :parent_id
+
+    foreign_object :parent
 
     # Returns the name of the organization.
     #
@@ -26,7 +28,7 @@ module Pupa
     # @todo Parentless organizations in different jurisdictions can have the
     #   same name. Add a `jurisdiction` property?
     def fingerprint
-      hash = to_h.slice(:classification, :parent_id)
+      hash = super.slice(:classification, :parent_id)
       {
         '$or' => [
           hash.merge('name' => name),

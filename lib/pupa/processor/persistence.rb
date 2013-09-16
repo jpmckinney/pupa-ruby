@@ -45,9 +45,8 @@ module Pupa
               @object._id.to_s
             end
           when 1
-            document = query.first
             query.update(@object.to_h)
-            document['_id'].to_s
+            query.first['_id'].to_s
           else
             raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{JSON.dump(selector)}"
           end

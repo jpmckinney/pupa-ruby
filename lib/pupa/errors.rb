@@ -22,5 +22,9 @@ module Pupa
     # This error is raised if an object's foreign keys or foreign objects cannot
     # be resolved.
     class UnprocessableEntity < Error; end
+
+    # This error is raised if duplicate objects were inadvertently saved to the
+    # database.
+    class DuplicateDocumentError < Error; end
   end
 end
