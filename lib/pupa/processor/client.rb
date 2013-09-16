@@ -6,8 +6,6 @@ require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
 require 'pupa/refinements/faraday_middleware'
 
-using Pupa::Refinements::FaradayMiddleware
-
 module Pupa
   class Processor
     # An HTTP client factory.

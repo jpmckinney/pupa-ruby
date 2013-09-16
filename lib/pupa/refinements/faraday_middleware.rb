@@ -1,32 +1,27 @@
-module Pupa
-  class Refinements
-    # A refinement for the Faraday caching middleware to cache all requests, not
-    # only GET requests.
-    module FaradayMiddleware
-      refine ::FaradayMiddleware::Caching do
-        def call(env)
-          # Remove if-statement to cache any request, not only GET.
-          if env[:parallel_manager]
-            # callback mode
-            cache_on_complete(env)
-          else
-            # synchronous mode
-            response = cache.fetch(cache_key(env)) { @app.call(env) }
-            finalize_response(response, env)
-          end
-        end
-
-        def cache_key(env)
-          url = env[:url].dup
-          if url.query && params_to_ignore.any?
-            params = parse_query url.query
-            params.reject! {|k,| params_to_ignore.include? k }
-            url.query = build_query params
-          end
-          url.normalize!
-          url.request_uri + env[:body].to_s # Add for POST requests.
-        end
-      end
+# A refinement for the Faraday caching middleware to cache all requests, not
+# only GET requests. Using Ruby's refinements doesn't seem to work, possibly
+# because Faraday caches middlewares.
+class FaradayMiddleware::Caching
+  def call(env)
+    # Remove if-statement to cache any request, not only GET.
+    if env[:parallel_manager]
+      # callback mode
+      cache_on_complete(env)
+    else
+      # synchronous mode
+      response = cache.fetch(cache_key(env)) { @app.call(env) }
+      finalize_response(response, env)
     end
+  end
+
+  def cache_key(env)
+    url = env[:url].dup
+    if url.query && params_to_ignore.any?
+      params = parse_query url.query
+      params.reject! {|k,| params_to_ignore.include? k }
+      url.query = build_query params
+    end
+    url.normalize!
+    url.request_uri + env[:body].to_s # Add for POST requests.
   end
 end

@@ -26,11 +26,11 @@ module Pupa
         end
       end
     end
+  end
+end
 
-    class ::JSON::Schema::FormatAttribute
-      class << self
-        prepend Pupa::Refinements::Format
-      end
-    end
+class JSON::Schema::FormatAttribute
+  class << self
+    prepend Pupa::Refinements::Format
   end
 end
