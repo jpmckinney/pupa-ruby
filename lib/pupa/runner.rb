@@ -162,6 +162,14 @@ module Pupa
 
       exit if options.dry_run
 
+      report = {
+        plan: {
+          processor: @processor_class,
+          arguments: options.to_h,
+          options: rest,
+        },
+      }
+
       Pupa.session = Moped::Session.new([options.host_with_port], database: options.database)
 
       if options.actions.delete('scrape')
@@ -180,6 +188,8 @@ module Pupa
       options.actions.each do |action|
         processor.send(action)
       end
+
+      puts JSON.dump(report)
     end
   end
 end
