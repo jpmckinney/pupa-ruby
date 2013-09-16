@@ -4,6 +4,7 @@ require 'set'
 
 require 'active_support/callbacks'
 require 'active_support/core_ext/hash/except'
+require 'active_support/core_ext/hash/keys'
 require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/try'
 require 'json-schema'
@@ -150,12 +151,8 @@ module Pupa
     # @raises [JSON::Schema::ValidationError] if the object is invalid
     def validate!
       if self.class.json_schema
-        result = {}
-        to_h.each do |key,value|
-          result[key.to_s] = value
-        end
         # JSON::Validator#initialize_data runs fastest if given a hash.
-        JSON::Validator.validate!(self.class.json_schema, result)
+        JSON::Validator.validate!(self.class.json_schema, to_h.deep_stringify_keys)
       end
     end
 
