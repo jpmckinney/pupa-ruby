@@ -152,7 +152,7 @@ module Pupa
     def validate!
       if self.class.json_schema
         # JSON::Validator#initialize_data runs fastest if given a hash.
-        JSON::Validator.validate!(self.class.json_schema, to_h.deep_stringify_keys)
+        JSON::Validator.validate!(self.class.json_schema, stringify_keys(to_h))
       end
     end
 
@@ -182,6 +182,25 @@ module Pupa
       a.delete(:_id)
       b.delete(:_id)
       a == b
+    end
+
+  private
+
+    def stringify_keys(object)
+      case object
+      when Hash
+        {}.tap do |hash|
+          object.each do |key,value|
+            hash[key.to_s] = stringify_keys(value)
+          end
+        end
+      when Array
+        object.map do |value|
+          stringify_keys(value)
+        end
+      else
+        object
+      end
     end
   end
 end

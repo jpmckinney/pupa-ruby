@@ -6,20 +6,26 @@ describe Pupa::Base do
       self.schema = {
         '$schema' => 'http://json-schema.org/draft-03/schema#',
         'properties' => {
-          'url' => {
-            'type' => 'string',
-            'format' => 'uri',
+          'links' => {
+            'items' => {
+              'properties' => {
+                'url' => {
+                  'type' => 'string',
+                  'format' => 'uri',
+                },
+              },
+            },
           },
         },
       }
-      attr_accessor :name, :url, :label, :founding_date, :inactive, :label_id, :manager_id
+      attr_accessor :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links
       foreign_key :label_id, :manager_id
       foreign_object :label
     end
   end
 
   let :properties do
-    {name: 'Moderat', url: 'http://moderat.fm/', label: {name: 'Mute'}, inactive: false, manager_id: '1'}
+    {name: 'Moderat', label: {name: 'Mute'}, inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
   end
 
   let :object do
@@ -28,7 +34,7 @@ describe Pupa::Base do
 
   describe '#attr_accessor' do
     it 'should add properties' do
-      Music::Band.properties.to_a.should == [:_id, :_type, :extras, :name, :url, :label, :founding_date, :inactive, :label_id, :manager_id]
+      Music::Band.properties.to_a.should == [:_id, :_type, :extras, :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links]
     end
   end
 
@@ -61,9 +67,15 @@ describe Pupa::Base do
       Music::Band.json_schema.should == {
         '$schema' => 'http://json-schema.org/draft-03/schema#',
         'properties' => {
-          'url' => {
-            'type' => 'string',
-            'format' => 'uri',
+          'links' => {
+            'items' => {
+              'properties' => {
+                'url' => {
+                  'type' => 'string',
+                  'format' => 'uri',
+                },
+              },
+            },
           },
         },
       }
@@ -89,7 +101,10 @@ describe Pupa::Base do
 
     it 'should set properties' do
       object.name.should == 'Moderat'
-      object.url.should == 'http://moderat.fm/'
+      object.label.should == {name: 'Mute'}
+      object.inactive.should == false
+      object.manager_id.should == '1'
+      object.links.should == [{url: 'http://moderat.fm/'}]
     end
   end
 
@@ -135,7 +150,7 @@ describe Pupa::Base do
 
   describe '#fingerprint' do
     it 'should return the fingerprint' do
-      object.fingerprint.should == {_type: 'music/band', name: 'Moderat', url: 'http://moderat.fm/', inactive: false, manager_id: '1'}
+      object.fingerprint.should == {_type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
     end
   end
 
@@ -159,18 +174,18 @@ describe Pupa::Base do
     end
 
     it 'should raise an error if the object is invalid' do
-      object[:url] = 'invalid'
+      object[:links][0][:url] = 'invalid'
       expect{object.validate!}.to raise_error(JSON::Schema::ValidationError)
     end
   end
 
   describe '#to_h' do
     it 'should not include foreign objects by default' do
-      object.to_h.should == {_id: object._id, _type: 'music/band', name: 'Moderat', url: 'http://moderat.fm/', inactive: false, manager_id: '1'}
+      object.to_h.should == {_id: object._id, _type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
     end
 
     it 'should include foreign objects if desired' do
-      object.to_h(include_foreign_objects: true).should == {_id: object._id, _type: 'music/band', name: 'Moderat', url: 'http://moderat.fm/', label: {name: 'Mute'}, inactive: false, manager_id: '1'}
+      object.to_h(include_foreign_objects: true).should == {_id: object._id, _type: 'music/band', name: 'Moderat', label: {name: 'Mute'}, inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
     end
 
     it 'should not include blank properties' do
