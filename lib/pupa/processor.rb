@@ -17,6 +17,8 @@ module Pupa
     class_attribute :tasks
     self.tasks = []
 
+    attr_reader :report
+
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
     # @param [String] output_dir the directory in which to dump JSON documents
@@ -31,6 +33,7 @@ module Pupa
       @level      = level
       @logger     = Logger.new('pupa', level: level, logdev: logdev)
       @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
+      @report     = {}
     end
 
     # Retrieves and parses a document with a GET request.
@@ -100,10 +103,14 @@ module Pupa
     # Dumps scraped objects to disk.
     #
     # @param [Symbol] task_name the name of the scraping task to perform
+    # @return [Integer] the number of scraped objects
     def dump_scraped_objects(task_name)
+      count = 0
       send(task_name).each do |object|
+        count += 1 # we don't know the size of the enumeration
         dump_scraped_object(object)
       end
+      count
     end
 
     # Saves scraped objects to a database.
@@ -114,6 +121,8 @@ module Pupa
     # @raises [Pupa::Errors::DuplicateDocumentError] if duplicate objects were
     #   inadvertently saved to the database
     def import
+      @report[:import] = {}
+
       objects = deduplicate(load_scraped_objects)
 
       object_id_to_database_id = {}
@@ -126,7 +135,7 @@ module Pupa
           object = objects[id]
           resolve_foreign_keys(object, object_id_to_database_id)
           # The dependency graph strategy only works if there are no foreign objects.
-          object_id_to_database_id[id] = Persistence.new(object).save
+          object_id_to_database_id[id] = import_object(object)
         end
       else
         size = objects.size
@@ -158,7 +167,7 @@ module Pupa
               progress_made = true
               resolve_foreign_keys(object, object_id_to_database_id)
               resolve_foreign_objects(object)
-              object_id_to_database_id[id] = Persistence.new(object).save
+              object_id_to_database_id[id] = import_object(object)
             end
           end
 
@@ -336,7 +345,7 @@ module Pupa
 
     # Resolves an object's foreign objects to database IDs.
     #
-    # @param [Object] an object
+    # @param [Object] object an object
     # @raises [Pupa::Errors::MissingDatabaseIdError]
     def resolve_foreign_objects(object)
       object.foreign_objects.each do |property|
@@ -346,6 +355,18 @@ module Pupa
           object["#{property}_id"] = Persistence.find(selector)['_id']
         end
       end
+    end
+
+    # @param [Object] object an object
+    def import_object(object)
+      id = Persistence.new(object).save
+      @report[:import][object._type] ||= Hash.new(0)
+      if id == object._id
+        @report[:import][object._type][:insert] += 1
+      else
+        @report[:import][object._type][:update] += 1
+      end
+      id
     end
   end
 end

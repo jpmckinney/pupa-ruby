@@ -168,6 +168,7 @@ module Pupa
           arguments: options.to_h,
           options: rest,
         },
+        start: Time.now.utc,
       }
 
       Pupa.session = Moped::Session.new([options.host_with_port], database: options.database)
@@ -180,15 +181,21 @@ module Pupa
           FileUtils.rm(path)
         end
 
+        report[:scrape] = {}
         options.tasks.each do |task_name|
-          processor.dump_scraped_objects(task_name)
+          report[:scrape][task_name] = processor.dump_scraped_objects(task_name)
         end
       end
 
       options.actions.each do |action|
         processor.send(action)
+        if processor.report.key?(action.to_sym)
+          report.update(action.to_sym => processor.report[action.to_sym])
+        end
       end
 
+      report[:end] = Time.now.utc
+      report[:time] = report[:end] - report[:start]
       puts JSON.dump(report)
     end
   end
