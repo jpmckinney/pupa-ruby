@@ -10,6 +10,8 @@ require 'json-schema'
 
 require 'pupa/refinements/json-schema'
 
+JSON::Validator.cache_schemas = true
+
 module Pupa
   # The base class from which other primary Popolo classes inherit.
   class Base
@@ -152,6 +154,7 @@ module Pupa
         to_h.each do |key,value|
           result[key.to_s] = value
         end
+        # JSON::Validator#initialize_data runs fastest if given a hash.
         JSON::Validator.validate!(self.class.json_schema, result)
       end
     end
