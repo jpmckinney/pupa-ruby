@@ -32,10 +32,23 @@ module Pupa
       # Declare the class' properties.
       #
       # When converting an object to a hash using the `to_h` method, only the
-      # properties declared with `attr_accessor` will be included in the hash.
+      # properties declared with `attr_accessor` or `attr_reader` will be
+      # included in the hash.
       #
       # @param [Array<Symbol>] the class' properties
       def attr_accessor(*attributes)
+        self.properties += attributes # use assignment to not overwrite the parent's attribute
+        super
+      end
+
+      # Declare the class' properties.
+      #
+      # When converting an object to a hash using the `to_h` method, only the
+      # properties declared with `attr_accessor` or `attr_reader` will be
+      # included in the hash.
+      #
+      # @param [Array<Symbol>] the class' properties
+      def attr_reader(*attributes)
         self.properties += attributes # use assignment to not overwrite the parent's attribute
         super
       end
