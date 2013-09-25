@@ -277,7 +277,9 @@ module Pupa
     # @return [Hash] a mapping from an object ID to the ID of its duplicate
     def build_losers_to_winners_map(objects)
       {}.tap do |map|
-        objects[0...-1].each_with_index do |(id1,object1),index|
+        # We don't need to iterate on the last item in the hash, but skipping
+        # the last item is more effort than running the last item.
+        objects.each_with_index do |(id1,object1),index|
           unless map.key?(id1) # Don't search for duplicates of duplicates.
             objects.drop(index + 1).each do |id2,object2|
               if object1 == object2
