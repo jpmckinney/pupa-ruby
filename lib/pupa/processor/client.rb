@@ -37,7 +37,12 @@ module Pupa
           end
           if cache_dir
             connection.response :caching do
-              ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: expires_in)
+              address = cache_dir[%r{\Amemcached://(.+)\z}, 1]
+              if address
+                ActiveSupport::Cache::MemCacheStore.new(address, expires_in: expires_in)
+              else
+                ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: expires_in)
+              end
             end
           end
           connection.adapter Faraday.default_adapter # must be last

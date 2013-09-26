@@ -75,7 +75,7 @@ module Pupa
         opts.on('-o', '--output_dir PATH', 'The directory in which to dump JSON documents') do |v|
           options.output_dir = v
         end
-        opts.on('-c', '--cache_dir PATH', 'The directory in which to cache HTTP requests') do |v|
+        opts.on('-c', '--cache_dir PATH', 'The directory or Memcached address (e.g. memcached://localhost:11211) in which to cache HTTP requests') do |v|
           options.cache_dir = v
         end
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
