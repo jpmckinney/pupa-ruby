@@ -24,15 +24,16 @@ module Pupa
     # @param [String] output_dir the directory in which to dump JSON documents
     # @param [String] cache_dir the directory in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
+    # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, level: 'INFO', logdev: STDOUT, options: {})
+    def initialize(output_dir, cache_dir: nil, expires_in: 86400, validate: true, level: 'INFO', logdev: STDOUT, options: {})
       @output_dir = output_dir
-      @options    = options
-      @level      = level
-      @logger     = Logger.new('pupa', level: level, logdev: logdev)
+      @validate   = validate
       @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
+      @logger     = Logger.new('pupa', level: level, logdev: logdev)
+      @options    = options
       @report     = {}
     end
 
@@ -226,10 +227,12 @@ module Pupa
         f.write(JSON.dump(object.to_h(include_foreign_objects: true)))
       end
 
-      begin
-        object.validate!
-      rescue JSON::Schema::ValidationError => e
-        warn {e.message}
+      if @validate
+        begin
+          object.validate!
+        rescue JSON::Schema::ValidationError => e
+          warn {e.message}
+        end
       end
     end
 

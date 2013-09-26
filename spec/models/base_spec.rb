@@ -82,11 +82,13 @@ describe Pupa::Base do
     end
 
     it 'should accept an absolute path' do
-      klass_with_absolute_path.json_schema.should == '/path/to/schema.json'
+      File.should_receive(:read).and_return('{}')
+      klass_with_absolute_path.json_schema.should == '{}'
     end
 
     it 'should accept a relative path' do
-      klass_with_relative_path.json_schema.should == File.expand_path(File.join('..', '..', 'schemas', 'schema.json'), __dir__)
+      File.should_receive(:read).and_return('{}')
+      klass_with_relative_path.json_schema.should == '{}'
     end
   end
 

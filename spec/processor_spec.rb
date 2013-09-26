@@ -31,6 +31,10 @@ describe Pupa::Processor do
     PersonProcessor.new('/tmp', level: 'WARN', logdev: io)
   end
 
+  let :novalidate do
+    PersonProcessor.new('/tmp', level: 'WARN', logdev: io, validate: false)
+  end
+
   describe '#get' do
     it 'should send a GET request' do
       processor.get('http://httpbin.org/get', 'foo=bar')['args'].should == {'foo' => 'bar'}
@@ -79,6 +83,12 @@ describe Pupa::Processor do
       processor.make_person_invalid
       processor.dump_scraped_objects(:people)
       io.string.should match('http://popoloproject.com/schemas/person.json')
+    end
+
+    it 'should not validate the object' do
+      novalidate.make_person_invalid
+      novalidate.dump_scraped_objects(:people)
+      io.string.should_not match('http://popoloproject.com/schemas/person.json')
     end
   end
 
