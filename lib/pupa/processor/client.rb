@@ -6,6 +6,12 @@ require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
 require 'pupa/refinements/faraday_middleware'
 
+begin
+  require 'multi_xml'
+rescue LoadError
+  # pass
+end
+
 module Pupa
   class Processor
     # An HTTP client factory.
@@ -26,7 +32,9 @@ module Pupa
           # @see http://tools.ietf.org/html/rfc4627
           connection.use FaradayMiddleware::ParseJson, content_type: /\bjson$/
           # @see http://tools.ietf.org/html/rfc3023
-          connection.use FaradayMiddleware::ParseXml, content_type: /\bxml$/
+          if defined?(MultiXml)
+            connection.use FaradayMiddleware::ParseXml, content_type: /\bxml$/
+          end
           if cache_dir
             connection.response :caching do
               ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: expires_in)
