@@ -17,7 +17,7 @@ module Pupa
     class_attribute :tasks
     self.tasks = []
 
-    attr_reader :report
+    attr_reader :report, :client, :options
 
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
@@ -54,7 +54,7 @@ module Pupa
         end
       end
 
-      @client.get(url, params).body
+      client.get(url, params).body
     end
 
     # Retrieves and parses a document with a POST request.
@@ -63,7 +63,7 @@ module Pupa
     # @param [String,Hash] params query string parameters
     # @return a parsed document
     def post(url, params = {})
-      @client.post(url, params).body
+      client.post(url, params).body
     end
 
     # Adds a scraping task to Pupa.rb.

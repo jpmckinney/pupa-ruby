@@ -19,6 +19,10 @@ describe Pupa::ContactDetailList do
         type: 'email',
         value: 'second',
       },
+      {
+        type: 'custom',
+        value: 'content',
+      },
     ])
   end
 
@@ -39,6 +43,16 @@ describe Pupa::ContactDetailList do
 
     it 'should return nil if no email addresses' do
       Pupa::ContactDetailList.new.email.should == nil
+    end
+  end
+
+  describe '#find_by_type' do
+    it 'should return the value of the first contact detail matching the type' do
+      object.find_by_type('custom').should == 'content'
+    end
+
+    it 'should return nil if no contact detail matches the type' do
+      Pupa::ContactDetailList.new.find_by_type('custom').should == nil
     end
   end
 end

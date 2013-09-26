@@ -11,6 +11,13 @@ describe Pupa::Concerns::Identifiable do
     klass.new
   end
 
+  describe '#identifiers=' do
+    it 'should use coerce to a IdentifierList' do
+      object.identifiers = [{identifier: '123456789', scheme: 'DUNS'}]
+      object.identifiers.should be_a(Pupa::IdentifierList)
+    end
+  end
+
   describe '#add_identifier' do
     it 'should add an identifier' do
       object.add_identifier('123456789', scheme: 'duns')

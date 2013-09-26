@@ -5,7 +5,14 @@ module Pupa
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :identifiers
+        attr_reader :identifiers
+      end
+
+      # Sets the identifiers.
+      #
+      # @param [Array] identifiers a list of identifiers
+      def identifiers=(identifiers)
+        @identifiers = IdentifierList.new(identifiers)
       end
 
       # Adds an issued identifier.

@@ -15,8 +15,10 @@ module Pupa
       find_by_type('email')
     end
 
-  private
-
+    # Returns the value of the first contact detail matching the type.
+    #
+    # @param [String] a type
+    # @return [String,nil] a value
     def find_by_type(type)
       find{|contact_detail|
         contact_detail[:type] == type

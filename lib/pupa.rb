@@ -19,6 +19,7 @@ require 'pupa/models/concerns/timestamps'
 
 require 'pupa/models/base'
 require 'pupa/models/contact_detail_list'
+require 'pupa/models/identifier_list'
 require 'pupa/models/membership'
 require 'pupa/models/organization'
 require 'pupa/models/person'
