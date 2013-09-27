@@ -49,6 +49,10 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 Pupa.rb offers several ways to significantly improve performance.
 
+In an example case, reducing file I/O and skipping validation reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
+
+**Note:** The `import` action's performance has not yet been improved.
+
 ### Caching HTTP requests
 
 HTTP requests consume the most time. To avoid repeat HTTP requests while developing a scraper, cache all HTTP responses. Pupa.rb will by default use a `web_cache` directory in the same directory as your script. You can change the directory by setting the `--cache_dir` switch on the command line, for example:
@@ -67,9 +71,9 @@ And you may store JSON documents in [Redis](http://redis.io/) like so:
 
 Note that Pupa.rb flushes the JSON documents before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/1`, where `1` is the Redis database number.
 
-### Other improvements
+### Skipping validation
 
-The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time. Putting it all together, it's possible to, for example, bring a scraper's running time down from 100s to 5s.
+The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time.
 
 ### Profiling
 
