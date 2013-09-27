@@ -45,6 +45,26 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 1.  You may want more control over the method used to perform a scraping task. For example, a legislature may publish legislators before 1997 in one format and legislators after 1997 in another format. In this case, you may want to select the method used to scrape legislators according to the year. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).
 
+## Performance
+
+Pupa.rb offers several ways to significantly improve performance.
+
+## Scraping
+
+HTTP requests consume the most time. To avoid repeat HTTP requests while developing a scraper, cache all HTTP responses. Pupa.rb will by default use a `web_cache` directory in the same directory as your script. You can change the directory by setting the `--cache_dir` switch on the command line, for example:
+
+    ruby cat.rb --cache_dir my_cache_dir
+
+After HTTP requests, reading and writing files to disk are the slowest operations. Two types of files are written: HTTP responses are written to the cache directory, and JSON documents are written to the output directory. Writing to memory is much faster than writing to disk. You may store HTTP responses in [Memcached](http://memcached.org/) like so:
+
+    ruby cat.rb --cache_dir memcached://localhost:11211
+
+And you may store JSON documents in [Redis](http://redis.io/) like so:
+
+    ruby cat.rb --output_dir redis://localhost:6379/0
+
+Note that Pupa.rb flushes the JSON documents before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/1`, where `1` is the Redis database number.
+
 ## Bugs? Questions?
 
 This project's main repository is on GitHub: [http://github.com/opennorth/pupa-ruby](http://github.com/opennorth/pupa-ruby), where your contributions, forks, bug reports, feature requests, and feedback are greatly welcomed.
