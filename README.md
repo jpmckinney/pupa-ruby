@@ -79,13 +79,15 @@ Once you are done with the RAM disk, release the memory:
     diskutil unmount $ramdisk
     hdiutil detach $ramdisk
 
-Using a RAM disk will significantly improve performance. However, the temporary data will be lost between reboots unless you move the data to a hard disk. Using Memcached and Redis is moderately faster.
+Using a RAM disk will significantly improve performance; however, the data will be lost between reboots unless you move the data to a hard disk. Using Memcached (for caching) and Redis (for storage) is moderately faster than using a RAM disk.
 
 #### Memcached
 
-You may store HTTP responses in [Memcached](http://memcached.org/). First, add the `dalli` gem to your `Gemfile` and `require 'dalli'` in your script. Then:
+You may cache HTTP responses in [Memcached](http://memcached.org/). First, add the `dalli` gem to your `Gemfile` and `require 'dalli'` in your script. Then:
 
     ruby cat.rb --cache_dir memcached://localhost:11211
+
+The data in Memcached will be lost between reboots.
 
 #### Redis
 
