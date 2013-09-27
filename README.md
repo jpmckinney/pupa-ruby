@@ -65,9 +65,9 @@ After HTTP requests, disk I/O is the slowest operation. Two types of files are w
 
 #### RAM file systems
 
-A simple solution is to create a file system in RAM, like `tmpfs` on Linux for example, and to use it as your `cache_dir` and `output_dir`. On OS X, you must create a RAM disk. To create a 64MB RAM disk, for example, run:
+A simple solution is to create a file system in RAM, like `tmpfs` on Linux for example, and to use it as your `cache_dir` and `output_dir`. On OS X, you must create a RAM disk. To create a 128MB RAM disk, for example, run:
 
-    ramdisk=$(hdiutil attach -nomount ram://$((64 * 2048)) | tr -d ' \t')
+    ramdisk=$(hdiutil attach -nomount ram://$((128 * 2048)) | tr -d ' \t')
     diskutil erasevolume HFS+ 'ramdisk' $ramdisk
 
 You can then set the `output_dir` and `cache_dir` on OS X as:
@@ -78,6 +78,8 @@ Once you are done with the RAM disk, release the memory:
 
     diskutil unmount $ramdisk
     hdiutil detach $ramdisk
+
+Using a RAM disk will significantly improve performance. However, the temporary data will be lost between reboots unless you move the data to a hard disk. Using Memcached and Redis is moderately faster.
 
 #### Memcached
 
