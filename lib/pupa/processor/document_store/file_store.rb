@@ -54,7 +54,7 @@ module Pupa
         # @param [Hash] value a value
         def write(name, value)
           File.open(namespaced_key(name), 'w') do |f|
-            MultiJson.dump(value, f)
+            f.write(MultiJson.dump(value))
           end
         end
 
