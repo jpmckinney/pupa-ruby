@@ -3,12 +3,11 @@ require 'rubygems'
 require 'coveralls'
 Coveralls.wear!
 
+require 'multi_xml'
+require 'redis-activesupport'
 require 'rspec'
 require 'vcr'
 require File.dirname(__FILE__) + '/../lib/pupa'
-
-require 'multi_xml'
-require 'redis'
 
 VCR.configure do |c|
   c.cassette_library_dir = 'spec/cassettes'

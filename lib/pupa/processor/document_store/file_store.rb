@@ -1,7 +1,7 @@
 module Pupa
   class Processor
     class DocumentStore
-      # Stores HTTP responses to disk.
+      # Stores JSON documents on disk.
       #
       # @see ActiveSupport::Cache::FileStore
       class FileStore

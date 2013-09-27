@@ -1,6 +1,4 @@
-# A refinement for the Faraday caching middleware to cache all requests, not
-# only GET requests. Using Ruby's refinements doesn't seem to work, possibly
-# because Faraday caches middlewares.
+# Caches all requests, not only GET requests.
 class FaradayMiddleware::Caching
   def call(env)
     # Remove if-statement to cache any request, not only GET.
