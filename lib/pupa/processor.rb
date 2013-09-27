@@ -283,7 +283,7 @@ module Pupa
     def build_losers_to_winners_map(objects)
       inverse = {}
       objects.each do |id,object|
-        (inverse[object] ||= []) << id
+        (inverse[object.to_h.except(:_id)] ||= []) << id
       end
 
       {}.tap do |map|
