@@ -1,3 +1,4 @@
+require 'fileutils'
 require 'forwardable'
 
 require 'active_support/concern'

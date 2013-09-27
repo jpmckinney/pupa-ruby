@@ -68,9 +68,9 @@ describe Pupa::Processor do
     end
 
     it 'should not overwrite an existing file' do
-      FileUtils.touch(path)
+      File.open(path, 'w') {}
       expect{processor.dump_scraped_objects(:people)}.to raise_error(Pupa::Errors::DuplicateObjectIdError)
-      FileUtils.rm(path)
+      File.delete(path)
     end
 
     it 'should dump a JSON document' do

@@ -21,7 +21,7 @@ module Pupa
       # In order to automatically parse XML responses, you must `require 'multi_xml'`.
       #
       # @param [String] cache_dir a directory or a Memcached address
-      #   (e.g. memcached://localhost:11211) in which to cache requests
+      #   (e.g. `memcached://localhost:11211`) in which to cache requests
       # @param [Integer] expires_in the cache's expiration time in seconds
       # @param [String] level the log level
       # @return [Faraday::Connection] a configured Faraday HTTP client

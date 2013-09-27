@@ -6,7 +6,11 @@ require 'pupa/processor/client'
 require 'pupa/processor/dependency_graph'
 require 'pupa/processor/helper'
 require 'pupa/processor/persistence'
+require 'pupa/processor/response_store'
 require 'pupa/processor/yielder'
+
+require 'pupa/processor/response_stores/file_store'
+require 'pupa/processor/response_stores/redis_store'
 
 module Pupa
   # An abstract processor class from which specific processors inherit.
@@ -17,24 +21,26 @@ module Pupa
     class_attribute :tasks
     self.tasks = []
 
-    attr_reader :report, :client, :options
+    attr_reader :report, :store, :client, :options
 
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
-    # @param [String] output_dir the directory in which to dump JSON documents
-    # @param [String] cache_dir the directory in which to cache HTTP responses
+    # @param [String] output_dir the directory or Redis address
+    #   (e.g. `redis://localhost:6379`) in which to dump JSON documents
+    # @param [String] cache_dir the directory or Memcached address
+    #   (e.g. `memcached://localhost:11211`) in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
     # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
     def initialize(output_dir, cache_dir: nil, expires_in: 86400, validate: true, level: 'INFO', logdev: STDOUT, options: {})
-      @output_dir = output_dir
-      @validate   = validate
-      @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
-      @logger     = Logger.new('pupa', level: level, logdev: logdev)
-      @options    = options
-      @report     = {}
+      @store    = ResponseStore.new(output_dir)
+      @client   = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
+      @logger   = Logger.new('pupa', level: level, logdev: logdev)
+      @validate = validate
+      @options  = options
+      @report   = {}
     end
 
     # Retrieves and parses a document with a GET request.
@@ -214,18 +220,15 @@ module Pupa
     # @raises [Pupa::Errors::DuplicateObjectIdError]
     def dump_scraped_object(object)
       type = object.class.to_s.demodulize.underscore
-      basename = "#{type}_#{object._id.gsub(File::SEPARATOR, '_')}.json"
-      path = File.join(@output_dir, basename)
+      name = "#{type}_#{object._id.gsub(File::SEPARATOR, '_')}.json"
 
-      if File.exist?(path)
+      if @store.exist?(name)
         raise Errors::DuplicateObjectIdError, "duplicate object ID: #{object._id} (was the same objected yielded twice?)"
       end
 
-      info {"save #{type} #{object.to_s} as #{basename}"}
+      info {"save #{type} #{object.to_s} as #{name}"}
 
-      File.open(path, 'w') do |f|
-        f.write(JSON.dump(object.to_h(include_foreign_objects: true)))
-      end
+      @store.write(name, object.to_h(include_foreign_objects: true))
 
       if @validate
         begin
@@ -241,8 +244,7 @@ module Pupa
     # @return [Hash] a hash of scraped objects keyed by ID
     def load_scraped_objects
       {}.tap do |objects|
-        Dir[File.join(@output_dir, '*.json')].each do |path|
-          data = JSON.load(File.read(path))
+        @store.read_multi(@store.entries).each do |data|
           object = data['_type'].camelize.constantize.new(data)
           objects[object._id] = object
         end
