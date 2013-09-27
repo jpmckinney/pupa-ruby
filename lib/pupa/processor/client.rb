@@ -18,7 +18,10 @@ module Pupa
     class Client
       # Returns a configured Faraday HTTP client.
       #
-      # @param [String] cache_dir a directory in which to cache requests
+      # In order to automatically parse XML responses, you must `require 'multi_xml'`.
+      #
+      # @param [String] cache_dir a directory or a Memcached address
+      #   (e.g. memcached://localhost:11211) in which to cache requests
       # @param [Integer] expires_in the cache's expiration time in seconds
       # @param [String] level the log level
       # @return [Faraday::Connection] a configured Faraday HTTP client
@@ -26,15 +29,19 @@ module Pupa
         Faraday.new do |connection|
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
+
           # @see http://tools.ietf.org/html/rfc2854
           # @see http://tools.ietf.org/html/rfc3236
           connection.use Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
+
           # @see http://tools.ietf.org/html/rfc4627
           connection.use FaradayMiddleware::ParseJson, content_type: /\bjson$/
-          # @see http://tools.ietf.org/html/rfc3023
+
           if defined?(MultiXml)
+            # @see http://tools.ietf.org/html/rfc3023
             connection.use FaradayMiddleware::ParseXml, content_type: /\bxml$/
           end
+
           if cache_dir
             connection.response :caching do
               address = cache_dir[%r{\Amemcached://(.+)\z}, 1]
@@ -45,6 +52,7 @@ module Pupa
               end
             end
           end
+
           connection.adapter Faraday.default_adapter # must be last
         end
       end
