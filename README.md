@@ -91,9 +91,13 @@ The data in Memcached will be lost between reboots.
 
 #### Redis
 
-You may store JSON documents in [Redis](http://redis.io/). First, add the `redis-store` gem to your `Gemfile` and `require 'redis-store'` in your script. Then:
+You may dump JSON documents in [Redis](http://redis.io/). First, add the `redis-store` gem to your `Gemfile` and `require 'redis-store'` in your script. Then:
 
     ruby cat.rb --output_dir redis://localhost:6379/0
+
+To dump JSON documents moderately faster, use [pipelining](http://redis.io/topics/pipelining):
+
+    ruby cat.rb --output_dir redis://localhost:6379/0 --pipelined
 
 Note that Pupa.rb flushes the Redis database before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/15`, where `15` is the database number.
 

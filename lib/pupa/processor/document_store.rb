@@ -10,10 +10,11 @@ module Pupa
       #
       # @param [String] argument the filesystem directory or Redis address
       #   (e.g. `redis://localhost:6379/0`) in which to dump JSON documents
+      # @param [Hash] options optional arguments
       # @return a configured JSON document store
-      def self.new(argument)
+      def self.new(argument, **options)
         if argument[%r{\Aredis://}]
-          RedisStore.new(argument)
+          RedisStore.new(argument, options)
         else
           FileStore.new(argument)
         end

@@ -18,6 +18,7 @@ module Pupa
         output_dir:     File.expand_path('scraped_data', Dir.pwd),
         cache_dir:      File.expand_path('web_cache', Dir.pwd),
         expires_in:     86400, # 1 day
+        pipelined:      false,
         validate:       true,
         host_with_port: 'localhost:27017',
         database:       'pupa',
@@ -81,6 +82,9 @@ module Pupa
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           options.expires_in = v
         end
+        opts.on('--pipelined', 'Dump JSON documents all at once') do |v|
+          options.pipelined = v
+        end
         opts.on('--[no-]validate', 'Validate JSON documents') do |v|
           options.validate = v
         end
@@ -143,6 +147,7 @@ module Pupa
       processor = @processor_class.new(options.output_dir,
         cache_dir: options.cache_dir,
         expires_in: options.expires_in,
+        pipelined: options.pipelined,
         validate: options.validate,
         level: options.level,
         options: Hash[*rest])

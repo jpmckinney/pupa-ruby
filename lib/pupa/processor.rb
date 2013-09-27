@@ -28,12 +28,13 @@ module Pupa
     # @param [String] cache_dir the directory or Memcached address
     #   (e.g. `memcached://localhost:11211`) in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
+    # @param [Boolean] pipelined whether to dump JSON documents all at once
     # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, validate: true, level: 'INFO', logdev: STDOUT, options: {})
-      @store    = DocumentStore.new(output_dir)
+    def initialize(output_dir, cache_dir: nil, expires_in: 86400, pipelined: false, validate: true, level: 'INFO', logdev: STDOUT, options: {})
+      @store    = DocumentStore.new(output_dir, pipelined: pipelined)
       @client   = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
       @logger   = Logger.new('pupa', level: level, logdev: logdev)
       @validate = validate
@@ -111,9 +112,11 @@ module Pupa
     # @return [Integer] the number of scraped objects
     def dump_scraped_objects(task_name)
       count = 0
-      send(task_name).each do |object|
-        count += 1 # we don't know the size of the enumeration
-        dump_scraped_object(object)
+      @store.pipelined do
+        send(task_name).each do |object|
+          count += 1 # we don't know the size of the enumeration
+          dump_scraped_object(object)
+        end
       end
       count
     end

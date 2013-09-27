@@ -13,11 +13,12 @@ module Pupa
       class RedisStore
         # @param [String] address the address (e.g. `redis://localhost:6379/0`)
         #   in which to dump JSON documents
-        def initialize(address)
+        # @param [Boolean] pipelined whether to enable
+        #   [pipelining](http://redis.io/topics/pipelining)
+        def initialize(address, pipelined: false)
+          @pipelined = pipelined
           options = {marshalling: false}
-          if defined?(Hiredis)
-            options.update(driver: :hiredis)
-          end
+          options.update(driver: :hiredis) if defined?(Hiredis)
           @redis = Redis::Store::Factory.create(address, options)
         end
 
@@ -95,7 +96,11 @@ module Pupa
 
         # Collects commands to run all at once.
         def pipelined
-          @redis.pipelined do
+          if @pipelined
+            @redis.pipelined do
+              yield
+            end
+          else
             yield
           end
         end
