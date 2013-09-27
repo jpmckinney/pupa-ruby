@@ -41,7 +41,7 @@ module Pupa
         # @param [String] name a key
         # @return [Hash] the value of the given key
         def read(name)
-          JSON.load(@redis.get(name))
+          MultiJson.load(@redis.get(name))
         end
 
         # Returns, as JSON, the values of the given keys.
@@ -49,7 +49,7 @@ module Pupa
         # @param [String] names keys
         # @return [Array<Hash>] the values of the given keys
         def read_multi(names)
-          @redis.mget(*names).map{|value| JSON.load(value)}
+          @redis.mget(*names).map{|value| MultiJson.load(value)}
         end
 
         # Writes, as JSON, the value to a key.
@@ -57,7 +57,7 @@ module Pupa
         # @param [String] name a key
         # @param [Hash] value a value
         def write(name, value)
-          @redis.set(name, JSON.dump(value))
+          @redis.set(name, MultiJson.dump(value))
         end
 
         # Writes, as JSON, the value to a key, unless the key exists.
@@ -66,7 +66,7 @@ module Pupa
         # @param [Hash] value a value
         # @return [Boolean] whether the key was set
         def write_unless_exists(name, value)
-          @redis.setnx(name, JSON.dump(value))
+          @redis.setnx(name, MultiJson.dump(value))
         end
 
         # Writes, as JSON, the values to keys.
@@ -76,7 +76,7 @@ module Pupa
           args = []
           pairs.each do |key,value|
             args << key
-            args << JSON.dump(value)
+            args << MultiJson.dump(value)
           end
           @redis.mset(*args)
         end
@@ -91,6 +91,13 @@ module Pupa
         # Deletes all keys in the database.
         def clear
           @redis.flushdb
+        end
+
+        # Collects commands to run all at once.
+        def pipelined
+          @redis.pipelined do
+            yield
+          end
         end
       end
     end

@@ -198,7 +198,7 @@ module Pupa
 
       report[:end] = Time.now.utc
       report[:time] = report[:end] - report[:start]
-      puts JSON.dump(report)
+      puts MultiJson.dump(report)
     end
   end
 end

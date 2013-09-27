@@ -1,5 +1,3 @@
-require 'json'
-
 require 'nokogiri'
 
 require 'pupa/processor/client'
@@ -182,7 +180,7 @@ module Pupa
         end
 
         unless objects.empty?
-          raise Errors::UnprocessableEntity, "couldn't resolve #{objects.size}/#{size} objects:\n  #{objects.values.map{|object| JSON.dump(object.foreign_properties)}.join("\n  ")}"
+          raise Errors::UnprocessableEntity, "couldn't resolve #{objects.size}/#{size} objects:\n  #{objects.values.map{|object| MultiJson.dump(object.foreign_properties)}.join("\n  ")}"
         end
       end
 

@@ -34,7 +34,7 @@ module Pupa
         # @return [Hash] the value of the given key
         def read(name)
           File.open(namespaced_key(name)) do |f|
-            JSON.load(f)
+            MultiJson.load(f)
           end
         end
 
@@ -54,7 +54,7 @@ module Pupa
         # @param [Hash] value a value
         def write(name, value)
           File.open(namespaced_key(name), 'w') do |f|
-            JSON.dump(value, f)
+            MultiJson.dump(value, f)
           end
         end
 
@@ -91,6 +91,11 @@ module Pupa
           Dir[File.join(@output_dir, '*.json')].each do |path|
             File.delete(path)
           end
+        end
+
+        # Collects commands to run all at once.
+        def pipelined
+          yield
         end
 
       private
