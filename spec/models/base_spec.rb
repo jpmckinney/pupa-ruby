@@ -18,9 +18,15 @@ describe Pupa::Base do
           },
         },
       }
-      attr_accessor :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links
+
+      attr_accessor :label, :founding_date, :inactive, :label_id, :manager_id, :links
+      attr_reader :name
       foreign_key :label_id, :manager_id
       foreign_object :label
+
+      def name=(name)
+        @name = name
+      end
     end
   end
 
@@ -32,25 +38,33 @@ describe Pupa::Base do
     Music::Band.new(properties)
   end
 
-  describe '#attr_accessor' do
+  describe '.attr_accessor' do
     it 'should add properties' do
-      Music::Band.properties.to_a.should == [:_id, :_type, :extras, :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links]
+      [:_id, :_type, :extras, :label, :founding_date, :inactive, :label_id, :manager_id, :links].each do |property|
+        Music::Band.properties.to_a.should include(property)
+      end
     end
   end
 
-  describe '#foreign_key' do
+  describe '.attr_reader' do
+    it 'should add properties' do
+      Music::Band.properties.to_a.should include(:name)
+    end
+  end
+
+  describe '.foreign_key' do
     it 'should add foreign keys' do
       Music::Band.foreign_keys.to_a.should == [:label_id, :manager_id]
     end
   end
 
-  describe '#foreign_object' do
+  describe '.foreign_object' do
     it 'should add foreign objects' do
       Music::Band.foreign_objects.to_a.should == [:label]
     end
   end
 
-  describe '#schema=' do
+  describe '.schema=' do
     let :klass_with_absolute_path do
       Class.new(Pupa::Base) do
         self.schema = '/path/to/schema.json'

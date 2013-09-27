@@ -11,7 +11,7 @@ describe Pupa::Processor::Persistence do
     Pupa.session[:people].insert(_type: 'pupa/person', name: 'non-unique')
   end
 
-  describe '#find' do
+  describe '.find' do
     it 'should return nil if no matches' do
       Pupa::Processor::Persistence.find(_type: 'pupa/person', name: 'nonexistent').should == nil
     end

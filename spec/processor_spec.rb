@@ -55,7 +55,7 @@ describe Pupa::Processor do
     end
   end
 
-  describe '#add_scraping_task' do
+  describe '.add_scraping_task' do
     it 'should add a scraping task and define a lazy method' do
       PersonProcessor.tasks.should == [:people]
       processor.should respond_to(:people)
