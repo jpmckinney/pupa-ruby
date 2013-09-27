@@ -17,7 +17,7 @@ describe Pupa::Processor::ResponseStore::FileStore do
 
   describe '#entries' do
     it 'should return all keys in the store' do
-      store.entries.should == %w(bar.json baz.json foo.json)
+      store.entries.sort.should == %w(bar.json baz.json foo.json)
     end
   end
 
@@ -53,7 +53,7 @@ describe Pupa::Processor::ResponseStore::FileStore do
 
   describe '#clear' do
     it 'should delete all entries from the store' do
-      store.entries.should == %w(bar.json baz.json foo.json)
+      store.entries.sort.should == %w(bar.json baz.json foo.json)
       store.clear
       store.entries.should == []
 
