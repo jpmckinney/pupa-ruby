@@ -23,7 +23,9 @@ module Pupa
         #
         # @return [Array<String>] all keys in the store
         def entries
-          Dir[File.join(@output_dir, '*.json')]
+          Dir.chdir(@output_dir) do
+            Dir['*.json']
+          end
         end
 
         # Returns, as JSON, the contents of the file with the given name.
@@ -65,7 +67,7 @@ module Pupa
 
         # Deletes all files in the storage directory.
         def clear
-          entries.each do |path|
+          Dir[File.join(@output_dir, '*.json')].each do |path|
             File.delete(path)
           end
         end
