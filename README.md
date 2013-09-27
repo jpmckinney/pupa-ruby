@@ -69,7 +69,7 @@ Note that Pupa.rb flushes the JSON documents before scraping. If you use Redis, 
 
 ### Other improvements
 
-The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time.
+The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time. Putting it all together, it's possible to, for example, bring a scraper's running time down from 100s to 5s.
 
 ### Profiling
 
@@ -77,13 +77,13 @@ You can profile your code using [perftools.rb](https://github.com/tmm1/perftools
 
     gem install perftools.rb
 
-Then, run your `script.rb` with the profiler, storing the results to `/tmp/PROFILE_NAME` in this example:
+Then, run your script with the profiler (changing `/tmp/PROFILE_NAME` and `script.rb` as appropriate):
 
     CPUPROFILE=/tmp/PROFILE_NAME RUBYOPT="-r`gem which perftools | tail -1`" ruby script.rb
 
-You may want to set the `CPUPROFILE_REALTIME=1` flag; however, for whatever reason, it seems to change the behavior of the `json-schema` gem.
+You may want to set the `CPUPROFILE_REALTIME=1` flag; however, it seems to change the behavior of the `json-schema` gem, for whatever reason.
 
-[perftools.rb](https://github.com/tmm1/perftools.rb) has several output formats. If your code is straight-forward, you can draw a graph to `/tmp/PROFILE_NAME.pdf` with:
+[perftools.rb](https://github.com/tmm1/perftools.rb) has several output formats. If your code is straight-forward, you can draw a graph (changing `/tmp/PROFILE_NAME` and `/tmp/PROFILE_NAME.pdf` as appropriate):
 
     pprof.rb --pdf /tmp/PROFILE_NAME > /tmp/PROFILE_NAME.pdf
 
