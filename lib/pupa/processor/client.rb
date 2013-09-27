@@ -4,6 +4,7 @@ require 'faraday_middleware/response_middleware'
 
 require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
+require 'pupa/processor/middleware/parse_json'
 require 'pupa/refinements/faraday_middleware'
 
 begin
@@ -37,7 +38,7 @@ module Pupa
           connection.use Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
 
           # @see http://tools.ietf.org/html/rfc4627
-          connection.use FaradayMiddleware::ParseJson, content_type: /\bjson$/
+          connection.use Middleware::ParseJson, content_type: /\bjson$/
 
           if defined?(MultiXml)
             # @see http://tools.ietf.org/html/rfc3023

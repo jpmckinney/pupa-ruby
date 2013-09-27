@@ -111,9 +111,11 @@ module Pupa
     # @return [Integer] the number of scraped objects
     def dump_scraped_objects(task_name)
       count = 0
-      send(task_name).each do |object|
-        count += 1 # we don't know the size of the enumeration
-        dump_scraped_object(object)
+      @store.pipelined do
+        send(task_name).each do |object|
+          count += 1 # we don't know the size of the enumeration
+          dump_scraped_object(object)
+        end
       end
       count
     end

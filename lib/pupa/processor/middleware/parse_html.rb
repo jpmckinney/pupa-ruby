@@ -7,9 +7,9 @@ module Pupa
       class ParseHtml < FaradayMiddleware::ResponseMiddleware
         dependency 'nokogiri'
 
-        define_parser { |body|
+        define_parser do |body|
           Nokogiri::HTML(body) unless body.empty?
-        }
+        end
       end
     end
   end
