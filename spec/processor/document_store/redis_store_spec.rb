@@ -49,6 +49,20 @@ describe Pupa::Processor::DocumentStore::RedisStore do
     end
   end
 
+  describe '#write_unless_exists' do
+    it 'should write an entry with the given value for the given key' do
+      store.exist?('new.json').should == false
+      store.write_unless_exists('new.json', {'name' => 'new'}).should == true
+      store.read('new.json').should == {'name' => 'new'}
+      store.delete('new.json') # cleanup
+    end
+
+    it 'should not write an entry with the given value for the given key if the key exists' do
+      store.write_unless_exists('foo.json', {'name' => 'new'}).should == false
+      store.read('foo.json').should == {'name' => 'foo'}
+    end
+  end
+
   describe '#write_multi' do
     it 'should write entries with the given values for the given keys' do
       pairs = {}

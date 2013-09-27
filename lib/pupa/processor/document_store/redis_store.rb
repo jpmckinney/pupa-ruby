@@ -60,6 +60,15 @@ module Pupa
           @redis.set(name, JSON.dump(value))
         end
 
+        # Writes, as JSON, the value to a key, unless the key exists.
+        #
+        # @param [String] name a key
+        # @param [Hash] value a value
+        # @return [Boolean] whether the key was set
+        def write_unless_exists(name, value)
+          @redis.setnx(name, JSON.dump(value))
+        end
+
         # Writes, as JSON, the values to keys.
         #
         # @param [Hash] pairs key-value pairs

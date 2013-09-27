@@ -58,6 +58,18 @@ module Pupa
           end
         end
 
+        # Writes, as JSON, the value to a file with the given name, unless such
+        # a file exists.
+        #
+        # @param [String] name a key
+        # @param [Hash] value a value
+        # @return [Boolean] whether the key was set
+        def write_unless_exists(name, value)
+          !exist?(name).tap do |exists|
+            write(name, value) unless exists
+          end
+        end
+
         # Writes, as JSON, the values to files with the given names.
         #
         # @param [Hash] pairs key-value pairs
