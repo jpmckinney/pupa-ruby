@@ -49,9 +49,9 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 Pupa.rb offers several ways to significantly improve performance.
 
-In an example case, reducing file I/O and skipping validation reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
+In an example case, reducing file I/O and skipping validation as described below reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
 
-**Note:** The `import` action's performance has not yet been improved.
+The `import` action's performance (when using a dependency graph) is currently limited by MongoDB.
 
 ### Caching HTTP requests
 
