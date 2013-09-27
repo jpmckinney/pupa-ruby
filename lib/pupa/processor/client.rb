@@ -18,7 +18,9 @@ module Pupa
     class Client
       # Returns a configured Faraday HTTP client.
       #
-      # In order to automatically parse XML responses, you must `require 'multi_xml'`.
+      # To automatically parse XML responses, you must `require 'multi_xml'`.
+      #
+      # Memcached support depends on the `dalli` gem.
       #
       # @param [String] cache_dir a directory or a Memcached address
       #   (e.g. `memcached://localhost:11211`) in which to cache requests

@@ -6,6 +6,8 @@ module Pupa
     class DocumentStore
       # Returns a configured JSON document store.
       #
+      # See each document store for more information.
+      #
       # @param [String] argument the filesystem directory or Redis address
       #   (e.g. `redis://localhost:6379/0`) in which to dump JSON documents
       # @return a configured JSON document store

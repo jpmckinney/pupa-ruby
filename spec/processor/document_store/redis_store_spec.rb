@@ -6,6 +6,7 @@ describe Pupa::Processor::DocumentStore::RedisStore do
   end
 
   before :all do
+    store.clear
     %w(foo bar baz).each do |name|
       store.write("#{name}.json", {'name' => name})
     end
@@ -45,6 +46,24 @@ describe Pupa::Processor::DocumentStore::RedisStore do
       store.write('new.json', {'name' => 'new'})
       store.read('new.json').should == {'name' => 'new'}
       store.delete('new.json') # cleanup
+    end
+  end
+
+  describe '#write_multi' do
+    it 'should write entries with the given values for the given keys' do
+      pairs = {}
+      %w(new1 new2).each do |name|
+        pairs["#{name}.json"] = {'name' => name}
+      end
+
+      pairs.keys.each do |name|
+        store.exist?(name).should == false
+      end
+      store.write_multi(pairs)
+      store.read_multi(pairs.keys).should == [{'name' => 'new1'}, {'name' => 'new2'}]
+      pairs.keys.each do |name| # cleanup
+        store.delete(name)
+      end
     end
   end
 

@@ -8,13 +8,13 @@ module Pupa
       # can select a different database than the default `0` for use with Pupa
       # by passing an argument like `redis://localhost:6379/0`.
       #
-      # @note Redis support depends on the `redis` gem. For better performance,
-      #   use the `hiredis` gem as well.
+      # @note Redis support depends on the `redis-store` gem. You may optionally
+      #   use the `hiredis` gem to further improve performance.
       class RedisStore
         # @param [String] address the address (e.g. `redis://localhost:6379/0`)
         #   in which to dump JSON documents
         def initialize(address)
-          options = {}
+          options = {marshalling: false}
           if defined?(Hiredis)
             options.update(driver: :hiredis)
           end
@@ -58,6 +58,18 @@ module Pupa
         # @param [Hash] value a value
         def write(name, value)
           @redis.set(name, JSON.dump(value))
+        end
+
+        # Writes, as JSON, the values to keys.
+        #
+        # @param [Hash] pairs key-value pairs
+        def write_multi(pairs)
+          args = []
+          pairs.each do |key,value|
+            args << key
+            args << JSON.dump(value)
+          end
+          @redis.mset(*args)
         end
 
         # Delete a key.

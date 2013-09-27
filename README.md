@@ -83,13 +83,13 @@ Using a RAM disk will significantly improve performance. However, the temporary 
 
 #### Memcached
 
-You may store HTTP responses in [Memcached](http://memcached.org/) like so:
+You may store HTTP responses in [Memcached](http://memcached.org/). First, add the `dalli` gem to your `Gemfile` and `require 'dalli'` in your script. Then:
 
     ruby cat.rb --cache_dir memcached://localhost:11211
 
 #### Redis
 
-You may store JSON documents in [Redis](http://redis.io/) like so:
+You may store JSON documents in [Redis](http://redis.io/). First, add the `redis-store` gem to your `Gemfile` and `require 'redis-store'` in your script. Then:
 
     ruby cat.rb --output_dir redis://localhost:6379/0
 

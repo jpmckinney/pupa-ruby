@@ -58,6 +58,15 @@ module Pupa
           end
         end
 
+        # Writes, as JSON, the values to files with the given names.
+        #
+        # @param [Hash] pairs key-value pairs
+        def write_multi(pairs)
+          pairs.each do |name,value|
+            write(name, value)
+          end
+        end
+
         # Delete a file with the given name.
         #
         # @param [String] name a key
