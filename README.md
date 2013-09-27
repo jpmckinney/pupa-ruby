@@ -49,7 +49,7 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 Pupa.rb offers several ways to significantly improve performance.
 
-In an example case, reducing file I/O and skipping validation as described below reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
+In an example case, reducing disk I/O and skipping validation as described below reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
 
 The `import` action's performance (when using a dependency graph) is currently limited by MongoDB.
 
@@ -59,17 +59,39 @@ HTTP requests consume the most time. To avoid repeat HTTP requests while develop
 
     ruby cat.rb --cache_dir my_cache_dir
 
-### Reducing file I/O
+### Reducing disk I/O
 
-After HTTP requests, file I/O is the slowest operation. Two types of files are written to disk: HTTP responses are written to the cache directory, and JSON documents are written to the output directory. Writing to memory is much faster than writing to disk. You may store HTTP responses in [Memcached](http://memcached.org/) like so:
+After HTTP requests, disk I/O is the slowest operation. Two types of files are written to disk: HTTP responses are written to the cache directory, and JSON documents are written to the output directory. Writing to memory is much faster than writing to disk.
+
+#### RAM file systems
+
+A simple solution is to create a file system in RAM, like `tmpfs` on Linux for example, and to use it as your `cache_dir` and `output_dir`. On OS X, you must create a RAM disk. To create a 64MB RAM disk, for example, run:
+
+    ramdisk=$(hdiutil attach -nomount ram://$((64 * 2048)) | tr -d ' \t')
+    diskutil erasevolume HFS+ 'ramdisk' $ramdisk
+
+You can then set the `output_dir` and `cache_dir` on OS X as:
+
+    ruby cat.rb --output_dir /Volumes/ramdisk/scraped_data --cache_dir /Volumes/ramdisk/web_cache
+
+Once you are done with the RAM disk, release the memory:
+
+    diskutil unmount $ramdisk
+    hdiutil detach $ramdisk
+
+#### Memcached
+
+You may store HTTP responses in [Memcached](http://memcached.org/) like so:
 
     ruby cat.rb --cache_dir memcached://localhost:11211
 
-And you may store JSON documents in [Redis](http://redis.io/) like so:
+#### Redis
+
+You may store JSON documents in [Redis](http://redis.io/) like so:
 
     ruby cat.rb --output_dir redis://localhost:6379/0
 
-Note that Pupa.rb flushes the JSON documents before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/1`, where `1` is the Redis database number.
+Note that Pupa.rb flushes the Redis database before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/15`, where `15` is the database number.
 
 ### Skipping validation
 
@@ -85,7 +107,7 @@ Then, run your script with the profiler (changing `/tmp/PROFILE_NAME` and `scrip
 
     CPUPROFILE=/tmp/PROFILE_NAME RUBYOPT="-r`gem which perftools | tail -1`" ruby script.rb
 
-You may want to set the `CPUPROFILE_REALTIME=1` flag; however, it seems to change the behavior of the `json-schema` gem, for whatever reason.
+You may want to set the `CPUPROFILE_REALTIME=1` flag; however, it seems to interfere with HTTP requests, for whatever reason.
 
 [perftools.rb](https://github.com/tmm1/perftools.rb) has several output formats. If your code is straight-forward, you can draw a graph (changing `/tmp/PROFILE_NAME` and `/tmp/PROFILE_NAME.pdf` as appropriate):
 
