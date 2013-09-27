@@ -4,7 +4,7 @@ require 'coveralls'
 Coveralls.wear!
 
 require 'multi_xml'
-require 'redis-activesupport'
+require 'redis-store'
 require 'rspec'
 require 'vcr'
 require File.dirname(__FILE__) + '/../lib/pupa'

@@ -10,6 +10,7 @@ require 'pupa/processor/document_store'
 require 'pupa/processor/yielder'
 
 require 'pupa/processor/document_store/file_store'
+require 'pupa/processor/document_store/redis_store'
 
 module Pupa
   # An abstract processor class from which specific processors inherit.

@@ -49,13 +49,15 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 Pupa.rb offers several ways to significantly improve performance.
 
-## Scraping
+### Caching HTTP requests
 
 HTTP requests consume the most time. To avoid repeat HTTP requests while developing a scraper, cache all HTTP responses. Pupa.rb will by default use a `web_cache` directory in the same directory as your script. You can change the directory by setting the `--cache_dir` switch on the command line, for example:
 
     ruby cat.rb --cache_dir my_cache_dir
 
-After HTTP requests, reading and writing files to disk are the slowest operations. Two types of files are written: HTTP responses are written to the cache directory, and JSON documents are written to the output directory. Writing to memory is much faster than writing to disk. You may store HTTP responses in [Memcached](http://memcached.org/) like so:
+### Reducing file I/O
+
+After HTTP requests, file I/O is the slowest operation. Two types of files are written to disk: HTTP responses are written to the cache directory, and JSON documents are written to the output directory. Writing to memory is much faster than writing to disk. You may store HTTP responses in [Memcached](http://memcached.org/) like so:
 
     ruby cat.rb --cache_dir memcached://localhost:11211
 
@@ -64,6 +66,30 @@ And you may store JSON documents in [Redis](http://redis.io/) like so:
     ruby cat.rb --output_dir redis://localhost:6379/0
 
 Note that Pupa.rb flushes the JSON documents before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/1`, where `1` is the Redis database number.
+
+### Other improvements
+
+The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time.
+
+### Profiling
+
+You can profile your code using [perftools.rb](https://github.com/tmm1/perftools.rb). First, install the gem:
+
+    gem install perftools.rb
+
+Then, run your `script.rb` with the profiler, storing the results to `/tmp/PROFILE_NAME` in this example:
+
+    CPUPROFILE=/tmp/PROFILE_NAME RUBYOPT="-r`gem which perftools | tail -1`" ruby script.rb
+
+You may want to set the `CPUPROFILE_REALTIME=1` flag; however, for whatever reason, it seems to change the behavior of the `json-schema` gem.
+
+[perftools.rb](https://github.com/tmm1/perftools.rb) has several output formats. If your code is straight-forward, you can draw a graph to `/tmp/PROFILE_NAME.pdf` with:
+
+    pprof.rb --pdf /tmp/PROFILE_NAME > /tmp/PROFILE_NAME.pdf
+
+## Testing
+
+**DO NOT** run this gem's specs if you are using Redis database number 15 on `localhost`!
 
 ## Bugs? Questions?
 
