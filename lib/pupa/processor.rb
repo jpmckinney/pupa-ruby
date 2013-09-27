@@ -6,11 +6,11 @@ require 'pupa/processor/client'
 require 'pupa/processor/dependency_graph'
 require 'pupa/processor/helper'
 require 'pupa/processor/persistence'
-require 'pupa/processor/response_store'
+require 'pupa/processor/document_store'
 require 'pupa/processor/yielder'
 
-require 'pupa/processor/response_stores/file_store'
-require 'pupa/processor/response_stores/redis_store'
+require 'pupa/processor/document_store/file_store'
+require 'pupa/processor/document_store/redis_store'
 
 module Pupa
   # An abstract processor class from which specific processors inherit.
@@ -35,7 +35,7 @@ module Pupa
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
     def initialize(output_dir, cache_dir: nil, expires_in: 86400, validate: true, level: 'INFO', logdev: STDOUT, options: {})
-      @store    = ResponseStore.new(output_dir)
+      @store    = DocumentStore.new(output_dir)
       @client   = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
       @logger   = Logger.new('pupa', level: level, logdev: logdev)
       @validate = validate

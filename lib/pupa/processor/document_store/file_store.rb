@@ -1,6 +1,6 @@
 module Pupa
   class Processor
-    class ResponseStore
+    class DocumentStore
       # Stores HTTP responses to disk.
       #
       # @see ActiveSupport::Cache::FileStore

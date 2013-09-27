@@ -1,8 +1,8 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe Pupa::Processor::ResponseStore::FileStore do
+describe Pupa::Processor::DocumentStore::FileStore do
   let :store do
-    Pupa::Processor::ResponseStore::FileStore.new(File.expand_path(File.join('..', '..', 'fixtures'), __dir__))
+    Pupa::Processor::DocumentStore::FileStore.new(File.expand_path(File.join('..', '..', 'fixtures'), __dir__))
   end
 
   describe '#exist?' do
