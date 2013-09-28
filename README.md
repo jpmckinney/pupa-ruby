@@ -80,6 +80,7 @@ responses = []
 
 # Change the maximum number of concurrent requests (default 200). You usually
 # need to tweak this number by trial and error.
+# @see https://github.com/lostisland/faraday/wiki/Parallel-requests#advanced-use
 manager = Typhoeus::Hydra.new(max_concurrency: 20)
 
 begin
@@ -109,8 +110,6 @@ responses.each do |response|
   end
 end
 ```
-
-You can [change the maximum number of concurrent requests](https://github.com/lostisland/faraday/wiki/Parallel-requests#advanced-use) (default 200).
 
 ### Reducing disk I/O
 
