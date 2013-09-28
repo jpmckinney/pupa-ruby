@@ -78,15 +78,34 @@ Then, in your scraping methods, write code like:
 ```ruby
 responses = []
 
-# Send HTTP requests in parallel.
-client.in_parallel do
-  responses << client.get('http://example.com/foo')
-  responses << client.get('http://example.com/bar')
+# Change the maximum number of concurrent requests (default 200).
+manager = Typhoeus::Hydra.new(max_concurrency: 20)
+
+begin
+  # Send HTTP requests in parallel.
+  client.in_parallel(manager) do
+    responses << client.get('http://example.com/foo')
+    responses << client.get('http://example.com/bar')
+  end
+rescue Faraday::Error::ClientError => e
+  # Log an error message if, for example, you exceed a server's maximum number
+  # of concurrent connections or if you exceed an API's rate limit. Note that
+  # Typhoeus may sometimes raise the following error for unknown reasons:
+  #
+  # `An error occured on select: 4 (Ethon::Errors::Select)`
+  #
+  # @see https://github.com/typhoeus/ethon/issues/31
+  error(e.response.inspect)
 end
 
 # Responses are now available.
 responses.each do |response|
-  ...
+  # Only process the finished responses.
+  if response.success?
+    # If success...
+  elsif response.finished?
+    # If error...
+  end
 end
 ```
 
