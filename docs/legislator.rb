@@ -6,6 +6,8 @@
 # a data source changes format from year to year.
 require 'pupa'
 
+require 'nokogiri'
+
 # parl.gc.ca uses ASP.NET forms, so we need [bigger guns](http://mechanize.rubyforge.org/).
 require 'mechanize'
 

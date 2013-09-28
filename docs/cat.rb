@@ -1,5 +1,8 @@
 require 'pupa'
 
+# Require Nokogiri so that HTML responses are automatically parsed.
+require 'nokogiri'
+
 # All models should inherit from (or quack like) [Pupa::Base](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/base.rb#files).
 class Cat < Pupa::Base
   # If you would like Pupa.rb to validate your objects, assign to `self.schema`

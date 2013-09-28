@@ -3,6 +3,8 @@
 # separate scraping tasks for different types of data.
 require 'pupa'
 
+require 'nokogiri'
+
 # Defines a new class to model legislative bills. In this example, we will
 # simply scrape the names of bills and associate each bill with a sponsor and a
 # legislative body.
