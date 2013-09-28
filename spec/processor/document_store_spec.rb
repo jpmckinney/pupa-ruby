@@ -8,7 +8,7 @@ describe Pupa::Processor::DocumentStore do
     end
 
     it 'should use Redis' do
-      Pupa::Processor::DocumentStore::RedisStore.should_receive(:new).with('redis://localhost').and_call_original
+      Pupa::Processor::DocumentStore::RedisStore.should_receive(:new).with('redis://localhost', {}).and_call_original
       Pupa::Processor::DocumentStore.new('redis://localhost')
     end
   end
