@@ -32,5 +32,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('rake')
   s.add_development_dependency('redis-store')
   s.add_development_dependency('rspec', '~> 2.10')
+  s.add_development_dependency('typhoeus')
   s.add_development_dependency('vcr', '~> 2.5.0')
 end
