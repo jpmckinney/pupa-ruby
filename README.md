@@ -45,6 +45,10 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 1.  You may want more control over the method used to perform a scraping task. For example, a legislature may publish legislators before 1997 in one format and legislators after 1997 in another format. In this case, you may want to select the method used to scrape legislators according to the year. See [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).
 
+### Automatic response parsing
+
+JSON parsing is enabled by default. To enable automatic parsing of HTML and XML, require the `nokogiri` and `multi_xml` gems.
+
 ## Performance
 
 Pupa.rb offers several ways to significantly improve performance.
@@ -83,7 +87,7 @@ Using a RAM disk will significantly improve performance; however, the data will 
 
 #### Memcached
 
-You may cache HTTP responses in [Memcached](http://memcached.org/). First, add the `dalli` gem to your `Gemfile` and `require 'dalli'` in your script. Then:
+You may cache HTTP responses in [Memcached](http://memcached.org/). First, require the `dalli` gem. Then:
 
     ruby cat.rb --cache_dir memcached://localhost:11211
 
@@ -91,7 +95,7 @@ The data in Memcached will be lost between reboots.
 
 #### Redis
 
-You may dump JSON documents in [Redis](http://redis.io/). First, add the `redis-store` gem to your `Gemfile` and `require 'redis-store'` in your script. Then:
+You may dump JSON documents in [Redis](http://redis.io/). First, require the `redis-store` gem. Then:
 
     ruby cat.rb --output_dir redis://localhost:6379/0
 

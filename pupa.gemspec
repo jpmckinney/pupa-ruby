@@ -22,12 +22,12 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('json-schema', '~> 2.1.3')
   s.add_runtime_dependency('mail')
   s.add_runtime_dependency('moped', '~> 1.5.1')
-  s.add_runtime_dependency('nokogiri', '~> 1.6.0')
 
   s.add_development_dependency('coveralls')
   s.add_development_dependency('dalli')
   s.add_development_dependency('json', '~> 1.7.7') # to silence coveralls warning
   s.add_development_dependency('multi_xml')
+  s.add_development_dependency('nokogiri', '~> 1.6.0')
   s.add_development_dependency('octokit') # to update Popolo schema
   s.add_development_dependency('rake')
   s.add_development_dependency('redis-store')

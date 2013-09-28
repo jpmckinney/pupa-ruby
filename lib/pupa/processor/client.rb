@@ -33,15 +33,17 @@ module Pupa
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
 
-          # @see http://tools.ietf.org/html/rfc2854
-          # @see http://tools.ietf.org/html/rfc3236
-          connection.use Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
-
           # @see http://tools.ietf.org/html/rfc4627
           connection.use Middleware::ParseJson, content_type: /\bjson$/
 
+          # @see http://tools.ietf.org/html/rfc2854
+          # @see http://tools.ietf.org/html/rfc3236
+          if defined?(Nokogiri)
+            connection.use Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
+          end
+
+          # @see http://tools.ietf.org/html/rfc3023
           if defined?(MultiXml)
-            # @see http://tools.ietf.org/html/rfc3023
             connection.use FaradayMiddleware::ParseXml, content_type: /\bxml$/
           end
 

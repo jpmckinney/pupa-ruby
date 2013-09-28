@@ -4,6 +4,7 @@ require 'coveralls'
 Coveralls.wear!
 
 require 'multi_xml'
+require 'nokogiri'
 require 'redis-store'
 require 'rspec'
 require 'vcr'
