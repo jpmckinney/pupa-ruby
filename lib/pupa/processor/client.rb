@@ -58,7 +58,11 @@ module Pupa
             end
           end
 
-          connection.adapter Faraday.default_adapter # must be last
+          if defined?(Typhoeus)
+            connection.adapter :typhoeus
+          else
+            connection.adapter Faraday.default_adapter # must be last
+          end
         end
       end
     end

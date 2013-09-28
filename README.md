@@ -57,11 +57,32 @@ In an example case, reducing disk I/O and skipping validation as described below
 
 The `import` action's performance (when using a dependency graph) is currently limited by MongoDB.
 
-### Caching HTTP requests
+### Reducing HTTP requests
 
 HTTP requests consume the most time. To avoid repeat HTTP requests while developing a scraper, cache all HTTP responses. Pupa.rb will by default use a `web_cache` directory in the same directory as your script. You can change the directory by setting the `--cache_dir` switch on the command line, for example:
 
     ruby cat.rb --cache_dir my_cache_dir
+
+### Parallelizing HTTP requests
+
+To enable parallel requests, require the `typhoeus` gem. Then, in your scraping methods, write code like:
+
+```ruby
+responses = []
+
+# Send HTTP requests in parallel.
+client.in_parallel do
+  responses << client.get('http://example.com/foo')
+  responses << client.get('http://example.com/bar')
+end
+
+# Responses are now available.
+responses.each do |response|
+  ...
+end
+```
+
+You can [change the maximum number of concurrent requests](https://github.com/lostisland/faraday/wiki/Parallel-requests#advanced-use) (default 200).
 
 ### Reducing disk I/O
 
@@ -111,7 +132,7 @@ Note that Pupa.rb flushes the Redis database before scraping. If you use Redis, 
 
 The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time.
 
-### JSON backend
+### Parsing JSON
 
 If the rest of your scraper is fast, you may see an improvement by using the `oj` gem. Pupa.rb will automatically pick it up, as it uses [MultiJson](https://github.com/intridea/multi_json).
 
