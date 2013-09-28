@@ -65,7 +65,7 @@ HTTP requests consume the most time. To avoid repeat HTTP requests while develop
 
 ### Parallelizing HTTP requests
 
-To enable parallel requests, use the `typhoeus` gem. Unless you are using an old version of Typhoeus (< 0.5), both Faraday and Typhoeus define a Faraday adapter, but you must use the adapter defined by Typhoeus, like so:
+To enable parallel requests, use the `typhoeus` gem. Unless you are using an old version of Typhoeus (`< 0.5`), both Faraday and Typhoeus define a Faraday adapter, but you must use the one defined by Typhoeus, like so:
 
 ```ruby
 require 'pupa'
@@ -88,6 +88,7 @@ begin
   client.in_parallel(manager) do
     responses << client.get('http://example.com/foo')
     responses << client.get('http://example.com/bar')
+    # More requests...
   end
 rescue Faraday::Error::ClientError => e
   # Log an error message if, for example, you exceed a server's maximum number
@@ -100,7 +101,7 @@ rescue Faraday::Error::ClientError => e
   error(e.response.inspect)
 end
 
-# Responses are now available.
+# Responses are now available for use.
 responses.each do |response|
   # Only process the finished responses.
   if response.success?
@@ -147,7 +148,7 @@ You may dump JSON documents in [Redis](http://redis.io/). First, require the `re
 
     ruby cat.rb --output_dir redis://localhost:6379/0
 
-To dump JSON documents moderately faster, use [pipelining](http://redis.io/topics/pipelining):
+To dump JSON documents in Redis moderately faster, use [pipelining](http://redis.io/topics/pipelining):
 
     ruby cat.rb --output_dir redis://localhost:6379/0 --pipelined
 
@@ -161,7 +162,7 @@ The `json-schema` gem is slow compared to, for example, [JSV](https://github.com
 
 ### Parsing JSON
 
-If the rest of your scraper is fast, you may see an improvement by using the `oj` gem. Pupa.rb will automatically pick it up, as it uses [MultiJson](https://github.com/intridea/multi_json).
+If the rest of your scraper is fast, you may see an improvement by using the `oj` gem. Just `require 'oj'` and Pupa.rb will automatically pick it up, since it uses [MultiJson](https://github.com/intridea/multi_json).
 
 ### Profiling
 
