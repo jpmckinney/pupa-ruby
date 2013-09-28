@@ -78,7 +78,8 @@ Then, in your scraping methods, write code like:
 ```ruby
 responses = []
 
-# Change the maximum number of concurrent requests (default 200).
+# Change the maximum number of concurrent requests (default 200). You usually
+# need to tweak this number by trial and error.
 manager = Typhoeus::Hydra.new(max_concurrency: 20)
 
 begin
