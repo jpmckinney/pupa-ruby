@@ -32,6 +32,7 @@ module Pupa
         Faraday.new do |connection|
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
+          connection.use Faraday::Response::RaiseError # useful for breaking concurrent requests
 
           # @see http://tools.ietf.org/html/rfc4627
           connection.use Middleware::ParseJson, content_type: /\bjson$/
