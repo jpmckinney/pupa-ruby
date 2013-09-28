@@ -103,6 +103,8 @@ To dump JSON documents moderately faster, use [pipelining](http://redis.io/topic
 
     ruby cat.rb --output_dir redis://localhost:6379/0 --pipelined
 
+Requiring the `hiredis` gem will slightly improve performance.
+
 Note that Pupa.rb flushes the Redis database before scraping. If you use Redis, **DO NOT** share a Redis database with Pupa.rb and other applications. You can select a different database than the default `0` for use with Pupa.rb by passing an argument like `redis://localhost:6379/15`, where `15` is the database number.
 
 ### Skipping validation
