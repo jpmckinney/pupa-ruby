@@ -1,5 +1,3 @@
-require 'nokogiri'
-
 require 'pupa/processor/client'
 require 'pupa/processor/dependency_graph'
 require 'pupa/processor/helper'
