@@ -41,11 +41,11 @@ module Pupa
           case query.count
           when 0
             @object.run_callbacks(:create) do
-              collection.insert(@object.to_h)
+              collection.insert(@object.to_h(persist: true))
               @object._id.to_s
             end
           when 1
-            query.update(@object.to_h)
+            query.update(@object.to_h(persist: true))
             query.first['_id'].to_s
           else
             raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{MultiJson.dump(selector)}"

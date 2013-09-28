@@ -223,7 +223,7 @@ module Pupa
       type = object.class.to_s.demodulize.underscore
       name = "#{type}_#{object._id.gsub(File::SEPARATOR, '_')}.json"
 
-      if @store.write_unless_exists(name, object.to_h(include_foreign_objects: true))
+      if @store.write_unless_exists(name, object.to_h)
         info {"save #{type} #{object.to_s} as #{name}"}
       else
         raise Errors::DuplicateObjectIdError, "duplicate object ID: #{object._id} (was the same objected yielded twice?)"

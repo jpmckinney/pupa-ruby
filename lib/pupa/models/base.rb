@@ -149,14 +149,14 @@ module Pupa
     #
     # @return [Hash] a subset of the object's properties
     def fingerprint
-      to_h.except(:_id)
+      to_h(persist: true).except(:_id)
     end
 
     # Returns the object's foreign keys and foreign objects.
     #
     # @return [Hash] the object's foreign keys and foreign objects
     def foreign_properties
-      to_h(include_foreign_objects: true).slice(*foreign_keys + foreign_objects)
+      to_h.slice(*foreign_keys + foreign_objects)
     end
 
     # Validates the object against the schema.
@@ -165,17 +165,19 @@ module Pupa
     def validate!
       if self.class.json_schema
         # JSON::Validator#initialize_schema runs fastest if given a hash.
-        JSON::Validator.validate!(self.class.json_schema, stringify_keys(to_h))
+        JSON::Validator.validate!(self.class.json_schema, stringify_keys(to_h(persist: true)))
       end
     end
 
     # Returns the object as a hash.
     #
-    # @param [Boolean] include_foreign_objects whether to include foreign objects
+    # @param [Boolean] persist whether the object is being persisted, validated
+    #   or used as a MongoDB selecto, in which case foreign objects (i.e. hints)
+    #   are excluded
     # @return [Hash] the object as a hash
-    def to_h(include_foreign_objects: false)
+    def to_h(persist: false)
       {}.tap do |hash|
-        (include_foreign_objects ? properties : properties - foreign_objects).each do |property|
+        (persist ? properties - foreign_objects : properties).each do |property|
           value = self[property]
           if value == false || value.present?
             hash[property] = value

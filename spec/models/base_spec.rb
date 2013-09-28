@@ -196,12 +196,12 @@ describe Pupa::Base do
   end
 
   describe '#to_h' do
-    it 'should not include foreign objects by default' do
-      object.to_h.should == {_id: object._id, _type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
+    it 'should include all properties by default' do
+      object.to_h.should == {_id: object._id, _type: 'music/band', name: 'Moderat', label: {name: 'Mute'}, inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
     end
 
-    it 'should include foreign objects if desired' do
-      object.to_h(include_foreign_objects: true).should == {_id: object._id, _type: 'music/band', name: 'Moderat', label: {name: 'Mute'}, inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
+    it 'should exclude foreign objects if persisting' do
+      object.to_h(persist: true).should == {_id: object._id, _type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
     end
 
     it 'should not include blank properties' do
