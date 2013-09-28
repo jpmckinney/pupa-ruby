@@ -65,7 +65,7 @@ HTTP requests consume the most time. To avoid repeat HTTP requests while develop
 
 ### Parallelizing HTTP requests
 
-To enable parallel requests, use the `typhoeus` gem. Unless you are using an old version of Typhoeus (`< 0.5`), both Faraday and Typhoeus define a Faraday adapter, but you must use the one defined by Typhoeus, like so:
+To enable parallel requests, use the `typhoeus` gem. Unless you are using an old version of Typhoeus (< 0.5), both Faraday and Typhoeus define a Faraday adapter, but you must use the one defined by Typhoeus, like so:
 
 ```ruby
 require 'pupa'
