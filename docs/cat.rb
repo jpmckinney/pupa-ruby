@@ -1,6 +1,6 @@
 require 'pupa'
 
-# Require Nokogiri so that HTML responses are automatically parsed.
+# Require Nokogiri to automatically parse HTML responses.
 require 'nokogiri'
 
 class Cat
