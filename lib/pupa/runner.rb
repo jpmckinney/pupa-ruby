@@ -178,7 +178,7 @@ module Pupa
       report = {
         plan: {
           processor: @processor_class,
-          arguments: options.to_h,
+          arguments: options.dup.to_h,
           options: rest,
         },
         start: Time.now.utc,
