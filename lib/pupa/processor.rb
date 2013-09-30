@@ -70,6 +70,15 @@ module Pupa
       client.post(url, params).body
     end
 
+    # Yields the object to the transformation task for processing, e.g. saving
+    # to disk, printing to CSV, etc.
+    #
+    # @param [Object] an object
+    # @note All the good terms are taken by Ruby: `return`, `send` and `yield`.
+    def dispatch(object)
+      Fiber.yield(object)
+    end
+
     # Adds a scraping task to Pupa.rb.
     #
     # Defines a method whose name is identical to `task_name`. This method

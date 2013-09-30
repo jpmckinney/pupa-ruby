@@ -15,7 +15,7 @@ describe Pupa::Processor do
     end
 
     def scrape_people
-      Fiber.yield(person)
+      dispatch(person)
     end
   end
 
