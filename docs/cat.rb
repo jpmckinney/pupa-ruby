@@ -3,8 +3,11 @@ require 'pupa'
 # Require Nokogiri so that HTML responses are automatically parsed.
 require 'nokogiri'
 
-# All models should inherit from (or quack like) [Pupa::Base](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/base.rb#files).
-class Cat < Pupa::Base
+class Cat
+  # All models should mixin
+  #[Pupa::Model](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/model.rb#files).
+  include Pupa::Model
+
   # If you would like Pupa.rb to validate your objects, assign to `self.schema`
   # an absolute path to a [JSON Schema](http://json-schema.org/). See for
   # example [Popolo's JSON Schema files](https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo).
@@ -16,10 +19,11 @@ class Cat < Pupa::Base
   # for more mixins.
   include Pupa::Concerns::Timestamps
 
-  # When converting an object to a hash with the `to_h` method (e.g. before
-  # saving an object to the database), only the properties declared with
-  # `attr_accessor` will be included in the hash.
   attr_accessor :image, :name, :breed, :age, :sex
+
+  # Declares which properties should be dumped to JSON after a scraping task is
+  # complete. All of these properties will be imported to MongoDB.
+  dump :image, :name, :breed, :age, :sex
 
   # When saving an object to the database, Pupa.rb will check if the object had
   # been saved in a previous run. It uses a "fingerprint" of the object: a

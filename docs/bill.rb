@@ -8,7 +8,9 @@ require 'nokogiri'
 # Defines a new class to model legislative bills. In this example, we will
 # simply scrape the names of bills and associate each bill with a sponsor and a
 # legislative body.
-class Bill < Pupa::Base
+class Bill
+  include Pupa::Model
+
   attr_accessor :name, :sponsor_id, :organization_id, :sponsor, :organization
 
   # When saving scraped objects to a database, these foreign keys will be used
@@ -21,6 +23,11 @@ class Bill < Pupa::Base
   # for example, `sponsor` for `sponsor_id`. Before saving the object to the
   # database, Pupa.rb will use this information to identify the foreign object.
   foreign_object :sponsor, :organization
+
+  # We want to dump all properties, including foreign objects, to JSON after
+  # scraping. However, we do not want to import foreign objects into MongoDB.
+  # Pupa.rb automatically excludes foreign objects during import.
+  dump :name, :sponsor_id, :organization_id, :sponsor, :organization
 
   # Overrides the `sponsor=` setter to automatically add the `_type` property,
   # instead of having to add it each time in the processor.
