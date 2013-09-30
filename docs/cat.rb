@@ -73,7 +73,7 @@ class CatProcessor < Pupa::Processor
 
       # Yields the Cat object to the transformation task for processing, e.g.
       # saving to disk, printing to CSV, etc.
-      Fiber.yield(cat)
+      dispatch(cat)
     end
   end
 end

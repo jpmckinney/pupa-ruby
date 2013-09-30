@@ -60,7 +60,7 @@ class LegislatorProcessor < Pupa::Processor
     doc.css('#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)').each do |row|
       person = Pupa::Person.new
       person.name = swap_first_last_name(row.at_css('td:eq(1)').text)
-      Fiber.yield(person)
+      dispatch(person)
     end
   end
 
@@ -74,7 +74,7 @@ class LegislatorProcessor < Pupa::Processor
     doc.css('tr:gt(1)').each do |row|
       person = Pupa::Person.new
       person.name = swap_first_last_name(row.at_css('td:eq(1)').text)
-      Fiber.yield(person)
+      dispatch(person)
     end
   end
 end

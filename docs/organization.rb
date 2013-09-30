@@ -74,7 +74,7 @@ class PublicBodyProcessor < Pupa::Processor
       organization.add_extra(:contact_detail, contact_detail)
       organization.add_contact_detail('email', email)
       organization.add_source(url, note: 'New Brunswick Directory of Public Bodies')
-      Fiber.yield(organization)
+      dispatch(organization)
     end
   end
 end

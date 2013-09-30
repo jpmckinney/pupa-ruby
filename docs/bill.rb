@@ -71,20 +71,20 @@ class ParliamentOfCanada < Pupa::Processor
       # omits any middle names.
       components = person.name.split(' ')
       person.add_name("#{components.first} #{components.last}")
-      Fiber.yield(person)
+      dispatch(person)
     end
   end
 
   # Hardcodes the top-level organizations within Parliament.
   def scrape_organizations
     parliament = Pupa::Organization.new(name: 'Parliament of Canada')
-    Fiber.yield(parliament)
+    dispatch(parliament)
 
     house_of_commons = Pupa::Organization.new(name: 'House of Commons', parent_id: parliament._id)
-    Fiber.yield(house_of_commons)
+    dispatch(house_of_commons)
 
     senate = Pupa::Organization.new(name: 'Senate', parent_id: parliament._id)
-    Fiber.yield(senate)
+    dispatch(senate)
   end
 
   def scrape_bills
@@ -109,7 +109,7 @@ class ParliamentOfCanada < Pupa::Processor
       bill.organization = {
         name: row['BillNumber']['prefix'] == 'C' ? 'House of Commons' : 'Senate',
       }
-      Fiber.yield(bill)
+      dispatch(bill)
     end
   end
 end

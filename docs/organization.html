@@ -186,7 +186,7 @@ of the Government of New Brunswick.</p>
       organization.add_extra(<span class="symbol">:contact_detail</span>, contact_detail)
       organization.add_contact_detail(<span class="string">'email'</span>, email)
       organization.add_source(url, <span class="symbol">note:</span> <span class="string">'New Brunswick Directory of Public Bodies'</span>)
-      <span class="constant">Fiber</span>.<span class="keyword">yield</span>(organization)
+      dispatch(organization)
     <span class="keyword">end</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>

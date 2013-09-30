@@ -212,7 +212,7 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
     doc.css(<span class="string">'#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)'</span>).each <span class="keyword">do</span> |row|
       person = <span class="constant">Pupa::Person</span>.new
       person.name = swap_first_last_name(row.at_css(<span class="string">'td:eq(1)'</span>).text)
-      <span class="constant">Fiber</span>.<span class="keyword">yield</span>(person)
+      dispatch(person)
     <span class="keyword">end</span>
   <span class="keyword">end</span>
 
@@ -226,7 +226,7 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
     doc.css(<span class="string">'tr:gt(1)'</span>).each <span class="keyword">do</span> |row|
       person = <span class="constant">Pupa::Person</span>.new
       person.name = swap_first_last_name(row.at_css(<span class="string">'td:eq(1)'</span>).text)
-      <span class="constant">Fiber</span>.<span class="keyword">yield</span>(person)
+      dispatch(person)
     <span class="keyword">end</span>
   <span class="keyword">end</span>
 <span class="keyword">end</span>
