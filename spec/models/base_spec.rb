@@ -1,8 +1,10 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Pupa::Base do
+describe Pupa::Model do
   module Music
-    class Band < Pupa::Base
+    class Band
+      include Pupa::Model
+
       self.schema = {
         '$schema' => 'http://json-schema.org/draft-03/schema#',
         'properties' => {
@@ -19,14 +21,10 @@ describe Pupa::Base do
         },
       }
 
-      attr_accessor :label, :founding_date, :inactive, :label_id, :manager_id, :links
-      attr_reader :name
+      attr_accessor :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links
+      dump :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links
       foreign_key :label_id, :manager_id
       foreign_object :label
-
-      def name=(name)
-        @name = name
-      end
     end
   end
 
@@ -38,17 +36,11 @@ describe Pupa::Base do
     Music::Band.new(properties)
   end
 
-  describe '.attr_accessor' do
+  describe '.dump' do
     it 'should add properties' do
-      [:_id, :_type, :extras, :label, :founding_date, :inactive, :label_id, :manager_id, :links].each do |property|
+      [:_id, :_type, :extras, :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links].each do |property|
         Music::Band.properties.to_a.should include(property)
       end
-    end
-  end
-
-  describe '.attr_reader' do
-    it 'should add properties' do
-      Music::Band.properties.to_a.should include(:name)
     end
   end
 
@@ -66,13 +58,15 @@ describe Pupa::Base do
 
   describe '.schema=' do
     let :klass_with_absolute_path do
-      Class.new(Pupa::Base) do
+      Class.new do
+        include Pupa::Model
         self.schema = '/path/to/schema.json'
       end
     end
 
     let :klass_with_relative_path do
-      Class.new(Pupa::Base) do
+      Class.new do
+        include Pupa::Model
         self.schema = 'schema'
       end
     end
@@ -178,7 +172,9 @@ describe Pupa::Base do
 
   describe '#validate!' do
     let :klass_without_schema do
-      Class.new(Pupa::Base)
+      Class.new do
+        include Pupa::Model
+      end
     end
 
     it 'should do nothing if the schema is not set' do

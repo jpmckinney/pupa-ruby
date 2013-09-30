@@ -11,43 +11,36 @@ require 'pupa/refinements/json-schema'
 JSON::Validator.cache_schemas = true
 
 module Pupa
-  # The base class from which other primary Popolo classes inherit.
-  class Base
-    include ActiveSupport::Callbacks
-    define_callbacks :create, :save
+  # Adds methods expected by Pupa processors.
+  module Model
+    extend ActiveSupport::Concern
 
-    class_attribute :json_schema
-    class_attribute :properties
-    class_attribute :foreign_keys
-    class_attribute :foreign_objects
+    included do
+      include ActiveSupport::Callbacks
+      define_callbacks :create, :save
 
-    self.properties = Set.new
-    self.foreign_keys = Set.new
-    self.foreign_objects = Set.new
+      class_attribute :json_schema
+      class_attribute :properties
+      class_attribute :foreign_keys
+      class_attribute :foreign_objects
 
-    class << self
-      # Declare the class' properties.
+      self.properties = Set.new
+      self.foreign_keys = Set.new
+      self.foreign_objects = Set.new
+
+      attr_reader :_id
+      attr_accessor :_type, :extras
+
+      dump :_id, :_type, :extras
+    end
+
+    module ClassMethods
+      # Declare which properties should be dumped to JSON after a scraping task
+      # is complete. A subset of these properties will be imported to MongoDB.
       #
-      # When converting an object to a hash using the `to_h` method, only the
-      # properties declared with `attr_accessor` or `attr_reader` will be
-      # included in the hash.
-      #
-      # @param [Array<Symbol>] the class' properties
-      def attr_accessor(*attributes)
+      # @param [Array<Symbol>] the properties to dump to JSON
+      def dump(*attributes)
         self.properties += attributes # use assignment to not overwrite the parent's attribute
-        super
-      end
-
-      # Declare the class' properties.
-      #
-      # When converting an object to a hash using the `to_h` method, only the
-      # properties declared with `attr_accessor` or `attr_reader` will be
-      # included in the hash.
-      #
-      # @param [Array<Symbol>] the class' properties
-      def attr_reader(*attributes)
-        self.properties += attributes # use assignment to not overwrite the parent's attribute
-        super
       end
 
       # Declare the class' foreign keys.
@@ -87,8 +80,6 @@ module Pupa
         end
       end
     end
-
-    attr_accessor :_id, :_type, :extras
 
     # @param [Hash] properties the object's properties
     def initialize(properties = {})

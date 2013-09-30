@@ -6,6 +6,7 @@ module Pupa
 
       included do
         attr_reader :identifiers
+        dump :identifiers
       end
 
       # Sets the identifiers.

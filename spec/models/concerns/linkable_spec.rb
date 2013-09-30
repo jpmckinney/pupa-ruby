@@ -2,7 +2,8 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Pupa::Concerns::Linkable do
   let :klass do
-    Class.new(Pupa::Base) do
+    Class.new do
+      include Pupa::Model
       include Pupa::Concerns::Linkable
     end
   end

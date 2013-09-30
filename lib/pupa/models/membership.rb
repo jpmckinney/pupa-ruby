@@ -1,6 +1,8 @@
 module Pupa
   # A relationship between a person and an organization.
-  class Membership < Base
+  class Membership
+    include Model
+
     self.schema = 'popolo/membership'
 
     include Concerns::Timestamps
@@ -9,6 +11,8 @@ module Pupa
     include Concerns::Linkable
 
     attr_accessor :label, :role, :person_id, :organization_id, :post_id,
+      :start_date, :end_date
+    dump :label, :role, :person_id, :organization_id, :post_id,
       :start_date, :end_date
 
     foreign_key :person_id, :organization_id, :post_id

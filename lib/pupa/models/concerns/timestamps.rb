@@ -8,6 +8,7 @@ module Pupa
 
       included do
         attr_accessor :created_at, :updated_at
+        dump :created_at, :updated_at
 
         set_callback(:create, :before) do |object|
           object.created_at = Time.now.utc

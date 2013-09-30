@@ -6,6 +6,7 @@ module Pupa
 
       included do
         attr_accessor :other_names
+        dump :other_names
       end
 
       # Adds an alternate or former name.

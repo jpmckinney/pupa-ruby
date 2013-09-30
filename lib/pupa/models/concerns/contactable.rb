@@ -6,6 +6,7 @@ module Pupa
 
       included do
         attr_reader :contact_details
+        dump :contact_details
       end
 
       # Sets the contact details.

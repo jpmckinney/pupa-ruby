@@ -1,7 +1,9 @@
 module Pupa
   # A group with a common purpose or reason for existence that goes beyond the set
   # of people belonging to it.
-  class Organization < Base
+  class Organization
+    include Model
+
     self.schema = 'popolo/organization'
 
     include Concerns::Timestamps
@@ -12,6 +14,8 @@ module Pupa
     include Concerns::Linkable
 
     attr_accessor :name, :classification, :parent_id, :parent, :founding_date,
+      :dissolution_date, :image
+    dump :name, :classification, :parent_id, :parent, :founding_date,
       :dissolution_date, :image
 
     foreign_key :parent_id

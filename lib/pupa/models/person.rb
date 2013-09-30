@@ -1,6 +1,8 @@
 module Pupa
   # A real person, alive or dead.
-  class Person < Base
+  class Person
+    include Model
+
     self.schema = 'popolo/person'
 
     include Concerns::Timestamps
@@ -11,6 +13,9 @@ module Pupa
     include Concerns::Linkable
 
     attr_accessor :name, :family_name, :given_name, :additional_name,
+      :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name,
+      :email, :gender, :birth_date, :death_date, :image, :summary, :biography
+    dump :name, :family_name, :given_name, :additional_name,
       :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name,
       :email, :gender, :birth_date, :death_date, :image, :summary, :biography
 

@@ -6,6 +6,7 @@ module Pupa
 
       included do
         attr_accessor :sources
+        dump :sources
       end
 
       # Adds a source to the object.

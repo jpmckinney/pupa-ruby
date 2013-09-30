@@ -6,6 +6,7 @@ module Pupa
 
       included do
         attr_accessor :links
+        dump :links
       end
 
       # Adds a URL.

@@ -1,6 +1,8 @@
 module Pupa
   # A position that exists independent of the person holding it.
-  class Post < Base
+  class Post
+    include Model
+
     self.schema = 'popolo/post'
 
     include Concerns::Timestamps
@@ -9,6 +11,7 @@ module Pupa
     include Concerns::Linkable
 
     attr_accessor :label, :role, :organization_id, :start_date, :end_date
+    dump :label, :role, :organization_id, :start_date, :end_date
 
     foreign_key :organization_id
 

@@ -55,13 +55,13 @@ Pupa.rb offers several ways to significantly improve performance.
 
 In an example case, reducing disk I/O and skipping validation as described below reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
 
-The `import` action's performance (when using a dependency graph) is currently limited by MongoDB.
+The `import` action's performance is currently limited by MongoDB when a dependency graph is used to determine the evaluation order. If a dependency graph cannot be used because you don't know a related object's ID, [several optimizations](https://github.com/opennorth/pupa-ruby/issues/12) can be implemented to improve performance.
 
 ### Reducing HTTP requests
 
 HTTP requests consume the most time. To avoid repeat HTTP requests while developing a scraper, cache all HTTP responses. Pupa.rb will by default use a `web_cache` directory in the same directory as your script. You can change the directory by setting the `--cache_dir` switch on the command line, for example:
 
-    ruby cat.rb --cache_dir my_cache_dir
+    ruby cat.rb --cache_dir /tmp/my_cache_dir
 
 ### Parallelizing HTTP requests
 
@@ -92,12 +92,7 @@ begin
   end
 rescue Faraday::Error::ClientError => e
   # Log an error message if, for example, you exceed a server's maximum number
-  # of concurrent connections or if you exceed an API's rate limit. Note that
-  # Typhoeus may sometimes raise the following error for unknown reasons:
-  #
-  # `An error occured on select: 4 (Ethon::Errors::Select)`
-  #
-  # @see https://github.com/typhoeus/ethon/issues/31
+  # of concurrent connections or if you exceed an API's rate limit.
   error(e.response.inspect)
 end
 
@@ -118,7 +113,7 @@ After HTTP requests, disk I/O is the slowest operation. Two types of files are w
 
 #### RAM file systems
 
-A simple solution is to create a file system in RAM, like `tmpfs` on Linux for example, and to use it as your `cache_dir` and `output_dir`. On OS X, you must create a RAM disk. To create a 128MB RAM disk, for example, run:
+A simple solution is to create a file system in RAM, like `tmpfs` on Linux for example, and to use it as your `output_dir` and  `cache_dir`. On OS X, you must create a RAM disk. To create a 128MB RAM disk, for example, run:
 
     ramdisk=$(hdiutil attach -nomount ram://$((128 * 2048)) | tr -d ' \t')
     diskutil erasevolume HFS+ 'ramdisk' $ramdisk
@@ -132,7 +127,7 @@ Once you are done with the RAM disk, release the memory:
     diskutil unmount $ramdisk
     hdiutil detach $ramdisk
 
-Using a RAM disk will significantly improve performance; however, the data will be lost between reboots unless you move the data to a hard disk. Using Memcached (for caching) and Redis (for storage) is moderately faster than using a RAM disk.
+Using a RAM disk will significantly improve performance; however, the data will be lost between reboots unless you move the data to a hard disk. Using Memcached (for caching) and Redis (for storage) is moderately faster than using a RAM disk, and Redis will not lose your output data between reboots.
 
 #### Memcached
 
