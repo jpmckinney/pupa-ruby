@@ -11,7 +11,8 @@ require 'nokogiri'
 class Bill
   include Pupa::Model
 
-  attr_accessor :name, :sponsor_id, :organization_id, :sponsor, :organization
+  attr_accessor :number, :name, :sponsor_id, :organization_id
+  attr_reader :sponsor, :organization
 
   # When saving scraped objects to a database, these foreign keys will be used
   # to derive an evaluation order.
@@ -27,20 +28,20 @@ class Bill
   # We want to dump all properties, including foreign objects, to JSON after
   # scraping. However, we do not want to import foreign objects into MongoDB.
   # Pupa.rb automatically excludes foreign objects during import.
-  dump :name, :sponsor_id, :organization_id, :sponsor, :organization
+  dump :number, :name, :sponsor_id, :organization_id, :sponsor, :organization
 
   # Overrides the `sponsor=` setter to automatically add the `_type` property,
   # instead of having to add it each time in the processor.
   def sponsor=(sponsor)
-    @sponsor = {'_type' => 'pupa/person'}.merge(sponsor)
+    @sponsor = {_type: 'pupa/person'}.merge(sponsor)
   end
 
   def organization=(organization)
-    @organization = {'_type' => 'pupa/organization'}.merge(organization)
+    @organization = {_type: 'pupa/organization'}.merge(organization)
   end
 
   def fingerprint
-    to_h.slice(:name, :organization_id)
+    to_h.slice(:number)
   end
 
   def to_s
@@ -93,6 +94,7 @@ class ParliamentOfCanada < Pupa::Processor
       next if row['BillNumber']['prefix'] == 'S'
 
       bill = Bill.new
+      bill.number = row['BillNumber']['prefix'] + row['BillNumber']['number']
       bill.name = row['BillTitle']['Title'].find{|x| x['language'] == 'en'}['__content__']
       # Here, we tell the Bill everything we know about the sponsor and the
       # legislative body. Pupa.rb will later determine which objects match the
