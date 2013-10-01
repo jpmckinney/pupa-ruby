@@ -371,9 +371,9 @@ module Pupa
 
     # @param [Object] object an object
     def import_object(object)
-      id = Persistence.new(object).save
+      inserted, id = Persistence.new(object).save
       @report[:import][object._type] ||= Hash.new(0)
-      if id == object._id
+      if inserted
         @report[:import][object._type][:insert] += 1
       else
         @report[:import][object._type][:update] += 1

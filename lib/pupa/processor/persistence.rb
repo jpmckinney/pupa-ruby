@@ -30,7 +30,7 @@ module Pupa
 
       # Saves an object to MongoDB.
       #
-      # @return [String] the object's database ID
+      # @return [Array] whether the object was inserted and the object's database ID
       # @raises [Pupa::Errors::TooManyMatches] if multiple documents would be updated
       def save
         selector = @object.fingerprint
@@ -42,11 +42,11 @@ module Pupa
           when 0
             @object.run_callbacks(:create) do
               collection.insert(@object.to_h(persist: true))
-              @object._id.to_s
+              [true, @object._id.to_s]
             end
           when 1
             query.update(@object.to_h(persist: true))
-            query.first['_id'].to_s
+            [false, query.first['_id'].to_s]
           else
             raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{MultiJson.dump(selector)}"
           end
