@@ -73,7 +73,7 @@ module Pupa
         opts.on('-t', '--task TASK', @processor_class.tasks, 'Select a scraping task to run (you may give this switch multiple times)', "  (#{@processor_class.tasks.join(', ')})") do |v|
           options.tasks << v
         end
-        opts.on('-o', '--output_dir PATH', 'The directory or Redis address (e.g. redis://localhost:6379) in which to dump JSON documents') do |v|
+        opts.on('-o', '--output_dir PATH', 'The directory or Redis address (e.g. redis://localhost:6379/0) in which to dump JSON documents') do |v|
           options.output_dir = v
         end
         opts.on('-c', '--cache_dir PATH', 'The directory or Memcached address (e.g. memcached://localhost:11211) in which to cache HTTP requests') do |v|
@@ -178,8 +178,8 @@ module Pupa
       report = {
         plan: {
           processor: @processor_class,
-          arguments: options.dup.to_h,
-          options: rest,
+          options: options.dup.to_h,
+          arguments: rest,
         },
         start: Time.now.utc,
       }
