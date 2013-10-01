@@ -153,7 +153,9 @@ Note that Pupa.rb flushes the Redis database before scraping. If you use Redis, 
 
 ### Skipping validation
 
-The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time. In an example case, using JSV instead of the `json-schema` gem reduced the time to validate 10,000 documents from 18 seconds down to 3 seconds.
+The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time.
+
+The [pupa-validate](https://npmjs.org/package/pupa-validate) npm package can be used to validate JSON documents using the faster JSV. In an example case, using JSV instead of the `json-schema` gem reduced by half the time to validate 10,000 documents.
 
 ### Parsing JSON
 
