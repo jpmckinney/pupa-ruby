@@ -36,17 +36,17 @@ module Pupa
           connection.use Middleware::RaiseError # useful for breaking concurrent requests
 
           # @see http://tools.ietf.org/html/rfc4627
-          connection.use Middleware::ParseJson, content_type: /\bjson$/
+          connection.use Middleware::ParseJson, preserve_raw: true, content_type: /\bjson$/
 
           # @see http://tools.ietf.org/html/rfc2854
           # @see http://tools.ietf.org/html/rfc3236
           if defined?(Nokogiri)
-            connection.use Middleware::ParseHtml, content_type: %w(text/html application/xhtml+xml)
+            connection.use Middleware::ParseHtml, preserve_raw: true, content_type: %w(text/html application/xhtml+xml)
           end
 
           # @see http://tools.ietf.org/html/rfc3023
           if defined?(MultiXml)
-            connection.use FaradayMiddleware::ParseXml, content_type: /\bxml$/
+            connection.use FaradayMiddleware::ParseXml, preserve_raw: true, content_type: /\bxml$/
           end
 
           if cache_dir
