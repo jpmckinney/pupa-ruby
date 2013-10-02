@@ -31,7 +31,7 @@ describe Pupa::Processor::Persistence do
     end
 
     it 'should update a document if one match' do
-      Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'changed', name: 'existing'))[1].save.should == [false, 'existing']
+      Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'changed', name: 'existing')).save.should == [false, 'existing']
     end
 
     it 'should raise an error if many matches' do
