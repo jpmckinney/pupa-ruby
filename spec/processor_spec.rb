@@ -67,6 +67,10 @@ describe Pupa::Processor do
       path = "/tmp/person_#{processor.person._id}.json"
     end
 
+    it 'should return the number of scraped objects by type' do
+      processor.dump_scraped_objects(:people).should == {'person' => 1}
+    end
+
     it 'should not overwrite an existing file' do
       File.open(path, 'w') {}
       expect{processor.dump_scraped_objects(:people)}.to raise_error(Pupa::Errors::DuplicateObjectIdError)
