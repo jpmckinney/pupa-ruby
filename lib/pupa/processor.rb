@@ -122,24 +122,8 @@ module Pupa
       counts = Hash.new(0)
       @store.pipelined do
         send(task_name).each do |object|
-          type = object.class.to_s.demodulize.underscore
-          name = "#{type}_#{object._id.gsub(File::SEPARATOR, '_')}.json"
-
-          if @store.write_unless_exists(name, object.to_h)
-            info {"save #{type} #{object.to_s} as #{name}"}
-          else
-            raise Errors::DuplicateObjectIdError, "duplicate object ID: #{object._id} (was the same objected yielded twice?)"
-          end
-
-          counts[type] += 1
-
-          if @validate
-            begin
-              object.validate!
-            rescue JSON::Schema::ValidationError => e
-              warn {e.message}
-            end
-          end
+          counts[object._type] += 1
+          dump_scraped_object(object)
         end
       end
       counts
@@ -237,6 +221,29 @@ module Pupa
     # @return [String] the name of the method to perform the scraping task
     def scraping_task_method(task_name)
       "scrape_#{task_name}"
+    end
+
+    # Dumps an scraped object to disk.
+    #
+    # @param [Object] object an scraped object
+    # @raises [Pupa::Errors::DuplicateObjectIdError]
+    def dump_scraped_object(object)
+      type = object.class.to_s.demodulize.underscore
+      name = "#{type}_#{object._id.gsub(File::SEPARATOR, '_')}.json"
+
+      if @store.write_unless_exists(name, object.to_h)
+        info {"save #{type} #{object.to_s} as #{name}"}
+      else
+        raise Errors::DuplicateObjectIdError, "duplicate object ID: #{object._id} (was the same objected yielded twice?)"
+      end
+
+      if @validate
+        begin
+          object.validate!
+        rescue JSON::Schema::ValidationError => e
+          warn {e.message}
+        end
+      end
     end
 
     # Loads scraped objects from disk.

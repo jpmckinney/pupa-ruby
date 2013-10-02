@@ -68,7 +68,7 @@ describe Pupa::Processor do
     end
 
     it 'should return the number of scraped objects by type' do
-      processor.dump_scraped_objects(:people).should == {'person' => 1}
+      processor.dump_scraped_objects(:people).should == {'pupa/person' => 1}
     end
 
     it 'should not overwrite an existing file' do
