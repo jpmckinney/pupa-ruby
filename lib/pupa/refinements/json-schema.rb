@@ -1,3 +1,5 @@
+require 'mail'
+
 module Pupa
   module Refinements
     # A refinement for JSON Schema to validate "email" and "uri" formats. Using
