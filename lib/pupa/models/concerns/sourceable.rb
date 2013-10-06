@@ -9,6 +9,11 @@ module Pupa
         dump :sources
       end
 
+      def initialize(*args)
+        @sources = []
+        super
+      end
+
       # Adds a source to the object.
       #
       # @param [String] url a URL
@@ -19,7 +24,7 @@ module Pupa
           data[:note] = note
         end
         if url
-          (@sources ||= []) << data
+          @sources << data
         end
       end
     end

@@ -9,6 +9,11 @@ module Pupa
         dump :contact_details
       end
 
+      def initialize(*args)
+        @contact_details = ContactDetailList.new
+        super
+      end
+
       # Sets the contact details.
       #
       # @param [Array] contact_details a list of contact details
@@ -27,7 +32,7 @@ module Pupa
           data[:note] = note
         end
         if type && value
-          (@contact_details ||= ContactDetailList.new) << data
+          @contact_details << data
         end
       end
     end

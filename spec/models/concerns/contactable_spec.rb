@@ -12,6 +12,18 @@ describe Pupa::Concerns::Contactable do
     klass.new
   end
 
+  describe '#initialize' do
+    it 'should initialize an empty ContactDetailList' do
+      object.contact_details.should be_a(Pupa::ContactDetailList)
+      object.contact_details.should == []
+    end
+
+    it 'should initialize the given ContactDetailList' do
+      object = klass.new(contact_details: [{type: 'email', value: 'ceo@example.com', note: 'work'}])
+      object.contact_details.should == [{type: 'email', value: 'ceo@example.com', note: 'work'}]
+    end
+  end
+
   describe '#contact_details=' do
     it 'should use coerce to a ContactDetailList' do
       object.contact_details = [{type: 'email', value: 'ceo@example.com', note: 'work'}]

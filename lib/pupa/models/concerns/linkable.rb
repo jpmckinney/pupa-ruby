@@ -9,6 +9,11 @@ module Pupa
         dump :links
       end
 
+      def initialize(*args)
+        @links = []
+        super
+      end
+
       # Adds a URL.
       #
       # @param [String] url a URL
@@ -19,7 +24,7 @@ module Pupa
           data[:note] = note
         end
         if url
-          (@links ||= []) << data
+          @links << data
         end
       end
     end

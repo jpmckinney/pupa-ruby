@@ -9,6 +9,11 @@ module Pupa
         dump :other_names
       end
 
+      def initialize(*args)
+        @other_names = []
+        super
+      end
+
       # Adds an alternate or former name.
       #
       # @param [String] name an alternate or former name
@@ -27,7 +32,7 @@ module Pupa
           data[:note] = note
         end
         if name
-          (@other_names ||= []) << data
+          @other_names << data
         end
       end
     end

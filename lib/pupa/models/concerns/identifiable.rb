@@ -9,6 +9,11 @@ module Pupa
         dump :identifiers
       end
 
+      def initialize(*args)
+        @identifiers = IdentifierList.new
+        super
+      end
+
       # Sets the identifiers.
       #
       # @param [Array] identifiers a list of identifiers
@@ -26,7 +31,7 @@ module Pupa
           data[:scheme] = scheme
         end
         if identifier
-          (@identifiers ||= []) << data
+          @identifiers << data
         end
       end
     end

@@ -12,6 +12,18 @@ describe Pupa::Concerns::Identifiable do
     klass.new
   end
 
+  describe '#initialize' do
+    it 'should initialize an empty IdentifierList' do
+      object.identifiers.should be_a(Pupa::IdentifierList)
+      object.identifiers.should == []
+    end
+
+    it 'should initialize the given IdentifierList' do
+      object = klass.new(identifiers: [{identifier: '123456789', scheme: 'DUNS'}])
+      object.identifiers.should == [{identifier: '123456789', scheme: 'DUNS'}]
+    end
+  end
+
   describe '#identifiers=' do
     it 'should use coerce to a IdentifierList' do
       object.identifiers = [{identifier: '123456789', scheme: 'DUNS'}]
