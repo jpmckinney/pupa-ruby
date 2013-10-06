@@ -38,12 +38,14 @@ describe Pupa::Concerns::Contactable do
     end
 
     it 'should not add a contact detail without a type' do
-      object.add_contact_detail('email', nil)
+      object.add_contact_detail(nil, 'ceo@example.com')
+      object.add_contact_detail('', 'ceo@example.com')
       object.contact_details.blank?.should == true
     end
 
     it 'should not add a contact detail without a value' do
-      object.add_contact_detail(nil, 'ceo@example.com')
+      object.add_contact_detail('email', nil)
+      object.add_contact_detail('email', '')
       object.contact_details.blank?.should == true
     end
   end

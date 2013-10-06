@@ -20,6 +20,7 @@ describe Pupa::Concerns::Nameable do
 
     it 'should not add a name without a name' do
       object.add_name(nil)
+      object.add_name('')
       object.other_names.blank?.should == true
     end
   end

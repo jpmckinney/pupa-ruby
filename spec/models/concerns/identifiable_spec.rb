@@ -39,6 +39,7 @@ describe Pupa::Concerns::Identifiable do
 
     it 'should not add an identifier without an identifier' do
       object.add_identifier(nil)
+      object.add_identifier('')
       object.identifiers.blank?.should == true
     end
   end

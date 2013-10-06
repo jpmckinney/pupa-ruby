@@ -31,7 +31,7 @@ module Pupa
         if note
           data[:note] = note
         end
-        if name
+        if name.present?
           @other_names << data
         end
       end

@@ -31,7 +31,7 @@ module Pupa
         if note
           data[:note] = note
         end
-        if type && value
+        if type.present? && value.present?
           @contact_details << data
         end
       end

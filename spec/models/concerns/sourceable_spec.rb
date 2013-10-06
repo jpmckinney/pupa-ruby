@@ -20,6 +20,7 @@ describe Pupa::Concerns::Sourceable do
 
     it 'should not add a source without a url' do
       object.add_source(nil)
+      object.add_source('')
       object.sources.blank?.should == true
     end
   end

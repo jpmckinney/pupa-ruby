@@ -20,6 +20,7 @@ describe Pupa::Concerns::Linkable do
 
     it 'should not add a link without a url' do
       object.add_link(nil)
+      object.add_link('')
       object.links.blank?.should == true
     end
   end

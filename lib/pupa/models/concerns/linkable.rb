@@ -23,7 +23,7 @@ module Pupa
         if note
           data[:note] = note
         end
-        if url
+        if url.present?
           @links << data
         end
       end

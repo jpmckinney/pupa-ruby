@@ -30,7 +30,7 @@ module Pupa
         if scheme
           data[:scheme] = scheme
         end
-        if identifier
+        if identifier.present?
           @identifiers << data
         end
       end
