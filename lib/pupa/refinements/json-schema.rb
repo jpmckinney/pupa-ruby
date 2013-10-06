@@ -10,20 +10,26 @@ module Pupa
       def validate(current_schema, data, fragments, processor, validator, options = {})
         case current_schema.schema['format']
         when 'email'
-          error_message = "The property '#{build_fragment(fragments)}' must be a valid email address"
-          validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if !data.is_a?(String)
-          address = Mail::Address.new(data)
-          unless (address.address == data && address.domain && address.__send__(:tree).domain.dot_atom_text.elements.size > 1 rescue false)
+          if String === data
+            address = Mail::Address.new(data)
+            unless (address.address == data && address.domain && address.__send__(:tree).domain.dot_atom_text.elements.size > 1 rescue false)
+              error_message = "The property '#{build_fragment(fragments)}' must be a valid email address (#{data})"
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+            end
+          else
+            error_message = "The property '#{build_fragment(fragments)}' must be a string (#{data})"
             validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
-            return
           end
         when 'uri'
-          error_message = "The property '#{build_fragment(fragments)}' must be a valid URI"
-          validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors]) and return if !data.is_a?(String)
-          r = URI::DEFAULT_PARSER.regexp[:ABS_URI]
-          unless r.match(data)
+          if String === data
+            re = URI::DEFAULT_PARSER.regexp[:ABS_URI]
+            unless re.match(data)
+              error_message = "The property '#{build_fragment(fragments)}' must be a valid URI (#{data})"
+              validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
+            end
+          else
+            error_message = "The property '#{build_fragment(fragments)}' must be string (#{data})"
             validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
-            return
           end
         else
           super
