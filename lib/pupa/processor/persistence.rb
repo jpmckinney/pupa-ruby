@@ -45,7 +45,7 @@ module Pupa
               [true, @object._id.to_s]
             end
           when 1
-            query.update(@object.to_h(persist: true))
+            query.update(@object.to_h(persist: true).except(:_id))
             [false, query.first['_id'].to_s]
           else
             raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{MultiJson.dump(selector)}"

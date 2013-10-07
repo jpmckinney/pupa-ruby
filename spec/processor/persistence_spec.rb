@@ -5,7 +5,7 @@ describe Pupa::Processor::Persistence do
     Pupa.session = Moped::Session.new(['localhost:27017'], database: 'pupa_test')
     Pupa.session.collections.each(&:drop)
 
-    Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'existing', name: 'existing')).save
+    Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'existing', name: 'existing', email: 'existing@example.com')).save
 
     Pupa.session[:people].insert(_type: 'pupa/person', name: 'non-unique')
     Pupa.session[:people].insert(_type: 'pupa/person', name: 'non-unique')
@@ -27,11 +27,13 @@ describe Pupa::Processor::Persistence do
 
   describe '#save' do
     it 'should insert a document if no matches' do
-      Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'new', name: 'new')).save.should == [true, 'new']
+      Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'new', name: 'new', email: 'new@example.com')).save.should == [true, 'new']
+      Pupa::Processor::Persistence.find(_type: 'pupa/person', name: 'new')['email'].should == 'new@example.com'
     end
 
     it 'should update a document if one match' do
-      Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'changed', name: 'existing')).save.should == [false, 'existing']
+      Pupa::Processor::Persistence.new(Pupa::Person.new(_id: 'changed', name: 'existing', email: 'changed@example.com')).save.should == [false, 'existing']
+      Pupa::Processor::Persistence.find(_type: 'pupa/person', name: 'existing')['email'].should == 'changed@example.com'
     end
 
     it 'should raise an error if many matches' do
