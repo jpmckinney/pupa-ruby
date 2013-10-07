@@ -15,6 +15,7 @@ module Pupa
         end
 
         set_callback(:save, :before) do |object|
+          object.created_at = object.document['created_at'] if object.document
           object.updated_at = Time.now.utc
         end
       end

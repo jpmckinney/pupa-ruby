@@ -28,8 +28,15 @@ module Pupa
       self.foreign_keys = Set.new
       self.foreign_objects = Set.new
 
-      attr_reader :_id, :extras
+      # @return [String] The object's unique identifier.
+      attr_reader :_id
+      # @return [Hash] The object's non-schema properties.
+      attr_reader :extras
+      # @return [String] The underscored, lowercase form of the object's class.
       attr_accessor :_type
+      # @return [Moped::BSON::Document,nil] The object's matching document in
+      #   the database. Set before persisting the object to the database.
+      attr_accessor :document
 
       dump :_id, :_type, :extras
     end
@@ -166,8 +173,8 @@ module Pupa
 
     # Returns the object as a hash.
     #
-    # @param [Boolean] persist whether the object is being persisted, validated
-    #   or used as a MongoDB selecto, in which case foreign objects (i.e. hints)
+    # @param [Boolean] persist whether the object is being persisted, validated,
+    #   or used as a MongoDB selector, in which case foreign objects (i.e. hints)
     #   are excluded
     # @return [Hash] the object as a hash
     def to_h(persist: false)

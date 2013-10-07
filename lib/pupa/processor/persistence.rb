@@ -28,7 +28,7 @@ module Pupa
         end
       end
 
-      # Saves an object to MongoDB.
+      # Inserts or replaces a document in MongoDB.
       #
       # @return [Array] whether the object was inserted and the object's database ID
       # @raises [Pupa::Errors::TooManyMatches] if multiple documents would be updated
@@ -37,19 +37,23 @@ module Pupa
         query = collection.find(selector)
 
         # Run query before callbacks to avoid e.g. timestamps in the selector.
-        @object.run_callbacks(:save) do
-          case query.count
-          when 0
+        case query.count
+        when 0
+          @object.run_callbacks(:save) do
             @object.run_callbacks(:create) do
               collection.insert(@object.to_h(persist: true))
               [true, @object._id.to_s]
             end
-          when 1
-            query.update(@object.to_h(persist: true).except(:_id))
-            [false, query.first['_id'].to_s]
-          else
-            raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{MultiJson.dump(selector)}"
           end
+        when 1
+          # Make the document available to the callbacks.
+          @object.document = query.first
+          @object.run_callbacks(:save) do
+            query.update(@object.to_h(persist: true).except(:_id))
+            [false, @object.document['_id'].to_s]
+          end
+        else
+          raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{MultiJson.dump(selector)}"
         end
       end
 
