@@ -151,6 +151,13 @@ describe Pupa::Model do
     end
   end
 
+  describe '#links' do
+    it 'should symbolize keys' do
+      object.extras = {'age' => 10}
+      object.extras.should == {age: 10}
+    end
+  end
+
   describe '#add_extra' do
     it 'should add an extra property' do
       object.add_extra(:age, 10)

@@ -28,8 +28,8 @@ module Pupa
       self.foreign_keys = Set.new
       self.foreign_objects = Set.new
 
-      attr_reader :_id
-      attr_accessor :_type, :extras
+      attr_reader :_id, :extras
+      attr_accessor :_type
 
       dump :_id, :_type, :extras
     end
@@ -122,6 +122,13 @@ module Pupa
     # @param [String,Moped::BSON::ObjectId] id an ID
     def _id=(id)
       @_id = id.to_s # in case of Moped::BSON::ObjectId
+    end
+
+    # Sets the extras.
+    #
+    # @param [Array] extras a list of extras
+    def extras=(extras)
+      @extras = symbolize_keys(extras)
     end
 
     # Adds a key-value pair to the object.
