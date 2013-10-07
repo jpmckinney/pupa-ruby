@@ -5,13 +5,20 @@ module Pupa
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :sources
+        attr_reader :sources
         dump :sources
       end
 
       def initialize(*args)
         @sources = []
         super
+      end
+
+      # Sets the sources.
+      #
+      # @param [Array] sources a list of sources
+      def sources=(sources)
+        @sources = symbolize_keys(sources)
       end
 
       # Adds a source to the object.

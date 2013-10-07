@@ -29,6 +29,11 @@ describe Pupa::Concerns::Identifiable do
       object.identifiers = [{identifier: '123456789', scheme: 'DUNS'}]
       object.identifiers.should be_a(Pupa::IdentifierList)
     end
+
+    it 'should symbolize keys' do
+      object.identifiers = [{'identifier' => '123456789', 'scheme' => 'DUNS'}]
+      object.identifiers.should == [{identifier: '123456789', scheme: 'DUNS'}]
+    end
   end
 
   describe '#add_identifier' do

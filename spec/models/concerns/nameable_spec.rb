@@ -12,6 +12,13 @@ describe Pupa::Concerns::Nameable do
     klass.new
   end
 
+  describe '#other_names' do
+    it 'should symbolize keys' do
+      object.other_names = [{'name' => 'Mr. Ziggy Q. Public, Esq.', 'start_date' => '1920-01', 'end_date' => '1949-12-31', 'note' => 'Birth name'}]
+      object.other_names.should == [{name: 'Mr. Ziggy Q. Public, Esq.', start_date: '1920-01', end_date: '1949-12-31', note: 'Birth name'}]
+    end
+  end
+
   describe '#add_name' do
     it 'should add a name' do
       object.add_name('Mr. Ziggy Q. Public, Esq.', start_date: '1920-01', end_date: '1949-12-31', note: 'Birth name')

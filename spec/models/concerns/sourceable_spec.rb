@@ -12,6 +12,13 @@ describe Pupa::Concerns::Sourceable do
     klass.new
   end
 
+  describe '#sources' do
+    it 'should symbolize keys' do
+      object.sources = [{'url' => 'http://example.com', 'note' => 'homepage'}]
+      object.sources.should == [{url: 'http://example.com', note: 'homepage'}]
+    end
+  end
+
   describe '#add_source' do
     it 'should add a source' do
       object.add_source('http://example.com', note: 'homepage')

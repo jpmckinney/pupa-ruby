@@ -18,7 +18,7 @@ module Pupa
       #
       # @param [Array] contact_details a list of contact details
       def contact_details=(contact_details)
-        @contact_details = ContactDetailList.new(contact_details)
+        @contact_details = ContactDetailList.new(symbolize_keys(contact_details))
       end
 
       # Adds a contact detail.

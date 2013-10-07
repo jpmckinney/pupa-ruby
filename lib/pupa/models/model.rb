@@ -189,21 +189,29 @@ module Pupa
 
   private
 
-    def stringify_keys(object)
+    def transform_keys(object, meth)
       case object
       when Hash
         {}.tap do |hash|
           object.each do |key,value|
-            hash[key.to_s] = stringify_keys(value)
+            hash[key.send(meth)] = transform_keys(value, meth)
           end
         end
       when Array
         object.map do |value|
-          stringify_keys(value)
+          transform_keys(value, meth)
         end
       else
         object
       end
+    end
+
+    def symbolize_keys(object)
+      transform_keys(object, :to_sym)
+    end
+
+    def stringify_keys(object)
+      transform_keys(object, :to_s)
     end
   end
 end

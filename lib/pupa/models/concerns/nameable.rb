@@ -5,13 +5,20 @@ module Pupa
       extend ActiveSupport::Concern
 
       included do
-        attr_accessor :other_names
+        attr_reader :other_names
         dump :other_names
       end
 
       def initialize(*args)
         @other_names = []
         super
+      end
+
+      # Sets the other names.
+      #
+      # @param [Array] other_names a list of other names
+      def other_names=(other_names)
+        @other_names = symbolize_keys(other_names)
       end
 
       # Adds an alternate or former name.

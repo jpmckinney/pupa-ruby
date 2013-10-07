@@ -12,6 +12,13 @@ describe Pupa::Concerns::Linkable do
     klass.new
   end
 
+  describe '#links' do
+    it 'should symbolize keys' do
+      object.links = [{'url' => 'http://example.com', 'note' => 'homepage'}]
+      object.links.should == [{url: 'http://example.com', note: 'homepage'}]
+    end
+  end
+
   describe '#add_link' do
     it 'should add a link' do
       object.add_link('http://example.com', note: 'homepage')

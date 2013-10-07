@@ -29,6 +29,11 @@ describe Pupa::Concerns::Contactable do
       object.contact_details = [{type: 'email', value: 'ceo@example.com', note: 'work'}]
       object.contact_details.should be_a(Pupa::ContactDetailList)
     end
+
+    it 'should symbolize keys' do
+      object.contact_details = [{'type' => 'email', 'value' => 'ceo@example.com', 'note' => 'work'}]
+      object.contact_details.should == [{type: 'email', value: 'ceo@example.com', note: 'work'}]
+    end
   end
 
   describe '#add_contact_detail' do

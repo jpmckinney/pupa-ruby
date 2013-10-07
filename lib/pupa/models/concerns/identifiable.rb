@@ -18,7 +18,7 @@ module Pupa
       #
       # @param [Array] identifiers a list of identifiers
       def identifiers=(identifiers)
-        @identifiers = IdentifierList.new(identifiers)
+        @identifiers = IdentifierList.new(symbolize_keys(identifiers))
       end
 
       # Adds an issued identifier.
