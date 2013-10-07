@@ -8,7 +8,9 @@ module Pupa
       # @param [String] a string
       # @return [String] a clean string
       def clean(string)
-        string.gsub(/[[:space:]]/, ' ').squeeze(' ').strip
+        if string
+          string.gsub(/[[:space:]]/, ' ').squeeze(' ').strip
+        end
       end
     end
   end
