@@ -59,7 +59,7 @@ class ParliamentOfCanada < Pupa::Processor
   # Bill data is updated more frequently than person data; we would therefore
   # run the bills task more frequently.
   #
-  # See the [`scraping_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L158)
+  # See the [`scraping_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L222)
   # documentation for more information on the naming of scraping methods.
   def scrape_people
     doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&Language=E')

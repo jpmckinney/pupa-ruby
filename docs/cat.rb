@@ -11,7 +11,7 @@ class Cat
   # If you would like Pupa.rb to validate your objects, assign to `self.schema`
   # an absolute path to a [JSON Schema](http://json-schema.org/). See for
   # example [Popolo's JSON Schema files](https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo).
-  # self.schema = '/path/to/json-schema/cat.json'
+  self.schema = '/path/to/json-schema/cat.json'
 
   # Adds the `created_at` and `updated_at` metadata properties from [Popolo](http://popoloproject.com/specs/).
   # `created_at` and `updated_at` will be set by Pupa.rb before writing to the

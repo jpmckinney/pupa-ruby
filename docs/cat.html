@@ -107,9 +107,22 @@
               </div>
               <p>If you would like Pupa.rb to validate your objects, assign to <code>self.schema</code>
 an absolute path to a <a href="http://json-schema.org/">JSON Schema</a>. See for
-example <a href="https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo">Popolo&#39;s JSON Schema files</a>.
-self.schema = &#39;/path/to/json-schema/cat.json&#39;</p>
-<p>Adds the <code>created_at</code> and <code>updated_at</code> metadata properties from <a href="http://popoloproject.com/specs/">Popolo</a>.
+example <a href="https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo">Popolo&#39;s JSON Schema files</a>.</p>
+
+            </div>
+            
+            <div class="content"><div class='highlight'><pre>  <span class="keyword">self</span>.schema = <span class="string">'/path/to/json-schema/cat.json'</span></pre></div></div>
+            
+        </li>
+        
+        
+        <li id="section-5">
+            <div class="annotation">
+              
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-5">&#182;</a>
+              </div>
+              <p>Adds the <code>created_at</code> and <code>updated_at</code> metadata properties from <a href="http://popoloproject.com/specs/">Popolo</a>.
 <code>created_at</code> and <code>updated_at</code> will be set by Pupa.rb before writing to the
 database. See <a href="http://rdoc.info/gems/pupa/Pupa/Concerns">Pupa::Concerns</a>
 for more mixins.</p>
@@ -123,11 +136,11 @@ for more mixins.</p>
         </li>
         
         
-        <li id="section-5">
+        <li id="section-6">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-5">&#182;</a>
+                <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
               <p>Declares which properties should be dumped to JSON after a scraping task is
 complete. All of these properties will be imported to MongoDB.</p>
@@ -139,11 +152,11 @@ complete. All of these properties will be imported to MongoDB.</p>
         </li>
         
         
-        <li id="section-6">
+        <li id="section-7">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-6">&#182;</a>
+                <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>When saving an object to the database, Pupa.rb will check if the object had
 been saved in a previous run. It uses a &quot;fingerprint&quot; of the object: a
@@ -160,11 +173,11 @@ identifying property, because the image can change without changing the cat.</p>
         </li>
         
         
-        <li id="section-7">
+        <li id="section-8">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-7">&#182;</a>
+                <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
               <p>Adds a <code>to_s</code> method so that it&#39;s easier to see which objects are being
 saved in the processor&#39;s log.</p>
@@ -179,11 +192,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-8">
+        <li id="section-9">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-8">&#182;</a>
+                <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
               <p>All processors should inherit from <a href="https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#files">Pupa::Processor</a>.</p>
 
@@ -194,11 +207,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-9">
+        <li id="section-10">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-9">&#182;</a>
+                <a class="pilcrow" href="#section-10">&#182;</a>
               </div>
               <p>For simple processors like this one, you may put all your code in a generic
 <code>scrape_objects</code> method.</p>
@@ -210,11 +223,11 @@ saved in the processor&#39;s log.</p>
         </li>
         
         
-        <li id="section-10">
+        <li id="section-11">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-10">&#182;</a>
+                <a class="pilcrow" href="#section-11">&#182;</a>
               </div>
               <p>The <code>get</code> and <code>post</code> helpers take a URL as a first argument, and a query
 string or request body as a second argument.</p>
@@ -231,11 +244,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-11">
+        <li id="section-12">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-11">&#182;</a>
+                <a class="pilcrow" href="#section-12">&#182;</a>
               </div>
               <p>HTML responses are parsed by <a href="http://nokogiri.org/">Nokogiri</a>.</p>
 
@@ -246,11 +259,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-12">
+        <li id="section-13">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-12">&#182;</a>
+                <a class="pilcrow" href="#section-13">&#182;</a>
               </div>
               <p>Skips multiple unnamed kittens. Only individual cats!</p>
 
@@ -261,11 +274,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-13">
+        <li id="section-14">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-13">&#182;</a>
+                <a class="pilcrow" href="#section-14">&#182;</a>
               </div>
               <p>Creates a new Cat object.</p>
 
@@ -276,11 +289,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-14">
+        <li id="section-15">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-14">&#182;</a>
+                <a class="pilcrow" href="#section-15">&#182;</a>
               </div>
               <p>The <code>clean</code> helper removes extra whitespace from a string.</p>
 
@@ -294,11 +307,11 @@ developing and testing a processor.</p>
         </li>
         
         
-        <li id="section-15">
+        <li id="section-16">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-15">&#182;</a>
+                <a class="pilcrow" href="#section-16">&#182;</a>
               </div>
               <p>Yields the Cat object to the transformation task for processing, e.g.
 saving to disk, printing to CSV, etc.</p>
@@ -313,11 +326,11 @@ saving to disk, printing to CSV, etc.</p>
         </li>
         
         
-        <li id="section-16">
+        <li id="section-17">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-16">&#182;</a>
+                <a class="pilcrow" href="#section-17">&#182;</a>
               </div>
               <p>Registers a scraping task. This will define an <code>objects</code> method on the
 processor, which will return a lazy enumerator of all objects scraped by the
@@ -330,11 +343,11 @@ processor.</p>
         </li>
         
         
-        <li id="section-17">
+        <li id="section-18">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-17">&#182;</a>
+                <a class="pilcrow" href="#section-18">&#182;</a>
               </div>
               <p>Tells the Pupa command-line parser which processor to use, and then parses
 command-line options. Run <code>cat.rb --help</code> to see a full list of options.</p>
@@ -347,11 +360,11 @@ runner.run(<span class="constant">ARGV</span>)</pre></div></div>
         </li>
         
         
-        <li id="section-18">
+        <li id="section-19">
             <div class="annotation">
               
               <div class="pilwrap ">
-                <a class="pilcrow" href="#section-18">&#182;</a>
+                <a class="pilcrow" href="#section-19">&#182;</a>
               </div>
               <p>Ready to move on? Check out the next example: <a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a>.</p>
 
