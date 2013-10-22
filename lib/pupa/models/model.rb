@@ -17,6 +17,7 @@ module Pupa
 
     included do
       include ActiveSupport::Callbacks
+
       define_callbacks :create, :save
 
       class_attribute :json_schema
