@@ -102,6 +102,14 @@ describe Pupa::Processor do
       Pupa.session.collections.each(&:drop)
     end
 
+    let :_type do
+      if testing_python_compatibility?
+        'organization'
+      else
+        'pupa/organization'
+      end
+    end
+
     let :graphable do
       {
         '1' => Pupa::Organization.new({
@@ -125,7 +133,7 @@ describe Pupa::Processor do
         '4' => Pupa::Organization.new({
           _id: '4',
           name: 'Child',
-          parent: {_type: 'pupa/organization', name: 'Parent'},
+          parent: {_type: _type, name: 'Parent'},
         }),
         '5' => Pupa::Organization.new({
           _id: '5',
@@ -158,8 +166,8 @@ describe Pupa::Processor do
       processor.import
       documents = Pupa.session[:organizations].find.entries
       documents.size.should == 2
-      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => 'pupa/organization', 'name' => 'Parent'}
-      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => 'pupa/organization', 'name' => 'Child', 'parent_id' => '2'}
+      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
+      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
     end
 
     it 'should resolve foreign objects' do
@@ -168,8 +176,8 @@ describe Pupa::Processor do
       processor.import
       documents = Pupa.session[:organizations].find.entries
       documents.size.should == 2
-      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '5', '_type' => 'pupa/organization', 'name' => 'Parent'}
-      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '4', '_type' => 'pupa/organization', 'name' => 'Child', 'parent_id' => '5'}
+      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '5', '_type' => _type, 'name' => 'Parent'}
+      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '4', '_type' => _type, 'name' => 'Child', 'parent_id' => '5'}
     end
 
     context 'with existing documents' do
@@ -201,7 +209,7 @@ describe Pupa::Processor do
           'a' => Pupa::Organization.new({
             _id: 'a',
             name: 'Child',
-            parent: {_type: 'pupa/organization', name: 'Parent'},
+            parent: {_type: _type, name: 'Parent'},
           }),
           'b' => Pupa::Organization.new({
             _id: 'b',
@@ -220,7 +228,7 @@ describe Pupa::Processor do
           'a' => Pupa::Organization.new({
             _id: 'a',
             name: 'Child',
-            parent: {_type: 'pupa/organization', name: 'Nonexistent'},
+            parent: {_type: _type, name: 'Nonexistent'},
           }),
           'b' => Pupa::Organization.new({
             _id: 'b',
@@ -239,7 +247,7 @@ describe Pupa::Processor do
           'a' => Pupa::Organization.new({
             _id: 'a',
             name: 'Child',
-            parent: {_type: 'pupa/organization', name: 'Parent'},
+            parent: {_type: _type, name: 'Parent'},
           }),
           'b' => Pupa::Organization.new({
             _id: 'b',
@@ -259,8 +267,8 @@ describe Pupa::Processor do
         processor.import
         documents = Pupa.session[:organizations].find.entries
         documents.size.should == 2
-        documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => 'pupa/organization', 'name' => 'Parent'}
-        documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => 'pupa/organization', 'name' => 'Child', 'parent_id' => '2'}
+        documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
+        documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
       end
 
       it 'should raise an error if a foreign key cannot be resolved' do

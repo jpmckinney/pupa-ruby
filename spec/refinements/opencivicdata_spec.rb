@@ -1,8 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-require File.dirname(__FILE__) + '/../../lib/pupa/refinements/opencivicdata'
-
-describe Pupa::Refinements do
+describe Pupa::Refinements, testing_python_compatibility: true do
   module Music
     class Band
       include Pupa::Model

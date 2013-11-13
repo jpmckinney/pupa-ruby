@@ -1,6 +1,9 @@
 language: ruby
 rvm:
   - 2.0.0
+env:
+  - MODE=default
+  - MODE=compat
 services:
   - mongodb
   - redis
