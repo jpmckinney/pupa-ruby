@@ -67,6 +67,18 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 JSON parsing is enabled by default. To enable automatic parsing of HTML and XML, require the `nokogiri` and `multi_xml` gems.
 
+### [OpenCivicData](http://opencivicdata.org/) compatibility
+
+Both Pupa.rb and Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa) implement models for people, organizations and memberships from the [Popolo](http://popoloproject.com/) open government data specification. Pupa.rb lets you use your own classes, but Pupa only supports a fixed set of classes. A consequence of Pupa.rb's flexibility is that the value of the `_type` property for `Person`, `Organization` and `Membership` objects differs between Pupa.rb and Pupa. Pupa.rb has namespaced types like `pupa/person` – to allow Ruby to load the `Person` class in the `Pupa` module – whereas Pupa has unnamespaced types like `person`.
+
+To save objects to MongoDB with unnamespaced types like Sunlight Labs' Pupa – in order to benefit from other tools in the [OpenCivicData](http://opencivicdata.org/) stack – add this line to the top of your script:
+
+```ruby
+require 'pupa/refinements/opencivicdata'
+```
+
+It is not currently possible to run the `scrape` action with one of Pupa.rb and Pupa, and to then run the `import` action with the other. Both actions must be run by the same library.
+
 ## Performance
 
 Pupa.rb offers several ways to significantly improve performance.
