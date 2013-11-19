@@ -1,3 +1,5 @@
+# @see https://github.com/opennorth/pupa-ruby#opencivicdata-compatibility
+
 module Pupa::Model
   # This unfortunately won't cause the behavior of any model that has already
   # included `Pupa::Model` to change.
