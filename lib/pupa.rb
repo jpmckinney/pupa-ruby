@@ -33,3 +33,32 @@ module Pupa
     attr_accessor :session
   end
 end
+
+# ActiveSupport's String methods become bottlenecks once:
+#
+# - HTTP responses are cached in Memcached
+# - JSON documents are dumped to Redis
+# - Redis is pipelined
+# - Validation is skipped
+# - The runner is quiet
+#
+# With these optimizations, in sample scripts, garbage collection and gem
+# requiring take up two-thirds of the running time.
+class String
+  # Alternatively, check if `inflections.acronym_regex` is equal to `/(?=a)b/`.
+  # If so, to skip the substitution, which is guaranteed to fail.
+  #
+  # @see http://api.rubyonrails.org/classes/ActiveSupport/Inflector.html#method-i-underscore
+  def underscore
+    word = gsub('::', '/')
+    # word.gsub!(/(?:([A-Za-z\d])|^)(#{inflections.acronym_regex})(?=\b|[^a-z])/) { "#{$1}#{$1 && '_'}#{$2.downcase}" }
+    word.gsub!(/([A-Z\d]+)([A-Z][a-z])/,'\1_\2')
+    word.gsub!(/([a-z\d])([A-Z])/,'\1_\2')
+    word.tr!("-", "_")
+    word.downcase!
+    word
+  end
+
+  # @see http://api.rubyonrails.org/classes/String.html#method-i-blank-3F
+  alias_method :blank?, :empty?
+end
