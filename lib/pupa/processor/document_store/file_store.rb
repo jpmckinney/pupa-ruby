@@ -34,7 +34,7 @@ module Pupa
         # @return [Hash] the value of the given key
         def read(name)
           File.open(namespaced_key(name)) do |f|
-            MultiJson.load(f)
+            Oj.load(f)
           end
         end
 
@@ -54,7 +54,7 @@ module Pupa
         # @param [Hash] value a value
         def write(name, value)
           File.open(namespaced_key(name), 'w') do |f|
-            f.write(MultiJson.dump(value))
+            f.write(Oj.dump(value))
           end
         end
 

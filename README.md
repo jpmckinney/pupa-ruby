@@ -187,10 +187,6 @@ The `json-schema` gem is slow compared to, for example, [JSV](https://github.com
 
 The [pupa-validate](https://npmjs.org/package/pupa-validate) npm package can be used to validate JSON documents using the faster JSV. In an example case, using JSV instead of the `json-schema` gem reduced by half the time to validate 10,000 documents.
 
-### Parsing JSON
-
-If the rest of your scraper is fast, you may see an improvement by using the `oj` gem. Just `require 'oj'` and Pupa.rb will automatically pick it up, since it uses [MultiJson](https://github.com/intridea/multi_json).
-
 ### Profiling
 
 You can profile your code using [perftools.rb](https://github.com/tmm1/perftools.rb). First, install the gem:

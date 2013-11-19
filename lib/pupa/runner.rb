@@ -204,7 +204,7 @@ module Pupa
       if %w(DEBUG INFO).include?(options.level)
         report[:end] = Time.now.utc
         report[:time] = report[:end] - report[:start]
-        puts MultiJson.dump(report)
+        puts Oj.dump(report)
       end
     end
   end

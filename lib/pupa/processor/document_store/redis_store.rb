@@ -42,7 +42,7 @@ module Pupa
         # @param [String] name a key
         # @return [Hash] the value of the given key
         def read(name)
-          MultiJson.load(@redis.get(name))
+          Oj.load(@redis.get(name))
         end
 
         # Returns, as JSON, the values of the given keys.
@@ -50,7 +50,7 @@ module Pupa
         # @param [String] names keys
         # @return [Array<Hash>] the values of the given keys
         def read_multi(names)
-          @redis.mget(*names).map{|value| MultiJson.load(value)}
+          @redis.mget(*names).map{|value| Oj.load(value)}
         end
 
         # Writes, as JSON, the value to a key.
@@ -58,7 +58,7 @@ module Pupa
         # @param [String] name a key
         # @param [Hash] value a value
         def write(name, value)
-          @redis.set(name, MultiJson.dump(value))
+          @redis.set(name, Oj.dump(value))
         end
 
         # Writes, as JSON, the value to a key, unless the key exists.
@@ -67,7 +67,7 @@ module Pupa
         # @param [Hash] value a value
         # @return [Boolean] whether the key was set
         def write_unless_exists(name, value)
-          @redis.setnx(name, MultiJson.dump(value))
+          @redis.setnx(name, Oj.dump(value))
         end
 
         # Writes, as JSON, the values to keys.
@@ -77,7 +77,7 @@ module Pupa
           args = []
           pairs.each do |key,value|
             args << key
-            args << MultiJson.dump(value)
+            args << Oj.dump(value)
           end
           @redis.mset(*args)
         end

@@ -24,7 +24,7 @@ module Pupa
         when 1
           query.first
         else
-          raise Errors::TooManyMatches, "selector matches multiple documents during find: #{collection_name} #{MultiJson.dump(selector)}"
+          raise Errors::TooManyMatches, "selector matches multiple documents during find: #{collection_name} #{Oj.dump(selector)}"
         end
       end
 
@@ -54,7 +54,7 @@ module Pupa
             [false, @object.document['_id'].to_s]
           end
         else
-          raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{MultiJson.dump(selector)}"
+          raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{Oj.dump(selector)}"
         end
       end
 
