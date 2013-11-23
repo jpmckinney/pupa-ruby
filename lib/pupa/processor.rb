@@ -191,7 +191,7 @@ module Pupa
         end
 
         unless objects.empty?
-          raise Errors::UnprocessableEntity, "couldn't resolve #{objects.size}/#{size} objects:\n  #{objects.values.map{|object| Oj.dump(object.foreign_properties)}.join("\n  ")}"
+          raise Errors::UnprocessableEntity, "couldn't resolve #{objects.size}/#{size} objects:\n  #{objects.values.map{|object| JSON.dump(object.foreign_properties)}.join("\n  ")}"
         end
       end
 
@@ -252,8 +252,12 @@ module Pupa
     def load_scraped_objects
       {}.tap do |objects|
         @store.read_multi(@store.entries).each do |data|
-          object = data['_type'].camelize.constantize.new(data)
-          objects[object._id] = object
+          if data.key?('_type')
+            object = data['_type'].camelize.constantize.new(data)
+            objects[object._id] = object
+          else
+            raise Errors::MissingObjectTypeError, "missing _type: #{JSON.dump(data)}"
+          end
         end
       end
     end

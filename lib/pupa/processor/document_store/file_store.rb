@@ -54,7 +54,7 @@ module Pupa
         # @param [Hash] value a value
         def write(name, value)
           File.open(namespaced_key(name), 'w') do |f|
-            f.write(Oj.dump(value))
+            f.write(Oj.dump(value, mode: :compat, time_format: :ruby))
           end
         end
 

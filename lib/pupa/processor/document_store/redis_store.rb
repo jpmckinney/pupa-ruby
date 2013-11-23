@@ -58,7 +58,7 @@ module Pupa
         # @param [String] name a key
         # @param [Hash] value a value
         def write(name, value)
-          @redis.set(name, Oj.dump(value))
+          @redis.set(name, Oj.dump(value, mode: :compat, time_format: :ruby))
         end
 
         # Writes, as JSON, the value to a key, unless the key exists.
@@ -67,7 +67,7 @@ module Pupa
         # @param [Hash] value a value
         # @return [Boolean] whether the key was set
         def write_unless_exists(name, value)
-          @redis.setnx(name, Oj.dump(value))
+          @redis.setnx(name, Oj.dump(value, mode: :compat, time_format: :ruby))
         end
 
         # Writes, as JSON, the values to keys.
@@ -77,7 +77,7 @@ module Pupa
           args = []
           pairs.each do |key,value|
             args << key
-            args << Oj.dump(value)
+            args << Oj.dump(value, mode: :compat, time_format: :ruby)
           end
           @redis.mset(*args)
         end

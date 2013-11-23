@@ -3,6 +3,10 @@ module Pupa
     # An abstract class from which all Pupa errors inherit.
     class Error < StandardError; end
 
+    # This error is raised when loading a scraped object from disk if a type is
+    # not set.
+    class MissingObjectTypeError < Error; end
+
     # This error is raised when saving an object to a database if a foreign key
     # cannot be resolved.
     class MissingDatabaseIdError < Error; end
