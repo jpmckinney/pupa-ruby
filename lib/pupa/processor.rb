@@ -256,6 +256,7 @@ module Pupa
             object = data['_type'].camelize.constantize.new(data)
             objects[object._id] = object
           else
+            # This should never happen, but if it does, be precise about the error.
             raise Errors::MissingObjectTypeError, "missing _type: #{JSON.dump(data)}"
           end
         end
