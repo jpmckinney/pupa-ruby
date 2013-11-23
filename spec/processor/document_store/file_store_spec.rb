@@ -36,7 +36,7 @@ describe Pupa::Processor::DocumentStore::FileStore do
   describe '#write' do
     it 'should write an entry with the given value for the given key' do
       store.exist?('new.json').should == false
-      store.write('new.json', {'name' => 'new'})
+      store.write('new.json', {name: 'new'})
       store.read('new.json').should == {'name' => 'new'}
       store.delete('new.json') # cleanup
     end
@@ -45,13 +45,13 @@ describe Pupa::Processor::DocumentStore::FileStore do
   describe '#write_unless_exists' do
     it 'should write an entry with the given value for the given key' do
       store.exist?('new.json').should == false
-      store.write_unless_exists('new.json', {'name' => 'new'}).should == true
+      store.write_unless_exists('new.json', {name: 'new'}).should == true
       store.read('new.json').should == {'name' => 'new'}
       store.delete('new.json') # cleanup
     end
 
     it 'should not write an entry with the given value for the given key if the key exists' do
-      store.write_unless_exists('foo.json', {'name' => 'new'}).should == false
+      store.write_unless_exists('foo.json', {name: 'new'}).should == false
       store.read('foo.json').should == {'name' => 'foo'}
     end
   end
@@ -60,7 +60,7 @@ describe Pupa::Processor::DocumentStore::FileStore do
     it 'should write entries with the given values for the given keys' do
       pairs = {}
       %w(new1 new2).each do |name|
-        pairs["#{name}.json"] = {'name' => name}
+        pairs["#{name}.json"] = {name: name}
       end
 
       pairs.keys.each do |name|
@@ -76,7 +76,7 @@ describe Pupa::Processor::DocumentStore::FileStore do
 
   describe '#delete' do
     it 'should delete an entry with the given key from the store' do
-      store.write('new.json', {'name' => 'new'})
+      store.write('new.json', {name: 'new'})
       store.exist?('new.json').should == true
       store.delete('new.json')
       store.exist?('new.json').should == false
@@ -90,7 +90,7 @@ describe Pupa::Processor::DocumentStore::FileStore do
       store.entries.should == []
 
       %w(bar baz foo).each do |name| # cleanup
-        store.write("#{name}.json", {'name' => name})
+        store.write("#{name}.json", {name: name})
       end
     end
   end
