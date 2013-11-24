@@ -252,14 +252,23 @@ module Pupa
     def load_scraped_objects
       {}.tap do |objects|
         @store.read_multi(@store.entries).each do |data|
-          if data.key?('_type')
-            object = data['_type'].camelize.constantize.new(data)
-            objects[object._id] = object
-          else
-            # This should never happen, but if it does, be precise about the error.
-            raise Errors::MissingObjectTypeError, "missing _type: #{JSON.dump(data)}"
-          end
+          object = load_scraped_object(data)
+          objects[object._id] = object
         end
+      end
+    end
+
+    # Loads a scraped object from a JSON document.
+    #
+    # @param [Hash] a JSON document
+    # @return a scraped object
+    # @raises [Pupa::Errors::MissingObjectTypeError] if the scraped object is
+    #   missing a `_type` property.
+    def load_scraped_object(data)
+      if data.key?('_type') || data.key?(:_type)
+        (data['_type'] || data[:_type]).camelize.constantize.new(data)
+      else
+        raise Errors::MissingObjectTypeError, "missing _type: #{JSON.dump(data)}"
       end
     end
 
