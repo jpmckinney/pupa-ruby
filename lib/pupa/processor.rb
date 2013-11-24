@@ -175,8 +175,12 @@ module Pupa
             end
 
             resolvable &= object.foreign_objects.all? do |property|
-              selector = object[property]
-              selector.blank? || Persistence.find(selector)
+              value = object[property]
+              value.blank? || begin
+                foreign_object = load_scraped_object(value)
+                resolve_foreign_keys(foreign_object, object_id_to_database_id)
+                Persistence.find(foreign_object.to_h.except(:_id))
+              end
             end
 
             if resolvable
@@ -251,24 +255,25 @@ module Pupa
     # @return [Hash] a hash of scraped objects keyed by ID
     def load_scraped_objects
       {}.tap do |objects|
-        @store.read_multi(@store.entries).each do |data|
-          object = load_scraped_object(data)
+        @store.read_multi(@store.entries).each do |properties|
+          object = load_scraped_object(properties)
           objects[object._id] = object
         end
       end
     end
 
-    # Loads a scraped object from a JSON document.
+    # Loads a scraped object from its properties.
     #
-    # @param [Hash] a JSON document
-    # @return a scraped object
+    # @param [Hash] properties the object's properties
+    # @return [Object] a scraped object
     # @raises [Pupa::Errors::MissingObjectTypeError] if the scraped object is
     #   missing a `_type` property.
-    def load_scraped_object(data)
-      if data.key?('_type') || data.key?(:_type)
-        (data['_type'] || data[:_type]).camelize.constantize.new(data)
+    def load_scraped_object(properties)
+      type = properties['_type'] || properties[:_type]
+      if type
+        type.camelize.constantize.new(properties)
       else
-        raise Errors::MissingObjectTypeError, "missing _type: #{JSON.dump(data)}"
+        raise Errors::MissingObjectTypeError, "missing _type: #{JSON.dump(properties)}"
       end
     end
 

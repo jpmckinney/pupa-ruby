@@ -146,17 +146,29 @@ describe Pupa::Processor do
       }
     end
 
+    let :foreign_keys_on_foreign_objects do
+      {
+        '7' => Pupa::Organization.new({
+          _id: '7',
+          name: 'Child',
+          parent: {_type: _type, name: 'Parent'},
+        }),
+        '8' => Pupa::Organization.new({
+          _id: '8',
+          name: 'Grandchild',
+          parent: {_type: _type, parent_id: '9'}
+        }),
+        '9' => Pupa::Organization.new({
+          _id: '9',
+          name: 'Parent',
+        }),
+      }
+    end
+
     it 'should use a dependency graph if possible' do
       processor.should_receive(:load_scraped_objects).and_return(graphable)
 
       Pupa::Processor::DependencyGraph.any_instance.should_receive(:tsort).and_return(['2', '1'])
-      processor.import
-    end
-
-    it 'should not use a dependency graph if not possible' do
-      processor.should_receive(:load_scraped_objects).and_return(ungraphable)
-
-      Pupa::Processor::DependencyGraph.any_instance.should_not_receive(:tsort)
       processor.import
     end
 
@@ -170,7 +182,14 @@ describe Pupa::Processor do
       documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
     end
 
-    it 'should resolve foreign objects' do
+    it 'should not use a dependency graph if not possible' do
+      processor.should_receive(:load_scraped_objects).and_return(ungraphable)
+
+      Pupa::Processor::DependencyGraph.any_instance.should_not_receive(:tsort)
+      processor.import
+    end
+
+    it 'should remove duplicate objects and resolve foreign objects' do
       processor.should_receive(:load_scraped_objects).and_return(ungraphable)
 
       processor.import
@@ -178,6 +197,17 @@ describe Pupa::Processor do
       documents.size.should == 2
       documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '5', '_type' => _type, 'name' => 'Parent'}
       documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '4', '_type' => _type, 'name' => 'Child', 'parent_id' => '5'}
+    end
+
+    it 'should resolve foreign keys on foreign objects' do
+      processor.should_receive(:load_scraped_objects).and_return(foreign_keys_on_foreign_objects)
+
+      processor.import
+      documents = Pupa.session[:organizations].find.entries
+      documents.size.should == 3
+      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '9', '_type' => _type, 'name' => 'Parent'}
+      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '7', '_type' => _type, 'name' => 'Child', 'parent_id' => '9'}
+      documents[2].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '8', '_type' => _type, 'name' => 'Grandchild', 'parent_id' => '7'}
     end
 
     context 'with existing documents' do
@@ -204,6 +234,7 @@ describe Pupa::Processor do
         }
       end
 
+      # Use a foreign object to not use a dependency graph.
       let :unresolvable_foreign_key do
         {
           'a' => Pupa::Organization.new({
