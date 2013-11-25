@@ -151,7 +151,10 @@ module Pupa
           object = objects[id]
           resolve_foreign_keys(object, object_id_to_database_id)
           # The dependency graph strategy only works if there are no foreign objects.
-          object_id_to_database_id[id] = import_object(object)
+
+          database_id = import_object(object)
+          object_id_to_database_id[id] = database_id
+          object_id_to_database_id[database_id] = database_id
         end
       else
         size = objects.size
@@ -170,8 +173,11 @@ module Pupa
             begin
               resolve_foreign_keys(object, object_id_to_database_id)
               resolve_foreign_objects(object, object_id_to_database_id)
-              object_id_to_database_id[id] = import_object(object)
               progress_made = true
+
+              database_id = import_object(object)
+              object_id_to_database_id[id] = database_id
+              object_id_to_database_id[database_id] = database_id
             rescue Pupa::Errors::MissingDatabaseIdError
               false
             end
