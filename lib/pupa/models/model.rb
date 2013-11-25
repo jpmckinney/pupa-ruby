@@ -78,13 +78,14 @@ module Pupa
       # Sets the class' schema.
       #
       # @param [Hash,String] value a hash or a relative or absolute path
+      # @note `JSON::Validator#initialize_schema` runs fastest if given a hash.
       def schema=(value)
         self.json_schema = if Hash === value
           value
         elsif Pathname.new(value).absolute?
-          File.read(value)
+          JSON.load(File.read(value))
         else
-          File.read(File.expand_path(File.join('..', '..', '..', 'schemas', "#{value}.json"), __dir__))
+          JSON.load(File.read(File.expand_path(File.join('..', '..', '..', 'schemas', "#{value}.json"), __dir__)))
         end
       end
     end
@@ -167,7 +168,6 @@ module Pupa
     # @raises [JSON::Schema::ValidationError] if the object is invalid
     def validate!
       if self.class.json_schema
-        # JSON::Validator#initialize_schema runs fastest if given a hash.
         JSON::Validator.validate!(self.class.json_schema, stringify_keys(to_h(persist: true)))
       end
     end

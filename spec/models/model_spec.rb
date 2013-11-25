@@ -91,12 +91,12 @@ describe Pupa::Model do
 
     it 'should accept an absolute path' do
       File.should_receive(:read).and_return('{}')
-      klass_with_absolute_path.json_schema.should == '{}'
+      klass_with_absolute_path.json_schema.should == {}
     end
 
     it 'should accept a relative path' do
       File.should_receive(:read).and_return('{}')
-      klass_with_relative_path.json_schema.should == '{}'
+      klass_with_relative_path.json_schema.should == {}
     end
   end
 
