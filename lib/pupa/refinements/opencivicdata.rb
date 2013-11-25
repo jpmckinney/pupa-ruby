@@ -30,9 +30,7 @@ end
 # instead of inheritance, or go back to `Pupa::Model` being a superclass instead
 # of a mixin to take advantage of `DescendantsTracker` itself.
 #
-# Instead of adding a callback, we can override `to_h`, but that is harder to
-# maintain and less future-proof. We can also implement a non-callback hook in
-# `Persistence`, but that will not be of general interest.
+# Instead of adding a callback, we can override `to_h` when `persist` is `true`.
 ObjectSpace.each_object(Class) do |base|
   if base.include?(Pupa::Model)
     base.class_eval do

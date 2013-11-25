@@ -2,9 +2,8 @@ require 'mail'
 
 module Pupa
   module Refinements
-    # A refinement for JSON Schema to validate "email" and "uri" formats. Using
-    # Ruby's refinements doesn't seem to work, possibly because `refine` can't
-    # be used with `prepend`.
+    # Validates "email" and "uri" formats. Using Ruby's refinements doesn't seem
+    # to work, possibly because `refine` can't be used with `prepend`.
     module FormatAttribute
       # @see http://my.rails-royce.org/2010/07/21/email-validation-in-ruby-on-rails-without-regexp/
       def validate(current_schema, data, fragments, processor, validator, options = {})
