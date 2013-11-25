@@ -2,13 +2,14 @@ module Pupa
   # A minimal model for a foreign object.
   class ForeignObject
     extend Forwardable
+    include Concerns::IndifferentAccess
 
     attr_reader :attributes, :foreign_keys
 
     def_delegators :@attributes, :[], :[]=
 
     def initialize(properties = {})
-      hash = properties.dup
+      hash = symbolize_keys(properties)
       value = hash.delete(:foreign_keys) || {}
       @attributes = hash.merge(value)
       @foreign_keys = value.keys

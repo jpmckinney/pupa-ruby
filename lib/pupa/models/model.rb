@@ -17,6 +17,7 @@ module Pupa
 
     included do
       include ActiveSupport::Callbacks
+      include Concerns::IndifferentAccess
 
       define_callbacks :create, :save
 
@@ -200,33 +201,6 @@ module Pupa
       a.delete(:_id)
       b.delete(:_id)
       a == b
-    end
-
-  private
-
-    def transform_keys(object, meth)
-      case object
-      when Hash
-        {}.tap do |hash|
-          object.each do |key,value|
-            hash[key.send(meth)] = transform_keys(value, meth)
-          end
-        end
-      when Array
-        object.map do |value|
-          transform_keys(value, meth)
-        end
-      else
-        object
-      end
-    end
-
-    def symbolize_keys(object)
-      transform_keys(object, :to_sym)
-    end
-
-    def stringify_keys(object)
-      transform_keys(object, :to_s)
     end
   end
 end

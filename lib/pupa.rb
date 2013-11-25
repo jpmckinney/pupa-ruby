@@ -14,6 +14,7 @@ require 'pupa/logger'
 require 'pupa/processor'
 require 'pupa/runner'
 
+require 'pupa/models/concerns/indifferent_access'
 require 'pupa/models/concerns/contactable'
 require 'pupa/models/concerns/identifiable'
 require 'pupa/models/concerns/linkable'
