@@ -21,6 +21,7 @@ require 'pupa/models/concerns/nameable'
 require 'pupa/models/concerns/sourceable'
 require 'pupa/models/concerns/timestamps'
 
+require 'pupa/models/foreign_object'
 require 'pupa/models/model'
 require 'pupa/models/contact_detail_list'
 require 'pupa/models/identifier_list'

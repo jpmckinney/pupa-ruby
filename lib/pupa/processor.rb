@@ -167,27 +167,13 @@ module Pupa
           progress_made = false
 
           objects.delete_if do |id,object|
-            resolvable = true
-
-            resolvable &= object.foreign_keys.all? do |property|
-              value = object[property]
-              value.nil? || object_id_to_database_id.key?(value)
-            end
-
-            resolvable &= object.foreign_objects.all? do |property|
-              value = object[property]
-              value.blank? || begin
-                foreign_object = load_scraped_object(value)
-                resolve_foreign_keys(foreign_object, object_id_to_database_id)
-                Persistence.find(foreign_object.to_h.except(:_id))
-              end
-            end
-
-            if resolvable
-              progress_made = true
+            begin
               resolve_foreign_keys(object, object_id_to_database_id)
-              resolve_foreign_objects(object)
+              resolve_foreign_objects(object, object_id_to_database_id)
               object_id_to_database_id[id] = import_object(object)
+              progress_made = true
+            rescue Pupa::Errors::MissingDatabaseIdError
+              false
             end
           end
 
@@ -360,17 +346,17 @@ module Pupa
     #
     # @param [Object] an object
     # @param [Hash] a map from object ID to database ID
-    # @raises [Pupa::Errors::MissingDatabaseIdError]
+    # @raises [Pupa::Errors::MissingDatabaseIdError] if a foreign key cannot be
+    #   resolved
     def resolve_foreign_keys(object, map)
       object.foreign_keys.each do |property|
         value = object[property]
         if value
-          # If using a dependency graph, any foreign key that cannot be resolved
-          # will cause a key error while building the dependency graph.
-          #
-          # If not using a dependency graph, this method will not be called
-          # unless the foreign key is resolvable.
-          object[property] = map[value]
+          if map.key?(value)
+            object[property] = map[value]
+          else
+            raise Errors::MissingDatabaseIdError, "couldn't resolve foreign key: #{property} #{value}"
+          end
         end
       end
     end
@@ -378,13 +364,22 @@ module Pupa
     # Resolves an object's foreign objects to database IDs.
     #
     # @param [Object] object an object
-    # @raises [Pupa::Errors::MissingDatabaseIdError]
-    def resolve_foreign_objects(object)
+    # @param [Hash] a map from object ID to database ID
+    # @raises [Pupa::Errors::MissingDatabaseIdError] if a foreign object cannot
+    #   be resolved
+    def resolve_foreign_objects(object, map)
       object.foreign_objects.each do |property|
-        selector = object[property]
-        if selector.present?
-          # This method will not be called unless the foreign key is resolvable.
-          object["#{property}_id"] = Persistence.find(selector)['_id']
+        value = object[property]
+        if value.present?
+          foreign_object = ForeignObject.new(value)
+          resolve_foreign_keys(foreign_object, map)
+          document = Persistence.find(foreign_object.to_h)
+
+          if document
+            object["#{property}_id"] = document['_id']
+          else
+            raise Errors::MissingDatabaseIdError, "couldn't resolve foreign object: #{property} #{value}"
+          end
         end
       end
     end

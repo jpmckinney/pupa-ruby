@@ -156,7 +156,7 @@ describe Pupa::Processor do
         '8' => Pupa::Organization.new({
           _id: '8',
           name: 'Grandchild',
-          parent: {_type: _type, parent_id: '9'}
+          parent: {_type: _type, foreign_keys: {parent_id: '9'}}
         }),
         '9' => Pupa::Organization.new({
           _id: '9',
@@ -292,6 +292,25 @@ describe Pupa::Processor do
         }
       end
 
+      let :resolvable_foreign_keys_on_foreign_objects do
+        {
+          'a' => Pupa::Organization.new({
+            _id: 'a',
+            name: 'Child',
+            parent: {_type: _type, name: 'Parent'},
+          }),
+          'b' => Pupa::Organization.new({
+            _id: 'b',
+            name: 'Grandchild',
+            parent: {_type: _type, foreign_keys: {parent_id: 'c'}}
+          }),
+          'c' => Pupa::Organization.new({
+            _id: 'c',
+            name: 'Parent',
+          }),
+        }
+      end
+
       it 'should resolve foreign keys' do
         processor.should_receive(:load_scraped_objects).and_return(resolvable_foreign_key)
 
@@ -315,6 +334,17 @@ describe Pupa::Processor do
       it 'should raise an error if a duplicate was inadvertently saved' do
         processor.should_receive(:load_scraped_objects).and_return(duplicate_documents)
         expect{processor.import}.to raise_error(Pupa::Errors::DuplicateDocumentError)
+      end
+
+      it 'should resolve foreign keys on foreign objects' do
+        processor.should_receive(:load_scraped_objects).and_return(resolvable_foreign_keys_on_foreign_objects)
+
+        processor.import
+        documents = Pupa.session[:organizations].find.entries
+        documents.size.should == 3
+        documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
+        documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
+        documents[2].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => 'b', '_type' => _type, 'name' => 'Grandchild', 'parent_id' => '1'}
       end
     end
   end
