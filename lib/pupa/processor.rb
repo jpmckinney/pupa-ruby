@@ -194,7 +194,9 @@ module Pupa
       # Ensure that fingerprints uniquely identified objects.
       counts = {}
       object_id_to_database_id.each do |object_id,database_id|
-        (counts[database_id] ||= []) << object_id
+        unless object_id == database_id
+          (counts[database_id] ||= []) << object_id
+        end
       end
       duplicates = counts.select do |_,object_ids|
         object_ids.size > 1
