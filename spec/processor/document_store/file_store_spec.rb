@@ -94,4 +94,10 @@ describe Pupa::Processor::DocumentStore::FileStore do
       end
     end
   end
+
+  describe '#path' do
+    it 'should return the file path to the entry' do
+      store.path('foo').should == File.expand_path(File.join('..', '..', 'fixtures', 'foo'), __dir__)
+    end
+  end
 end

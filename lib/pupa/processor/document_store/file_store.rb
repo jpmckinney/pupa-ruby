@@ -16,7 +16,7 @@ module Pupa
         # @param [String] name a key
         # @return [Boolean] whether the store contains an entry for the given key
         def exist?(name)
-          File.exist?(namespaced_key(name))
+          File.exist?(path(name))
         end
 
         # Returns all file names in the storage directory.
@@ -33,7 +33,7 @@ module Pupa
         # @param [String] name a key
         # @return [Hash] the value of the given key
         def read(name)
-          File.open(namespaced_key(name)) do |f|
+          File.open(path(name)) do |f|
             Oj.load(f)
           end
         end
@@ -53,7 +53,7 @@ module Pupa
         # @param [String] name a key
         # @param [Hash] value a value
         def write(name, value)
-          File.open(namespaced_key(name), 'w') do |f|
+          File.open(path(name), 'w') do |f|
             f.write(Oj.dump(value, mode: :compat, time_format: :ruby))
           end
         end
@@ -83,7 +83,7 @@ module Pupa
         #
         # @param [String] name a key
         def delete(name)
-          File.delete(namespaced_key(name))
+          File.delete(path(name))
         end
 
         # Deletes all files in the storage directory.
@@ -98,9 +98,11 @@ module Pupa
           yield
         end
 
-      private
-
-        def namespaced_key(name)
+        # Returns the path to the file with the given name.
+        #
+        # @param [String] name a key
+        # @param [String] a path
+        def path(name)
           File.join(@output_dir, name)
         end
       end
