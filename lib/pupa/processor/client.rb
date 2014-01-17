@@ -6,6 +6,7 @@ require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
 require 'pupa/processor/middleware/parse_json'
 require 'pupa/processor/middleware/raise_error'
+require 'pupa/refinements/faraday'
 require 'pupa/refinements/faraday_middleware'
 
 begin

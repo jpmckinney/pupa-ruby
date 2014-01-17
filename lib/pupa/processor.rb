@@ -46,18 +46,6 @@ module Pupa
     # @param [String,Hash] params query string parameters
     # @return a parsed document
     def get(url, params = {})
-      # Faraday requires `params` to be a hash.
-      if String === params
-        params = CGI.parse(params)
-
-        # Flatten the parameters for Faraday.
-        params.each do |key,value|
-          if Array === value && value.size == 1
-            params[key] = value.first
-          end
-        end
-      end
-
       client.get(url, params).body
     end
 
