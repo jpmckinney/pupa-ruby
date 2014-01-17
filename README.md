@@ -5,7 +5,7 @@
 [![Coverage Status](https://coveralls.io/repos/opennorth/pupa-ruby/badge.png?branch=master)](https://coveralls.io/r/opennorth/pupa-ruby)
 [![Code Climate](https://codeclimate.com/github/opennorth/pupa-ruby.png)](https://codeclimate.com/github/opennorth/pupa-ruby)
 
-Pupa.rb is a Ruby 2.0 fork of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa). It implements an Extract, Transform and Load (ETL) process to scrape data from online sources, transform it, and write it to a database.
+Pupa.rb is a Ruby 2.x fork of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa). It implements an Extract, Transform and Load (ETL) process to scrape data from online sources, transform it, and write it to a database.
 
 ## What it tries to solve
 
@@ -186,6 +186,10 @@ Note that Pupa.rb flushes the Redis database before scraping. If you use Redis, 
 The `json-schema` gem is slow compared to, for example, [JSV](https://github.com/garycourt/JSV). Setting the `--no-validate` switch and running JSON Schema validations separately can further reduce a scraper's running time.
 
 The [pupa-validate](https://npmjs.org/package/pupa-validate) npm package can be used to validate JSON documents using the faster JSV. In an example case, using JSV instead of the `json-schema` gem reduced by half the time to validate 10,000 documents.
+
+### Ruby version
+
+Pupa.rb requires Ruby 2.x. If you have already made all the above optimizations, you may notice a significant improvement by using Ruby 2.1, which has better garbage collection than Ruby 2.0.
 
 ### Profiling
 
