@@ -2,6 +2,7 @@ require 'active_support/cache'
 require 'faraday_middleware'
 require 'faraday_middleware/response_middleware'
 
+require 'pupa/processor/middleware/gzip'
 require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
 require 'pupa/processor/middleware/parse_json'
@@ -49,6 +50,9 @@ module Pupa
           if defined?(MultiXml)
             connection.use FaradayMiddleware::ParseXml, preserve_raw: true, content_type: /\bxml$/
           end
+
+          # Must come after the parser middlewares.
+          connection.use Middleware::Gzip
 
           if cache_dir
             connection.response :caching do
