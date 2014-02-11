@@ -4,6 +4,7 @@ module Pupa
       # A Faraday response middleware for raising an error if unsuccessful.
       #
       # @see Faraday::Response::RaiseError
+      # @note Faraday has no tests for this middleware.
       class RaiseError < Faraday::Response::Middleware
         def on_complete(env)
           case env[:status]
