@@ -32,9 +32,6 @@ require 'pupa/models/person'
 require 'pupa/models/post'
 
 module Pupa
-  class << self
-    attr_accessor :session
-  end
 end
 
 # ActiveSupport's String methods become bottlenecks once:

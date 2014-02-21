@@ -1,8 +1,6 @@
 require 'optparse'
 require 'ostruct'
 
-require 'moped'
-
 module Pupa
   class Runner
     attr_reader :options, :actions
@@ -20,6 +18,7 @@ module Pupa
         expires_in:     86400, # 1 day
         pipelined:      false,
         validate:       true,
+        adapter:        'mongodb',
         host_with_port: 'localhost:27017',
         database:       'pupa',
         dry_run:        false,
@@ -88,10 +87,13 @@ module Pupa
         opts.on('--[no-]validate', 'Validate JSON documents') do |v|
           options.validate = v
         end
-        opts.on('-H', '--host HOST:PORT', 'The host and port to MongoDB') do |v|
+        opts.on('-A', '--adapter NAME', %w(mongodb), 'The database system adapter', '  (mongodb)') do |v|
+          options.adapter = v
+        end
+        opts.on('-H', '--host HOST:PORT', 'The host and port to the database system') do |v|
           options.host_with_port = v
         end
-        opts.on('-d', '--database NAME', 'The name of the MongoDB database') do |v|
+        opts.on('-d', '--database NAME', 'The name of the database') do |v|
           options.database = v
         end
         opts.on('-n', '--dry-run', 'Show the plan without running any actions') do
@@ -149,6 +151,9 @@ module Pupa
         expires_in: options.expires_in,
         pipelined: options.pipelined,
         validate: options.validate,
+        adapter: options.adapter,
+        host_with_port: options.host_with_port,
+        database: options.database,
         level: options.level,
         options: Hash[*rest])
 
@@ -165,7 +170,7 @@ module Pupa
       end
 
       if options.level == 'DEBUG'
-        %w(output_dir cache_dir expires_in host_with_port database level).each do |option|
+        %w(output_dir cache_dir expires_in adapter host_with_port database level).each do |option|
           puts "#{option}: #{options[option]}"
         end
         unless rest.empty?
@@ -183,8 +188,6 @@ module Pupa
         },
         start: Time.now.utc,
       }
-
-      Pupa.session = Moped::Session.new([options.host_with_port], database: options.database)
 
       if options.actions.delete('scrape')
         processor.store.clear

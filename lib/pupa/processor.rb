@@ -1,10 +1,11 @@
 require 'pupa/processor/client'
 require 'pupa/processor/dependency_graph'
 require 'pupa/processor/helper'
-require 'pupa/processor/persistence'
+require 'pupa/processor/connection'
 require 'pupa/processor/document_store'
 require 'pupa/processor/yielder'
 
+require 'pupa/processor/connection_adapters/mongodb_adapter'
 require 'pupa/processor/document_store/file_store'
 require 'pupa/processor/document_store/redis_store'
 
@@ -17,7 +18,7 @@ module Pupa
     class_attribute :tasks
     self.tasks = []
 
-    attr_reader :report, :store, :client, :options
+    attr_reader :report, :store, :connection, :client, :options
 
     def_delegators :@logger, :debug, :info, :warn, :error, :fatal
 
@@ -28,16 +29,20 @@ module Pupa
     # @param [Integer] expires_in the cache's expiration time in seconds
     # @param [Boolean] pipelined whether to dump JSON documents all at once
     # @param [Boolean] validate whether to validate JSON documents
+    # @param [String] adapter the database system adapter
+    # @param [String] host_with_port the host and port to the database system
+    # @param [String] database the name of the database
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, pipelined: false, validate: true, level: 'INFO', logdev: STDOUT, options: {})
-      @store    = DocumentStore.new(output_dir, pipelined: pipelined)
-      @client   = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
-      @logger   = Logger.new('pupa', level: level, logdev: logdev)
-      @validate = validate
-      @options  = options
-      @report   = {}
+    def initialize(output_dir, cache_dir: nil, expires_in: 86400, pipelined: false, validate: true, adapter: 'mongodb', host_with_port: 'localhost:27017', database: 'pupa', level: 'INFO', logdev: STDOUT, options: {})
+      @store      = DocumentStore.new(output_dir, pipelined: pipelined)
+      @connection = Connection.new(adapter, host_with_port, database: database)
+      @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
+      @logger     = Logger.new('pupa', level: level, logdev: logdev)
+      @validate   = validate
+      @options    = options
+      @report     = {}
     end
 
     # Retrieves and parses a document with a GET request.
@@ -369,7 +374,7 @@ module Pupa
         if value.present?
           foreign_object = ForeignObject.new(value)
           resolve_foreign_keys(foreign_object, map)
-          document = Persistence.find(foreign_object.to_h)
+          document = connection.find(foreign_object.to_h)
 
           if document
             object["#{property}_id"] = document['_id']
@@ -382,7 +387,7 @@ module Pupa
 
     # @param [Object] object an object
     def import_object(object)
-      inserted, id = Persistence.new(object).save
+      inserted, id = connection.save(object)
       @report[:import][object._type] ||= Hash.new(0)
       if inserted
         @report[:import][object._type][:insert] += 1
