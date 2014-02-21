@@ -7,6 +7,8 @@
 
 Pupa.rb is a Ruby 2.x fork of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa). It implements an Extract, Transform and Load (ETL) process to scrape data from online sources, transform it, and write it to a database.
 
+    gem install pupa
+
 ## What it tries to solve
 
 Pupa.rb's goal is to make scraping less painful by solving common problems:
