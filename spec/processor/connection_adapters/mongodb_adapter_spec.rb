@@ -34,7 +34,7 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
     end
   end
 
-  describe '#save' do
+  describe '.save' do
     it 'should insert a document if no matches' do
       connection.save(Pupa::Person.new(_id: 'new', name: 'new', email: 'new@example.com')).should == [true, 'new']
       connection.find(_type: _type, name: 'new')['email'].should == 'new@example.com'
