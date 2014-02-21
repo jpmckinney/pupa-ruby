@@ -68,6 +68,14 @@ module Pupa
           end
         end
 
+        # Returns all objects within a collection.
+        #
+        # @param [String,Symbol] the name of the collection
+        # @return [Array<Hash>] all objects within the collection
+        def find_all(collection_name)
+          raw_connection[collection_name].find.entries
+        end
+
         # Drops all collections in the MongoDB database.
         def drop_all
           raw_connection.collections.each(&:drop)
@@ -77,7 +85,8 @@ module Pupa
 
         # Returns the name of the collection in which to save the object.
         #
-        # @return [String] the name of the object's class
+        # @param [String] class_name the name of the object's class
+        # @return [String] the name of the collection in which to save the object
         def collection_name_from_class_name(class_name)
           class_name.demodulize.underscore.pluralize.to_sym
         end
