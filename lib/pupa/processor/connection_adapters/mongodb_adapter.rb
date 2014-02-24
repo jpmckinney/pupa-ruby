@@ -23,6 +23,9 @@ module Pupa
         # @raises [Pupa::Errors::TooManyMatches] if multiple documents are found
         def find(selector)
           collection_name = collection_name_from_class_name(selector[:_type].camelize)
+          if selector.except(:_type).empty?
+            raise Errors::EmptySelectorError, "selector is empty during find in collection #{collection_name}"
+          end
           collection = raw_connection[collection_name]
           query = collection.find(selector)
           case query.count
@@ -31,7 +34,7 @@ module Pupa
           when 1
             query.first
           else
-            raise Errors::TooManyMatches, "selector matches multiple documents during find: #{collection_name} #{JSON.dump(selector)}"
+            raise Errors::TooManyMatches, "selector matches multiple documents during find in collection #{collection_name}: #{JSON.dump(selector)}"
           end
         end
 
@@ -43,6 +46,9 @@ module Pupa
         def save(object)
           selector = object.fingerprint
           collection_name = collection_name_from_class_name(object.class.to_s)
+          if selector.empty?
+            raise Errors::EmptySelectorError, "selector is empty during save in collection #{collection_name} for #{object._id}"
+          end
           collection = raw_connection[collection_name]
           query = collection.find(selector)
 
@@ -64,7 +70,7 @@ module Pupa
               [false, object.document['_id'].to_s]
             end
           else
-            raise Errors::TooManyMatches, "selector matches multiple documents during save: #{collection_name} #{JSON.dump(selector)} for #{object._id}"
+            raise Errors::TooManyMatches, "selector matches multiple documents during save in collection #{collection_name} for #{object._id}: #{JSON.dump(selector)}"
           end
         end
 

@@ -29,12 +29,16 @@ module Pupa
     # @todo This will obviously need to be scoped as in Python Pupa, to a
     #  jurisdiction, post, etc.
     def fingerprint
-      {
-        '$or' => [
-          {'name' => name},
-          {'other_names.name' => name},
-        ],
-      }
+      if name
+        {
+          '$or' => [
+            {'name' => name},
+            {'other_names.name' => name},
+          ],
+        }
+      else
+        {}
+      end
     end
   end
 end

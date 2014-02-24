@@ -21,6 +21,10 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
   end
 
   describe '.find' do
+    it 'should raise an error if selector is empty' do
+      expect{connection.find(_type: _type)}.to raise_error(Pupa::Errors::EmptySelectorError)
+    end
+
     it 'should return nil if no matches' do
       connection.find(_type: _type, name: 'nonexistent').should == nil
     end
@@ -35,6 +39,10 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
   end
 
   describe '.save' do
+    it 'should raise an error if selector is empty' do
+      expect{connection.save(Pupa::Person.new)}.to raise_error(Pupa::Errors::EmptySelectorError)
+    end
+
     it 'should insert a document if no matches' do
       connection.save(Pupa::Person.new(_id: 'new', name: 'new', email: 'new@example.com')).should == [true, 'new']
       connection.find(_type: _type, name: 'new')['email'].should == 'new@example.com'

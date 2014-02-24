@@ -33,12 +33,16 @@ module Pupa
     #   same name. Add a `jurisdiction` property?
     def fingerprint
       hash = super.slice(:classification, :parent_id)
-      {
-        '$or' => [
-          hash.merge('name' => name),
-          hash.merge('other_names.name' => name),
-        ],
-      }
+      if name
+        {
+          '$or' => [
+            hash.merge('name' => name),
+            hash.merge('other_names.name' => name),
+          ],
+        }
+      else
+        hash
+      end
     end
   end
 end

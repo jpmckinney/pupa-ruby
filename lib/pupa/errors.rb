@@ -20,6 +20,10 @@ module Pupa
     class MissingAttributeError < Error; end
 
     # This error is raised when saving an object to a database if the object
+    # produces an empty selector.
+    class EmptySelectorError < Error; end
+
+    # This error is raised when saving an object to a database if the object
     # matches more than one document in the database.
     class TooManyMatches < Error; end
 
