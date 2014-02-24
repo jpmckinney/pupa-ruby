@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('faraday_middleware', '~> 0.9.0')
   s.add_runtime_dependency('json-schema', '~> 2.1.3')
   s.add_runtime_dependency('mail')
-  s.add_runtime_dependency('moped', '~> 1.5.1')
+  s.add_runtime_dependency('moped', '~> 2.0.0.beta')
   s.add_runtime_dependency('oj', '~> 2.1')
 
   s.add_development_dependency('coveralls')
