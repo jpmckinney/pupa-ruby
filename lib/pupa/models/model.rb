@@ -36,7 +36,7 @@ module Pupa
       attr_reader :extras
       # @return [String] The underscored, lowercase form of the object's class.
       attr_accessor :_type
-      # @return [Moped::BSON::Document,nil] The object's matching document in
+      # @return [BSON::Document,nil] The object's matching document in
       #   the database. Set before persisting the object to the database.
       attr_accessor :document
 
@@ -129,9 +129,9 @@ module Pupa
 
     # Sets the object's ID.
     #
-    # @param [String,Moped::BSON::ObjectId] id an ID
+    # @param [String,BSON::ObjectId] id an ID
     def _id=(id)
-      @_id = id.to_s # in case of Moped::BSON::ObjectId
+      @_id = id.to_s # in case of BSON::ObjectId
     end
 
     # Sets the extras.

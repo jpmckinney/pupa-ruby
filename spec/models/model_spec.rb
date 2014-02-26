@@ -146,7 +146,7 @@ describe Pupa::Model do
     end
 
     it 'should coerce the _id to a string' do
-      object._id = Moped::BSON::ObjectId.new
+      object._id = BSON::ObjectId.new
       object._id.should be_a(String)
     end
   end
