@@ -209,13 +209,24 @@ You may want to set the `CPUPROFILE_REALTIME=1` flag; however, it seems to inter
 
     pprof.rb --pdf /tmp/PROFILE_NAME > /tmp/PROFILE_NAME.pdf
 
+## Integration with ODMs
+
+### Mongoid
+
+`Pupa::Model` is incompatible with `Mongoid::Document`. Don't do this:
+
+```ruby
+class Cat
+  include Pupa::Model
+  include Mongoid::Document
+end
+```
+
+Instead, have a scraping model that includes `Pupa::Model` and an app model that includes `Mongoid::Document`.
+
 ## Testing
 
 **DO NOT** run this gem's specs if you are using Redis database number 15 on `localhost`!
-
-## Mongoid
-
-`Pupa::Model` is incompatible with `Mongoid::Document`. Each stores attributes in different ways and it would be difficult/impossible to get the two models aligned. Consider having a separate scraping model and app model.
 
 ## Bugs? Questions?
 
