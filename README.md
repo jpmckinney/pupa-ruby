@@ -213,6 +213,10 @@ You may want to set the `CPUPROFILE_REALTIME=1` flag; however, it seems to inter
 
 **DO NOT** run this gem's specs if you are using Redis database number 15 on `localhost`!
 
+## Mongoid
+
+`Pupa::Model` is incompatible with `Mongoid::Document`. Each stores attributes in different ways and it would be difficult/impossible to get the two models aligned. Consider having a separate scraping model and app model.
+
 ## Bugs? Questions?
 
 This project's main repository is on GitHub: [http://github.com/opennorth/pupa-ruby](http://github.com/opennorth/pupa-ruby), where your contributions, forks, bug reports, feature requests, and feedback are greatly welcomed.
