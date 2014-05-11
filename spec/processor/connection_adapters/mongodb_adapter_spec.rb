@@ -10,7 +10,7 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
   end
 
   def connection
-    Pupa::Processor::Connection::MongoDBAdapter.new('localhost:27017', database: 'pupa_test')
+    Pupa::Processor::Connection::MongoDBAdapter.new('mongodb://localhost:27017/pupa_test')
   end
 
   before :all do

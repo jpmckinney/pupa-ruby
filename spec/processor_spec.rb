@@ -28,11 +28,11 @@ describe Pupa::Processor do
   end
 
   let :processor do
-    PersonProcessor.new('/tmp', database: 'pupa_test', level: 'WARN', logdev: io)
+    PersonProcessor.new('/tmp', database_url: 'mongodb://localhost:27017/pupa_test', level: 'WARN', logdev: io)
   end
 
   let :novalidate do
-    PersonProcessor.new('/tmp', database: 'pupa_test', level: 'WARN', logdev: io, validate: false)
+    PersonProcessor.new('/tmp', database_url: 'mongodb://localhost:27017/pupa_test', level: 'WARN', logdev: io, validate: false)
   end
 
   describe '#get' do

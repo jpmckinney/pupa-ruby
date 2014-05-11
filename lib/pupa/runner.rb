@@ -17,11 +17,7 @@ module Pupa
         pipelined:      false,
         cache_dir:      File.expand_path('web_cache', Dir.pwd),
         expires_in:     86400, # 1 day
-        adapter:        'mongodb',
-        host_with_port: 'localhost:27017',
-        database:       'pupa',
-        username:       nil,
-        password:       nil,
+        database_url:   'mongodb://localhost:27017/pupa',
         validate:       true,
         level:          'INFO',
         dry_run:        false,
@@ -86,20 +82,8 @@ module Pupa
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           options.expires_in = v
         end
-        opts.on('-A', '--adapter NAME', %w(mongodb postgresql), 'The database system adapter', '  (mongodb, postgresql)') do |v|
-          options.adapter = v
-        end
-        opts.on('-H', '--host HOST:PORT', 'The host and port to the database system') do |v|
-          options.host_with_port = v
-        end
-        opts.on('-d', '--database NAME', 'The name of the database') do |v|
-          options.database = v
-        end
-        opts.on('-u', '--username USERNAME', 'The database username') do |v|
-          options.username = v
-        end
-        opts.on('-p', '--password PASSWORD', 'The database password') do |v|
-          options.password = v
+        opts.on('-d', '--database_url SCHEME://USERNAME:PASSWORD@HOST:PORT/DATABASE', 'The database URL') do |v|
+          options.database_url = v
         end
         opts.on('--[no-]validate', 'Validate JSON documents') do |v|
           options.validate = v
@@ -158,11 +142,7 @@ module Pupa
         pipelined: options.pipelined,
         cache_dir: options.cache_dir,
         expires_in: options.expires_in,
-        adapter: options.adapter,
-        host_with_port: options.host_with_port,
-        database: options.database,
-        username: options.username,
-        password: options.password,
+        database_url: options.database_url,
         validate: options.validate,
         level: options.level,
         options: Hash[*rest])
@@ -180,7 +160,7 @@ module Pupa
       end
 
       if options.level == 'DEBUG'
-        %w(output_dir pipelined cache_dir expires_in adapter host_with_port database username validate level).each do |option|
+        %w(output_dir pipelined cache_dir expires_in database_url validate level).each do |option|
           puts "#{option}: #{options[option]}"
         end
         unless rest.empty?

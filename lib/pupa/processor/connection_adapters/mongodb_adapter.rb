@@ -7,15 +7,11 @@ module Pupa
       class MongoDBAdapter
         attr_reader :raw_connection
 
-        # @param [String] host_with_port the host and port to the database system
-        # @param [String] database the name of the database
-        # @param [Hash] options optional arguments
-        def initialize(host_with_port, database: 'pupa', **options)
-          @raw_connection = Moped::Session.new([host_with_port], database: database)
-
-          if options.key?(:username) && options.key?(:password)
-            @raw_connection.login(options[:username], options[:password])
-          end
+        # @param [String] database_url the database URL
+        def initialize(database_url)
+          uri = URI.parse(database_url)
+          @raw_connection = Moped::Session.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
+          @raw_connection.login(uri.user, uri.password) if uri.user && uri.password
         end
 
         # Finds a document matching the selection criteria.

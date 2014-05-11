@@ -1,4 +1,4 @@
-require 'pg'
+require 'sequel'
 
 module Pupa
   class Processor
@@ -7,20 +7,9 @@ module Pupa
       class PostgreSQLAdapter
         attr_reader :raw_connection
 
-        # @param [String] host_with_port the host and port to the database system
-        # @param [String] database the name of the database
-        def initialize(host_with_port, database: 'pupa', **options)
-          host, port = host_with_port.split(':', 2)
-          args = {host: host, port: port || 5432, dbname: database}
-
-          if options.key?(:username)
-            args[:user] = options[:username]
-          end
-          if options.key?(:password)
-            args[:password] = options[:password]
-          end
-
-          @raw_connection = PG.connect(args)
+        # @param [String] database_url the database URL
+        def initialize(database_url)
+          @raw_connection = Sequel.connect(database_url)
         end
 
         # Finds a document matching the selection criteria.

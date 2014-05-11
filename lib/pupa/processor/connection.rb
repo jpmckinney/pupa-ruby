@@ -9,16 +9,16 @@ module Pupa
       #
       # See each connection adapter for more information.
       #
-      # @param [String] adapter the database system adapter
-      # @param [String] host_with_port the host and port to the database system
-      # @param [Hash] options optional arguments
+      # @param [String] database_url the database URL
       # @return a configured connection to a database system
-      def self.new(adapter, host_with_port, **options)
-        case adapter
-        when 'postgresql'
-          PostgreSQLAdapter.new(host_with_port, options)
+      def self.new(database_url)
+        case URI.parse(database_url).scheme
+        when 'postgres'
+          PostgreSQLAdapter.new(database_url)
+        when 'mongodb'
+          MongoDBAdapter.new(database_url)
         else
-          MongoDBAdapter.new(host_with_port, options)
+          raise NotImplementedError
         end
       end
     end
