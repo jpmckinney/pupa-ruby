@@ -32,7 +32,7 @@ end
 #
 # Instead of adding a callback, we can override `to_h` when `persist` is `true`.
 ObjectSpace.each_object(Class) do |base|
-  if base.include?(Pupa::Model)
+  if base != Sequel::Model && base.include?(Pupa::Model) # Sequel::Model will error on #include?
     base.class_eval do
       set_callback(:save, :before) do |object|
         object._type = object._type.camelize.demodulize.underscore
