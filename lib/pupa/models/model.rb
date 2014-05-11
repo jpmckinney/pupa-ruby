@@ -45,7 +45,7 @@ module Pupa
 
     module ClassMethods
       # Declare which properties should be dumped to JSON after a scraping task
-      # is complete. A subset of these properties will be imported to MongoDB.
+      # is complete. A subset of these will be imported to the database.
       #
       # @param [Array<Symbol>] the properties to dump to JSON
       def dump(*attributes)
@@ -176,7 +176,7 @@ module Pupa
     # Returns the object as a hash.
     #
     # @param [Boolean] persist whether the object is being persisted, validated,
-    #   or used as a MongoDB selector, in which case foreign objects (i.e. hints)
+    #   or used as a database selector, in which case foreign objects (hints)
     #   are excluded
     # @return [Hash] the object as a hash
     def to_h(persist: false)

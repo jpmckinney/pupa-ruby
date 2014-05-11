@@ -1,3 +1,6 @@
+require 'pupa/processor/connection_adapters/mongodb_adapter'
+require 'pupa/processor/connection_adapters/postgresql_adapter'
+
 module Pupa
   class Processor
     # A database system connection factory.
@@ -13,7 +16,7 @@ module Pupa
       def self.new(adapter, host_with_port, **options)
         case adapter
         when 'postgresql'
-          raise NotImplementedError
+          PostgreSQLAdapter.new(host_with_port, options)
         else
           MongoDBAdapter.new(host_with_port, options)
         end

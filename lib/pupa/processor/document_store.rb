@@ -1,3 +1,6 @@
+require 'pupa/processor/document_store/file_store'
+require 'pupa/processor/document_store/redis_store'
+
 module Pupa
   class Processor
     # An JSON document store factory.

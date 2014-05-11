@@ -9,8 +9,13 @@ module Pupa
 
         # @param [String] host_with_port the host and port to the database system
         # @param [String] database the name of the database
-        def initialize(host_with_port, database: 'pupa')
+        # @param [Hash] options optional arguments
+        def initialize(host_with_port, database: 'pupa', **options)
           @raw_connection = Moped::Session.new([host_with_port], database: database)
+
+          if options.key?(:username) && options.key?(:password)
+            @raw_connection.login(options[:username], options[:password])
+          end
         end
 
         # Finds a document matching the selection criteria.

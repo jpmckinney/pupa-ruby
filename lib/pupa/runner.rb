@@ -14,15 +14,17 @@ module Pupa
         actions:        [],
         tasks:          [],
         output_dir:     File.expand_path('scraped_data', Dir.pwd),
+        pipelined:      false,
         cache_dir:      File.expand_path('web_cache', Dir.pwd),
         expires_in:     86400, # 1 day
-        pipelined:      false,
-        validate:       true,
         adapter:        'mongodb',
         host_with_port: 'localhost:27017',
         database:       'pupa',
-        dry_run:        false,
+        username:       nil,
+        password:       nil,
+        validate:       true,
         level:          'INFO',
+        dry_run:        false,
       }.merge(defaults))
 
       @actions = {
@@ -75,19 +77,16 @@ module Pupa
         opts.on('-o', '--output_dir PATH', 'The directory or Redis address (e.g. redis://localhost:6379/0) in which to dump JSON documents') do |v|
           options.output_dir = v
         end
+        opts.on('--pipelined', 'Dump JSON documents all at once') do |v|
+          options.pipelined = v
+        end
         opts.on('-c', '--cache_dir PATH', 'The directory or Memcached address (e.g. memcached://localhost:11211) in which to cache HTTP requests') do |v|
           options.cache_dir = v
         end
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           options.expires_in = v
         end
-        opts.on('--pipelined', 'Dump JSON documents all at once') do |v|
-          options.pipelined = v
-        end
-        opts.on('--[no-]validate', 'Validate JSON documents') do |v|
-          options.validate = v
-        end
-        opts.on('-A', '--adapter NAME', %w(mongodb), 'The database system adapter', '  (mongodb)') do |v|
+        opts.on('-A', '--adapter NAME', %w(mongodb postgresql), 'The database system adapter', '  (mongodb, postgresql)') do |v|
           options.adapter = v
         end
         opts.on('-H', '--host HOST:PORT', 'The host and port to the database system') do |v|
@@ -96,8 +95,14 @@ module Pupa
         opts.on('-d', '--database NAME', 'The name of the database') do |v|
           options.database = v
         end
-        opts.on('-n', '--dry-run', 'Show the plan without running any actions') do
-          options.dry_run = true
+        opts.on('-u', '--username USERNAME', 'The database username') do |v|
+          options.username = v
+        end
+        opts.on('-p', '--password PASSWORD', 'The database password') do |v|
+          options.password = v
+        end
+        opts.on('--[no-]validate', 'Validate JSON documents') do |v|
+          options.validate = v
         end
         opts.on('-v', '--verbose', 'Show all messages') do
           options.level = 'DEBUG'
@@ -107,6 +112,9 @@ module Pupa
         end
         opts.on('-s', '--silent', 'Show no messages') do
           options.level = 'UNKNOWN'
+        end
+        opts.on('-n', '--dry-run', 'Show the plan without running any actions') do
+          options.dry_run = true
         end
 
         opts.separator ''
@@ -147,13 +155,15 @@ module Pupa
       end
 
       processor = @processor_class.new(options.output_dir,
+        pipelined: options.pipelined,
         cache_dir: options.cache_dir,
         expires_in: options.expires_in,
-        pipelined: options.pipelined,
-        validate: options.validate,
         adapter: options.adapter,
         host_with_port: options.host_with_port,
         database: options.database,
+        username: options.username,
+        password: options.password,
+        validate: options.validate,
         level: options.level,
         options: Hash[*rest])
 
@@ -170,7 +180,7 @@ module Pupa
       end
 
       if options.level == 'DEBUG'
-        %w(output_dir cache_dir expires_in adapter host_with_port database level).each do |option|
+        %w(output_dir pipelined cache_dir expires_in adapter host_with_port database username validate level).each do |option|
           puts "#{option}: #{options[option]}"
         end
         unless rest.empty?

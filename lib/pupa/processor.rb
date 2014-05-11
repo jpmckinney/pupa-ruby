@@ -5,10 +5,6 @@ require 'pupa/processor/connection'
 require 'pupa/processor/document_store'
 require 'pupa/processor/yielder'
 
-require 'pupa/processor/connection_adapters/mongodb_adapter'
-require 'pupa/processor/document_store/file_store'
-require 'pupa/processor/document_store/redis_store'
-
 module Pupa
   # An abstract processor class from which specific processors inherit.
   class Processor
@@ -24,21 +20,23 @@ module Pupa
 
     # @param [String] output_dir the directory or Redis address
     #   (e.g. `redis://localhost:6379`) in which to dump JSON documents
+    # @param [Boolean] pipelined whether to dump JSON documents all at once
     # @param [String] cache_dir the directory or Memcached address
     #   (e.g. `memcached://localhost:11211`) in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
-    # @param [Boolean] pipelined whether to dump JSON documents all at once
-    # @param [Boolean] validate whether to validate JSON documents
     # @param [String] adapter the database system adapter
     # @param [String] host_with_port the host and port to the database system
     # @param [String] database the name of the database
+    # @param [String] username the database username
+    # @param [String] password the database password
+    # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, cache_dir: nil, expires_in: 86400, pipelined: false, validate: true, adapter: 'mongodb', host_with_port: 'localhost:27017', database: 'pupa', level: 'INFO', logdev: STDOUT, options: {})
+    def initialize(output_dir, pipelined: false, cache_dir: nil, expires_in: 86400, adapter: 'mongodb', host_with_port: 'localhost:27017', database: 'pupa', username: 'username', password: 'password', validate: true, level: 'INFO', logdev: STDOUT, options: {})
       @store      = DocumentStore.new(output_dir, pipelined: pipelined)
-      @connection = Connection.new(adapter, host_with_port, database: database)
       @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
+      @connection = Connection.new(adapter, host_with_port, database: database, username: username, password: password)
       @logger     = Logger.new('pupa', level: level, logdev: logdev)
       @validate   = validate
       @options    = options
