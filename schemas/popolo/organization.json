@@ -11,8 +11,7 @@
     },
     "name": {
       "description": "A primary name, e.g. a legally recognized name",
-      "type": "string",
-      "required": true
+      "type": ["string", "null"]
     },
     "other_names": {
       "description": "Alternate or former names",
@@ -39,6 +38,14 @@
     "parent": {
       "description": "The organization that contains this organization",
       "$ref": "http://popoloproject.com/schemas/organization.json#"
+    },
+    "area_id": {
+      "description": "The ID of the geographic area to which this organization is related",
+      "type": ["string", "null"]
+    },
+    "area": {
+      "description": "The geographic area to which this organization is related",
+      "$ref": "http://popoloproject.com/schemas/area.json#"
     },
     "founding_date": {
       "description": "A date of founding",

@@ -11,8 +11,7 @@
     },
     "name": {
       "description": "A person's preferred full name",
-      "type": "string",
-      "required": true
+      "type": ["string", "null"]
     },
     "other_names": {
       "description": "Alternate or former names",
@@ -53,7 +52,7 @@
       "type": ["string", "null"]
     },
     "sort_name": {
-      "description": "A name to use in an lexicographically ordered list",
+      "description": "A name to use in a lexicographically ordered list",
       "type": ["string", "null"]
     },
     "email": {
@@ -86,6 +85,10 @@
     },
     "biography": {
       "description": "An extended account of a person's life",
+      "type": ["string", "null"]
+    },
+    "national_identity": {
+      "description": "A national identity",
       "type": ["string", "null"]
     },
     "contact_details": {
