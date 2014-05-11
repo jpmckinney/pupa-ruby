@@ -14,7 +14,7 @@ describe Pupa::Processor::Connection::PostgreSQLAdapter do
   end
 
   before :all do
-    connection.raw_connection.drop_table(:people)
+    connection.raw_connection.drop_table?(:people)
     connection.raw_connection.create_table(:people) do
       primary_key :id
       String :_id
