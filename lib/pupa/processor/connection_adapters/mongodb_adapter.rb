@@ -29,6 +29,7 @@ module Pupa
           end
           collection = raw_connection[collection_name]
           query = collection.find(selector)
+
           case query.count
           when 0
             nil
@@ -46,6 +47,7 @@ module Pupa
         # @raises [Pupa::Errors::TooManyMatches] if multiple documents would be updated
         def save(object)
           selector = object.fingerprint
+
           collection_name = collection_name_from_class_name(object.class.to_s)
           if selector.empty?
             raise Errors::EmptySelectorError, "selector is empty during save in collection #{collection_name} for #{object._id}"
@@ -73,19 +75,6 @@ module Pupa
           else
             raise Errors::TooManyMatches, "selector matches multiple documents during save in collection #{collection_name} for #{object._id}: #{JSON.dump(selector)}"
           end
-        end
-
-        # Returns all objects within a collection.
-        #
-        # @param [String,Symbol] the name of the collection
-        # @return [Array<Hash>] all objects within the collection
-        def find_all(collection_name)
-          raw_connection[collection_name].find.entries
-        end
-
-        # Drops a collection from the MongoDB database.
-        def drop(collection_name)
-          raw_connection[collection_name].drop
         end
 
       private

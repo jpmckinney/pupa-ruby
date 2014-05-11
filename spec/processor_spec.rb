@@ -98,7 +98,7 @@ describe Pupa::Processor do
 
   describe '#import' do
     before :each do
-      processor.connection.drop(:organizations)
+      processor.connection.raw_connection[:organizations].drop
     end
 
     let :_type do
@@ -175,7 +175,7 @@ describe Pupa::Processor do
       processor.should_receive(:load_scraped_objects).and_return(graphable)
 
       processor.import
-      documents = processor.connection.find_all(:organizations)
+      documents = processor.connection.raw_connection[:organizations].find.entries
       documents.size.should == 2
       documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
       documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
@@ -192,7 +192,7 @@ describe Pupa::Processor do
       processor.should_receive(:load_scraped_objects).and_return(ungraphable)
 
       processor.import
-      documents = processor.connection.find_all(:organizations)
+      documents = processor.connection.raw_connection[:organizations].find.entries
       documents.size.should == 2
       documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '5', '_type' => _type, 'name' => 'Parent'}
       documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '4', '_type' => _type, 'name' => 'Child', 'parent_id' => '5'}
@@ -202,7 +202,7 @@ describe Pupa::Processor do
       processor.should_receive(:load_scraped_objects).and_return(foreign_keys_on_foreign_objects)
 
       processor.import
-      documents = processor.connection.find_all(:organizations)
+      documents = processor.connection.raw_connection[:organizations].find.entries
       documents.size.should == 3
       documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '9', '_type' => _type, 'name' => 'Parent'}
       documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '7', '_type' => _type, 'name' => 'Child', 'parent_id' => '9'}
@@ -314,7 +314,7 @@ describe Pupa::Processor do
         processor.should_receive(:load_scraped_objects).and_return(resolvable_foreign_key)
 
         processor.import
-        documents = processor.connection.find_all(:organizations)
+        documents = processor.connection.raw_connection[:organizations].find.entries
         documents.size.should == 2
         documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
         documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
@@ -339,7 +339,7 @@ describe Pupa::Processor do
         processor.should_receive(:load_scraped_objects).and_return(resolvable_foreign_keys_on_foreign_objects)
 
         processor.import
-        documents = processor.connection.find_all(:organizations)
+        documents = processor.connection.raw_connection[:organizations].find.entries
         documents.size.should == 3
         documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
         documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}

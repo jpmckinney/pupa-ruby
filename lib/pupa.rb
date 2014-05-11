@@ -9,11 +9,6 @@ require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/blank'
 require 'active_support/inflector'
 
-require 'pupa/errors'
-require 'pupa/logger'
-require 'pupa/processor'
-require 'pupa/runner'
-
 require 'pupa/models/concerns/indifferent_access'
 require 'pupa/models/concerns/contactable'
 require 'pupa/models/concerns/identifiable'
@@ -21,6 +16,11 @@ require 'pupa/models/concerns/linkable'
 require 'pupa/models/concerns/nameable'
 require 'pupa/models/concerns/sourceable'
 require 'pupa/models/concerns/timestamps'
+
+require 'pupa/errors'
+require 'pupa/logger'
+require 'pupa/processor'
+require 'pupa/runner'
 
 require 'pupa/models/foreign_object'
 require 'pupa/models/model'

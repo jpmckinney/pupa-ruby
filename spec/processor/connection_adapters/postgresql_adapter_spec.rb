@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
-describe Pupa::Processor::Connection::MongoDBAdapter do
+describe Pupa::Processor::Connection::PostgreSQLAdapter do
   def _type
     if testing_python_compatibility?
       'person'
@@ -10,11 +10,20 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
   end
 
   def connection
-    Pupa::Processor::Connection::MongoDBAdapter.new('mongodb://localhost:27017/pupa_test')
+    Pupa::Processor::Connection::PostgreSQLAdapter.new('postgres://localhost:5432/pupa_test')
   end
 
   before :all do
-    connection.raw_connection[:people].drop
+    connection.raw_connection.drop_table(:people)
+    connection.raw_connection.create_table(:people) do
+      primary_key :id
+      String :_id
+      String :_type
+      String :name
+      String :email
+      Time :created_at
+      Time :updated_at
+    end
 
     connection.save(Pupa::Person.new(_id: 'existing', name: 'existing', email: 'existing@example.com'))
     connection.raw_connection[:people].insert(_type: 'pupa/person', name: 'non-unique')
