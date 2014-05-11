@@ -10,3 +10,5 @@ services:
   - mongodb
   - postgresql
   - redis
+before_script:
+  - createdb pupa_test
