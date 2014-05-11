@@ -52,8 +52,8 @@ module Pupa
           raise NotImplementedError
         end
 
-        # Drops all tables in the PostgreSQL database.
-        def drop_all
+        # Drops a table from the PostgreSQL database.
+        def drop(table_name)
           raise NotImplementedError
         end
       end

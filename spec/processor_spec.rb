@@ -11,7 +11,7 @@ describe Pupa::Processor do
     end
 
     def make_person_invalid
-      @person = Pupa::Person.new
+      @person = Pupa::Person.new(name: ['foo'])
     end
 
     def scrape_people
@@ -98,7 +98,7 @@ describe Pupa::Processor do
 
   describe '#import' do
     before :each do
-      processor.connection.drop_all
+      processor.connection.drop(:organizations)
     end
 
     let :_type do

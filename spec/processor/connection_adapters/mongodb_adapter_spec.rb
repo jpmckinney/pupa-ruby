@@ -14,7 +14,7 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
   end
 
   before :all do
-    connection.drop_all
+    connection.drop(:people)
     connection.save(Pupa::Person.new(_id: 'existing', name: 'existing', email: 'existing@example.com'))
     connection.raw_connection[:people].insert(_type: 'pupa/person', name: 'non-unique')
     connection.raw_connection[:people].insert(_type: 'pupa/person', name: 'non-unique')

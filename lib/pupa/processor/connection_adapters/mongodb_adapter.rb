@@ -87,9 +87,9 @@ module Pupa
           raw_connection[collection_name].find.entries
         end
 
-        # Drops all collections in the MongoDB database.
-        def drop_all
-          raw_connection.collections.each(&:drop)
+        # Drops a collection from the MongoDB database.
+        def drop(collection_name)
+          raw_connection[collection_name].drop
         end
 
       private

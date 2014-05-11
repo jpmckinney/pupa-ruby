@@ -17,7 +17,7 @@ class FaradayMiddleware::Caching
     if url.query && params_to_ignore.any?
       params = parse_query url.query
       params.reject! {|k,| params_to_ignore.include? k }
-      url.query = build_query params
+      url.query = params.any? ? build_query(params) : nil
     end
     url.normalize!
     url.request_uri + env[:body].to_s # XXX add for POST requests

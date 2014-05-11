@@ -27,16 +27,15 @@ module Pupa
     # @param [String] adapter the database system adapter
     # @param [String] host_with_port the host and port to the database system
     # @param [String] database the name of the database
-    # @param [String] username the database username
-    # @param [String] password the database password
     # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, pipelined: false, cache_dir: nil, expires_in: 86400, adapter: 'mongodb', host_with_port: 'localhost:27017', database: 'pupa', username: 'username', password: 'password', validate: true, level: 'INFO', logdev: STDOUT, options: {})
+    # @param [Hash] username_and_password the database username and password
+    def initialize(output_dir, pipelined: false, cache_dir: nil, expires_in: 86400, adapter: 'mongodb', host_with_port: 'localhost:27017', database: 'pupa', validate: true, level: 'INFO', logdev: STDOUT, options: {}, **username_and_password)
       @store      = DocumentStore.new(output_dir, pipelined: pipelined)
       @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
-      @connection = Connection.new(adapter, host_with_port, database: database, username: username, password: password)
+      @connection = Connection.new(adapter, host_with_port, database: database, **username_and_password)
       @logger     = Logger.new('pupa', level: level, logdev: logdev)
       @validate   = validate
       @options    = options
