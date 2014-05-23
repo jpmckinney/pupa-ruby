@@ -29,7 +29,7 @@ module Pupa
       # @param [String] cache_dir a directory or a Memcached address
       #   (e.g. `memcached://localhost:11211`) in which to cache requests
       # @param [Integer] expires_in the cache's expiration time in seconds
-      # @param [Integer,String] value_max_bytes the maximum Memcached item size
+      # @param [Integer] value_max_bytes the maximum Memcached item size
       # @param [String] level the log level
       # @return [Faraday::Connection] a configured Faraday HTTP client
       def self.new(cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, level: 'INFO') # 1 day
@@ -59,7 +59,7 @@ module Pupa
             connection.response :caching do
               address = cache_dir[%r{\Amemcached://(.+)\z}, 1]
               if address
-                ActiveSupport::Cache::MemCacheStore.new(address, expires_in: expires_in, value_max_bytes: value_max_bytes)
+                ActiveSupport::Cache::MemCacheStore.new(address, expires_in: expires_in, value_max_bytes: Integer(value_max_bytes))
               else
                 ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: expires_in)
               end

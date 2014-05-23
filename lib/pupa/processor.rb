@@ -24,7 +24,7 @@ module Pupa
     # @param [String] cache_dir the directory or Memcached address
     #   (e.g. `memcached://localhost:11211`) in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
-    # @param [Integer,String] value_max_bytes the maximum Memcached item size
+    # @param [Integer] value_max_bytes the maximum Memcached item size
     # @param [String] database_url the database URL
     # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
