@@ -24,14 +24,15 @@ module Pupa
     # @param [String] cache_dir the directory or Memcached address
     #   (e.g. `memcached://localhost:11211`) in which to cache HTTP responses
     # @param [Integer] expires_in the cache's expiration time in seconds
+    # @param [Integer,String] value_max_bytes the maximum Memcached item size
     # @param [String] database_url the database URL
     # @param [Boolean] validate whether to validate JSON documents
     # @param [String] level the log level
     # @param [String,IO] logdev the log device
     # @param [Hash] options criteria for selecting the methods to run
-    def initialize(output_dir, pipelined: false, cache_dir: nil, expires_in: 86400, database_url: 'mongodb://localhost:27017/pupa', validate: true, level: 'INFO', logdev: STDOUT, options: {})
+    def initialize(output_dir, pipelined: false, cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, database_url: 'mongodb://localhost:27017/pupa', validate: true, level: 'INFO', logdev: STDOUT, options: {})
       @store      = DocumentStore.new(output_dir, pipelined: pipelined)
-      @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, level: level)
+      @client     = Client.new(cache_dir: cache_dir, expires_in: expires_in, value_max_bytes: value_max_bytes, level: level)
       @connection = Connection.new(database_url)
       @logger     = Logger.new('pupa', level: level, logdev: logdev)
       @validate   = validate

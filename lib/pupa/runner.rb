@@ -11,16 +11,17 @@ module Pupa
       @processor_class = processor_class
 
       @options = OpenStruct.new({
-        actions:        [],
-        tasks:          [],
-        output_dir:     File.expand_path('scraped_data', Dir.pwd),
-        pipelined:      false,
-        cache_dir:      File.expand_path('web_cache', Dir.pwd),
-        expires_in:     86400, # 1 day
-        database_url:   'mongodb://localhost:27017/pupa',
-        validate:       true,
-        level:          'INFO',
-        dry_run:        false,
+        actions:         [],
+        tasks:           [],
+        output_dir:      File.expand_path('scraped_data', Dir.pwd),
+        pipelined:       false,
+        cache_dir:       File.expand_path('web_cache', Dir.pwd),
+        expires_in:      86400, # 1 day
+        value_max_bytes: 1048576, # 1 MB
+        database_url:    'mongodb://localhost:27017/pupa',
+        validate:        true,
+        level:           'INFO',
+        dry_run:         false,
       }.merge(defaults))
 
       @actions = {
@@ -82,6 +83,9 @@ module Pupa
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           options.expires_in = v
         end
+        opts.on('-value_max_bytes BYTES', "The maximum Memcached item size") do |v|
+          options.value_max_bytes = v
+        end
         opts.on('-d', '--database_url SCHEME://USERNAME:PASSWORD@HOST:PORT/DATABASE', 'The database URL') do |v|
           options.database_url = v
         end
@@ -142,6 +146,7 @@ module Pupa
         pipelined: options.pipelined,
         cache_dir: options.cache_dir,
         expires_in: options.expires_in,
+        value_max_bytes: options.value_max_bytes,
         database_url: options.database_url,
         validate: options.validate,
         level: options.level,
@@ -160,7 +165,7 @@ module Pupa
       end
 
       if options.level == 'DEBUG'
-        %w(output_dir pipelined cache_dir expires_in database_url validate level).each do |option|
+        %w(output_dir pipelined cache_dir expires_in value_max_bytes database_url validate level).each do |option|
           puts "#{option}: #{options[option]}"
         end
         unless rest.empty?
