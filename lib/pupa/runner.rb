@@ -83,7 +83,7 @@ module Pupa
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           options.expires_in = v
         end
-        opts.on('-value_max_bytes BYTES', "The maximum Memcached item size") do |v|
+        opts.on('--value_max_bytes BYTES', "The maximum Memcached item size") do |v|
           options.value_max_bytes = v
         end
         opts.on('-d', '--database_url SCHEME://USERNAME:PASSWORD@HOST:PORT/DATABASE', 'The database URL') do |v|
