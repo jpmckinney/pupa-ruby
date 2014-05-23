@@ -59,7 +59,7 @@ module Pupa
             connection.response :caching do
               address = cache_dir[%r{\Amemcached://(.+)\z}, 1]
               if address
-                ActiveSupport::Cache::MemCacheStore.new(address, expires_in: expires_in, value_max_bytes: 1048576)
+                ActiveSupport::Cache::MemCacheStore.new(address, expires_in: expires_in, value_max_bytes: value_max_bytes)
               else
                 ActiveSupport::Cache::FileStore.new(cache_dir, expires_in: expires_in)
               end
