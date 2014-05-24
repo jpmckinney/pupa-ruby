@@ -86,7 +86,7 @@ module Pupa
         opts.on('--value_max_bytes BYTES', "The maximum Memcached item size") do |v|
           options.value_max_bytes = v
         end
-        opts.on('-d', '--database_url SCHEME://USERNAME:PASSWORD@HOST:PORT/DATABASE', 'The database URL') do |v|
+        opts.on('-d', '--database_url', 'The database URL (e.g. mongodb://USER:PASSWORD@localhost:27017/pupa or postgres://USER:PASSWORD@localhost:5432/pupa') do |v|
           options.database_url = v
         end
         opts.on('--[no-]validate', 'Validate JSON documents') do |v|

@@ -87,7 +87,7 @@ Pupa.rb offers several ways to significantly improve performance.
 
 In an example case, reducing disk I/O and skipping validation as described below reduced the time to scrape 10,000 documents from 100 cached HTTP responses from 100 seconds down to 5 seconds. Like fast tests, fast scrapers make development smoother.
 
-The `import` action's performance is currently limited by MongoDB when a dependency graph is used to determine the evaluation order. If a dependency graph cannot be used because you don't know a related object's ID, [several optimizations](https://github.com/opennorth/pupa-ruby/issues/12) can be implemented to improve performance.
+The `import` action's performance is currently limited by the database when a dependency graph is used to determine the evaluation order. If a dependency graph cannot be used because you don't know a related object's ID, [several optimizations](https://github.com/opennorth/pupa-ruby/issues/12) can be implemented to improve performance.
 
 ### Reducing HTTP requests
 
