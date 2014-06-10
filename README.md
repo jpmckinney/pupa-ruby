@@ -96,7 +96,7 @@ Instead, have a scraping model that includes `Pupa::Model` and an app model that
 
 ## Performance
 
-Pupa.rb offers several ways to significantly improve performance. [Read the documentation.](https://github.com/opennorth/pupa-ruby/blob/master/PERFORMANCE.md#L1)
+Pupa.rb offers several ways to significantly improve performance. [Read the documentation.](https://github.com/opennorth/pupa-ruby/blob/master/PERFORMANCE.md#readme)
 
 ## Testing
 
