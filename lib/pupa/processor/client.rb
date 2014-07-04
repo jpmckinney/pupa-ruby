@@ -31,8 +31,9 @@ module Pupa
       # @param [Integer] expires_in the cache's expiration time in seconds
       # @param [Integer] value_max_bytes the maximum Memcached item size
       # @param [String] level the log level
+      # @param [String,IO] logdev the log device
       # @return [Faraday::Connection] a configured Faraday HTTP client
-      def self.new(cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, level: 'INFO') # 1 day
+      def self.new(cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, level: 'INFO', logdev: logdev) # 1 day
         Faraday.new do |connection|
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
