@@ -11,17 +11,19 @@ module Pupa
       @processor_class = processor_class
 
       @options = OpenStruct.new({
-        actions:         [],
-        tasks:           [],
-        output_dir:      File.expand_path('scraped_data', Dir.pwd),
-        pipelined:       false,
-        cache_dir:       File.expand_path('web_cache', Dir.pwd),
-        expires_in:      86400, # 1 day
-        value_max_bytes: 1048576, # 1 MB
-        database_url:    'mongodb://localhost:27017/pupa',
-        validate:        true,
-        level:           'INFO',
-        dry_run:         false,
+        actions:            [],
+        tasks:              [],
+        output_dir:         File.expand_path('scraped_data', Dir.pwd),
+        pipelined:          false,
+        cache_dir:          File.expand_path('web_cache', Dir.pwd),
+        expires_in:         86400, # 1 day
+        value_max_bytes:    1048576, # 1 MB
+        memcached_username: nil,
+        memcached_password: nil,
+        database_url:       'mongodb://localhost:27017/pupa',
+        validate:           true,
+        level:              'INFO',
+        dry_run:            false,
       }.merge(defaults))
 
       @actions = {
@@ -86,6 +88,12 @@ module Pupa
         opts.on('--value_max_bytes BYTES', "The maximum Memcached item size") do |v|
           options.value_max_bytes = v
         end
+        opts.on('--memcached_username USERNAME', "The Memcached username") do |v|
+          options.memcached_username = v
+        end
+        opts.on('--memcached_password USERNAME', "The Memcached password") do |v|
+          options.memcached_password = v
+        end
         opts.on('-d', '--database_url', 'The database URL (e.g. mongodb://USER:PASSWORD@localhost:27017/pupa or postgres://USER:PASSWORD@localhost:5432/pupa') do |v|
           options.database_url = v
         end
@@ -147,6 +155,8 @@ module Pupa
         cache_dir: options.cache_dir,
         expires_in: options.expires_in,
         value_max_bytes: options.value_max_bytes,
+        memcached_username: options.memcached_username,
+        memcached_password: options.memcached_password,
         database_url: options.database_url,
         validate: options.validate,
         level: options.level,
@@ -165,7 +175,7 @@ module Pupa
       end
 
       if options.level == 'DEBUG'
-        %w(output_dir pipelined cache_dir expires_in value_max_bytes database_url validate level).each do |option|
+        %w(output_dir pipelined cache_dir expires_in value_max_bytes memcached_username memcached_password database_url validate level).each do |option|
           puts "#{option}: #{options[option]}"
         end
         unless rest.empty?
