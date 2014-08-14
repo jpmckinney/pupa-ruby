@@ -20,6 +20,6 @@ class FaradayMiddleware::Caching
       url.query = params.any? ? build_query(params) : nil
     end
     url.normalize!
-    url.request_uri + env[:body].to_s # XXX add for POST requests
+    url.host + url.request_uri + env[:body].to_s # XXX add for POST requests
   end
 end
