@@ -1,5 +1,6 @@
 # Pupa.rb: A Data Scraping Framework
 
+[![Gem Version](https://badge.fury.io/rb/pupa.svg)](http://badge.fury.io/rb/pupa)
 [![Build Status](https://secure.travis-ci.org/opennorth/pupa-ruby.png)](http://travis-ci.org/opennorth/pupa-ruby)
 [![Dependency Status](https://gemnasium.com/opennorth/pupa-ruby.png)](https://gemnasium.com/opennorth/pupa-ruby)
 [![Coverage Status](https://coveralls.io/repos/opennorth/pupa-ruby/badge.png?branch=master)](https://coveralls.io/r/opennorth/pupa-ruby)
