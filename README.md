@@ -30,7 +30,7 @@ Pupa.rb is extensible, so that you can add your own models, parsers, helpers, ac
 
 ## Usage
 
-You can use Pupa.rb to author scrapers that create people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) open government data specification. If you need to scrape other types of data, you can also use your own models with Pupa.rb.
+You can scrape any sort of data with Pupa.rb using your own models. You can also use Pupa.rb to scrape people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) open government data specification. This gem is up-to-date with Popolo's 2014-05-09 version, but omits the Motion, VoteEvent, Count, Vote and Area classes.
 
 The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows you how to:
 
