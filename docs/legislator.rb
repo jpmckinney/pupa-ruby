@@ -1,3 +1,6 @@
+# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/legislator.rb)
+# to run locally.
+#
 # The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
 # over the basics of using Pupa.rb, and [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html)
 # covers how to relate objects and how to separate scraping tasks for different

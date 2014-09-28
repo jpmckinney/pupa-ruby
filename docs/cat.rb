@@ -1,3 +1,5 @@
+# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/cat.rb)
+# to run locally.
 require 'pupa'
 
 # Require Nokogiri to automatically parse HTML responses.

@@ -1,3 +1,6 @@
+# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/organization.rb)
+# to run locally.
+#
 # The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html),
 # [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) and
 # [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html)
