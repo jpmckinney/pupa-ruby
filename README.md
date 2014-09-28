@@ -10,24 +10,6 @@ Pupa.rb is a Ruby 2.x fork of Sunlight Labs' [Pupa](https://github.com/opencivic
 
     gem install pupa
 
-## What it tries to solve
-
-Pupa.rb's goal is to make scraping less painful by solving common problems:
-
-* If you are updating a database by scraping a website, you can either delete and recreate records, or you can merge the scraped records with the saved records. Pupa.rb offers a simple way to merge records, by using an object's stable properties for identification.
-* If you are scraping a source that references other sources – for example, a committee that references its members – you may want to link the source to its references with foreign keys. Pupa.rb will use whatever identifying information you scrape – for example, the members' names – to fill in the foreign keys for you.
-* Data sources may use different formats in different contexts. Pupa.rb makes it easy to [select scraping methods](https://github.com/opennorth/pupa-ruby#scraping-method-selection) according to criteria, like the year of publication for example.
-* By splitting the scrape (extract) and import (load) steps, it's easier for you and volunteers to start a scraper without any interaction with a database.
-
-In short, Pupa.rb lets you spend more time on the tasks that are unique to your use case, and less time on common tasks like caching, merging and storing data. It also provides helpful features like:
-
-* Logging, to make debugging and monitoring a scraper easier
-* [Automatic response parsing](https://github.com/opennorth/pupa-ruby#automatic-response-parsing) of JSON, XML and HTML
-* Option parsing, to control your scraper from the command-line
-* Object validation, using [JSON Schema](http://json-schema.org/)
-
-Pupa.rb is extensible, so that you can add your own models, parsers, helpers, actions, etc. It also offers several ways to [improve your scraper's performance](https://github.com/opennorth/pupa-ruby#performance).
-
 ## Usage
 
 You can scrape any sort of data with Pupa.rb using your own models. You can also use Pupa.rb to scrape people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) open government data specification. This gem is up-to-date with Popolo's 2014-05-09 version, but omits the Motion, VoteEvent, Count, Vote and Area classes.
@@ -69,6 +51,24 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 ### Automatic response parsing
 
 JSON parsing is enabled by default. To enable automatic parsing of HTML and XML, require the `nokogiri` and `multi_xml` gems.
+
+## What it tries to solve
+
+Pupa.rb's goal is to make scraping less painful by solving common problems:
+
+* If you are updating a database by scraping a website, you can either delete and recreate records, or you can merge the scraped records with the saved records. Pupa.rb offers a simple way to merge records, by [using an object's stable properties for identification](http://opennorth.github.io/pupa-ruby/docs/cat.html#section-7).
+* If you are scraping a source that references other sources – for example, a committee that references its members – you may want to link the source to its references with foreign keys. Pupa.rb will use whatever identifying information you scrape – for example, the members' names – to [fill in the foreign keys for you](http://opennorth.github.io/pupa-ruby/docs/bill.html#section-4).
+* Data sources may use different formats in different contexts. Pupa.rb makes it easy to [select scraping methods](#scraping-method-selection) according to criteria, like the year of publication [for example](http://opennorth.github.io/pupa-ruby/docs/legislator.html#section-3).
+* By splitting the scrape (extract) and import (load) steps, it's easier for you and volunteers to start a scraper without any interaction with a database.
+
+In short, Pupa.rb lets you spend more time on the tasks that are unique to your use case, and less time on common tasks like caching, merging and storing data. It also provides helpful features like:
+
+* Logging, to make debugging and monitoring a scraper easier
+* [Automatic response parsing](#automatic-response-parsing) of JSON, XML and HTML
+* [Option parsing](http://opennorth.github.io/pupa-ruby/docs/legislator.html#section-9), to control your scraper from the command-line
+* [Object validation](http://opennorth.github.io/pupa-ruby/docs/cat.html#section-4), using [JSON Schema](http://json-schema.org/)
+
+Pupa.rb is extensible, so that you can add your own models, parsers, helpers, actions, etc. It also offers several ways to [improve your scraper's performance](#performance).
 
 ## [OpenCivicData](http://opencivicdata.org/) compatibility
 
