@@ -58,7 +58,9 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
+              <p>Download this example’s <a href="https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/legislator.rb">Ruby code</a>
+to run locally.</p>
+<p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
 over the basics of using Pupa.rb, and <a href="http://opennorth.github.io/pupa-ruby/docs/bill.html">bill.rb</a>
 covers how to relate objects and how to separate scraping tasks for different
 types of data. This will explain how to run, for example, different methods to
@@ -67,9 +69,9 @@ a data source changes format from year to year.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'pupa'</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">require</span> <span class="hljs-string">'pupa'</span>
 
-<span class="keyword">require</span> <span class="string">'nokogiri'</span></pre></div></div>
+<span class="hljs-keyword">require</span> <span class="hljs-string">'nokogiri'</span></pre></div></div>
             
         </li>
         
@@ -84,9 +86,9 @@ a data source changes format from year to year.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'mechanize'</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">require</span> <span class="hljs-string">'mechanize'</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">LegislatorProcessor</span> <span class="inheritance">&lt; <span class="parent">Pupa::Processor</span></span></span></pre></div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">LegislatorProcessor</span> <span class="hljs-inheritance">&lt; <span class="hljs-parent">Pupa::Processor</span></span></span></pre></div></div>
             
         </li>
         
@@ -103,8 +105,8 @@ used to scrape legislators according to the parliament.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scraping_task_method</span><span class="params">(task_name)</span></span>
-    <span class="keyword">if</span> task_name == <span class="symbol">:people</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scraping_task_method(task_name)
+    <span class="hljs-keyword">if</span> task_name == <span class="hljs-symbol">:people</span></pre></div></div>
             
         </li>
         
@@ -120,12 +122,12 @@ method according to the parliament.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">if</span> <span class="variable">@options</span>.key?(<span class="string">'parliament'</span>)
-        <span class="keyword">if</span> <span class="variable">@options</span>[<span class="string">'parliament'</span>].to_i &gt;= <span class="number">36</span>
-          <span class="string">"scrape_people_36th_to_date"</span>
-        <span class="keyword">else</span>
-          <span class="string">"scrape_people_1st_to_35th"</span>
-        <span class="keyword">end</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">if</span> <span class="hljs-variable">@options</span>.key?(<span class="hljs-string">'parliament'</span>)
+        <span class="hljs-keyword">if</span> <span class="hljs-variable">@options</span>[<span class="hljs-string">'parliament'</span>].to_i &gt;= <span class="hljs-number">36</span>
+          <span class="hljs-string">"scrape_people_36th_to_date"</span>
+        <span class="hljs-keyword">else</span>
+          <span class="hljs-string">"scrape_people_1st_to_35th"</span>
+        <span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -141,9 +143,9 @@ more common to scrape current data than historical data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">else</span>
-        <span class="string">"scrape_people_36th_to_date"</span>
-      <span class="keyword">end</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">else</span>
+        <span class="hljs-string">"scrape_people_36th_to_date"</span>
+      <span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -154,15 +156,15 @@ more common to scrape current data than historical data.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-6">&#182;</a>
               </div>
-              <p>Otherwise, we use <code>scraping_task_method</code>&#39;s default behavior for other
+              <p>Otherwise, we use <code>scraping_task_method</code>‘s default behavior for other
 scraping tasks.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    <span class="keyword">else</span>
-      <span class="keyword">super</span>
-    <span class="keyword">end</span>
-  <span class="keyword">end</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>    <span class="hljs-keyword">else</span>
+      <span class="hljs-keyword">super</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -177,14 +179,14 @@ scraping tasks.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">swap_first_last_name</span><span class="params">(name)</span></span>
-    name.strip.match(<span class="regexp">/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/</span>)[<span class="number">1</span>..<span class="number">2</span>].
-      reverse.map{|component| component.strip.squeeze(<span class="string">' '</span>)}.join(<span class="string">' '</span>)
-  <span class="keyword">end</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>swap_first_last_name(name)
+    name.strip.match(<span class="hljs-regexp">/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/</span>)[<span class="hljs-number">1</span>..<span class="hljs-number">2</span>].
+      reverse.map{|component| component.strip.squeeze(<span class="hljs-string">' '</span>)}.join(<span class="hljs-string">' '</span>)
+  <span class="hljs-keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">scrape_people_36th_to_date</span></span>
-    url = <span class="string">'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&amp;Language=E'</span>
-    doc = <span class="keyword">if</span> <span class="variable">@options</span>.key?(<span class="string">'parliament'</span>)</pre></div></div>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scrape_people_36th_to_date
+    url = <span class="hljs-string">'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&amp;Language=E'</span>
+    doc = <span class="hljs-keyword">if</span> <span class="hljs-variable">@options</span>.key?(<span class="hljs-string">'parliament'</span>)</pre></div></div>
             
         </li>
         
@@ -195,43 +197,43 @@ scraping tasks.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Since we aren&#39;t using the default Faraday HTTP client, we manually
-configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
+              <p>Since we aren’t using the default Faraday HTTP client, we manually
+configure the Mechanize client to use Pupa.rb’s logger.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      client = <span class="constant">Mechanize</span>.new
-      client.log = <span class="constant">Pupa::Logger</span>.new(<span class="string">'mechanize'</span>, <span class="symbol">level:</span> <span class="variable">@level</span>)
+            <div class="content"><div class='highlight'><pre>      client = <span class="hljs-constant">Mechanize</span>.new
+      client.log = <span class="hljs-constant">Pupa::Logger</span>.new(<span class="hljs-string">'mechanize'</span>, <span class="hljs-symbol">level:</span> <span class="hljs-variable">@level</span>)
       page = client.get(url)
-      page.form[<span class="string">'MasterPage$MasterPage$BodyContent$PageContent$Content$ListCriteriaContent$ListCriteriaContent$ucComboParliament$cboParliaments'</span>] = <span class="variable">@options</span>[<span class="string">'parliament'</span>]
+      page.form[<span class="hljs-string">'MasterPage$MasterPage$BodyContent$PageContent$Content$ListCriteriaContent$ListCriteriaContent$ucComboParliament$cboParliaments'</span>] = <span class="hljs-variable">@options</span>[<span class="hljs-string">'parliament'</span>]
       page.form.submit.parser
-    <span class="keyword">else</span>
+    <span class="hljs-keyword">else</span>
       get(url)
-    <span class="keyword">end</span>
+    <span class="hljs-keyword">end</span>
 
-    doc.css(<span class="string">'#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)'</span>).each <span class="keyword">do</span> |row|
-      person = <span class="constant">Pupa::Person</span>.new
-      person.name = swap_first_last_name(row.at_css(<span class="string">'td:eq(1)'</span>).text)
+    doc.css(<span class="hljs-string">'#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)'</span>).each <span class="hljs-keyword">do</span> |row|
+      person = <span class="hljs-constant">Pupa::Person</span>.new
+      person.name = swap_first_last_name(row.at_css(<span class="hljs-string">'td:eq(1)'</span>).text)
       dispatch(person)
-    <span class="keyword">end</span>
-  <span class="keyword">end</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">scrape_people_1st_to_35th</span></span>
-    list_url = <span class="string">'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E'</span>
-    page_url = <span class="string">'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E&amp;Parliament=%s&amp;Riding=&amp;Name=&amp;Party=&amp;Province=&amp;Gender=&amp;New=False&amp;Current=False&amp;First=False&amp;Picture=False&amp;Section=False&amp;ElectionDate='</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scrape_people_1st_to_35th
+    list_url = <span class="hljs-string">'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E'</span>
+    page_url = <span class="hljs-string">'http://www.parl.gc.ca/Parlinfo/Lists/Members.aspx?Language=E&amp;Parliament=%s&amp;Riding=&amp;Name=&amp;Party=&amp;Province=&amp;Gender=&amp;New=False&amp;Current=False&amp;First=False&amp;Picture=False&amp;Section=False&amp;ElectionDate='</span>
     doc = get(list_url)
-    value = doc.at_xpath(<span class="string">"//select[@id='ctl00_cphContent_cboParliamentCriteria']/option[starts-with(.,'<span class="subst">#{<span class="variable">@options</span>[<span class="string">'parliament'</span>]}</span>')]/@value"</span>).value
+    value = doc.at_xpath(<span class="hljs-string">"//select[@id='ctl00_cphContent_cboParliamentCriteria']/option[starts-with(.,'<span class="hljs-subst">#{<span class="hljs-variable">@options</span>[<span class="hljs-string">'parliament'</span>]}</span>')]/@value"</span>).value
     doc = get(page_url % value)
 
-    doc.css(<span class="string">'tr:gt(1)'</span>).each <span class="keyword">do</span> |row|
-      person = <span class="constant">Pupa::Person</span>.new
-      person.name = swap_first_last_name(row.at_css(<span class="string">'td:eq(1)'</span>).text)
+    doc.css(<span class="hljs-string">'tr:gt(1)'</span>).each <span class="hljs-keyword">do</span> |row|
+      person = <span class="hljs-constant">Pupa::Person</span>.new
+      person.name = swap_first_last_name(row.at_css(<span class="hljs-string">'td:eq(1)'</span>).text)
       dispatch(person)
-    <span class="keyword">end</span>
-  <span class="keyword">end</span>
-<span class="keyword">end</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
 
-<span class="constant">LegislatorProcessor</span>.add_scraping_task(<span class="symbol">:people</span>)</pre></div></div>
+<span class="hljs-constant">LegislatorProcessor</span>.add_scraping_task(<span class="hljs-symbol">:people</span>)</pre></div></div>
             
         </li>
         
@@ -244,16 +246,16 @@ configure the Mechanize client to use Pupa.rb&#39;s logger.</p>
               </div>
               <p>To add scraping method selection criteria when running the processor, call
 <code>legislator.rb</code> following the pattern:</p>
-<pre><code>ruby legislator.rb [options] -- [criteria]</code></pre>
-<p>So, for example, to scrape and import legislators from the 37th parliament:</p>
-<pre><code>ruby legislator.rb -- parliament 37</code></pre>
-<p>Or, to scrape but not import legislators from the 12th parliament:</p>
-<pre><code>ruby legislator.rb --action scrape -- parliament 12</code></pre>
-
+<pre><code>ruby legislator.rb [options] -- [criteria]
+</code></pre><p>So, for example, to scrape and import legislators from the 37th parliament:</p>
+<pre><code>ruby legislator.rb -- parliament <span class="hljs-number">37</span>
+</code></pre><p>Or, to scrape but not import legislators from the 12th parliament:</p>
+<pre><code>ruby legislator.rb --action scrape -- parliament <span class="hljs-number">12</span>
+</code></pre>
             </div>
             
-            <div class="content"><div class='highlight'><pre>runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">LegislatorProcessor</span>)
-runner.run(<span class="constant">ARGV</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>runner = <span class="hljs-constant">Pupa::Runner</span>.new(<span class="hljs-constant">LegislatorProcessor</span>)
+runner.run(<span class="hljs-constant">ARGV</span>)</pre></div></div>
             
         </li>
         

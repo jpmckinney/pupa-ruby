@@ -58,15 +58,17 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              <p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
+              <p>Download this example’s <a href="https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/bill.rb">Ruby code</a>
+to run locally.</p>
+<p>The <a href="http://opennorth.github.io/pupa-ruby/docs/cat.html">cat.rb</a> example goes
 over the basics of using Pupa.rb. This covers how to relate objects and how to
 separate scraping tasks for different types of data.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'pupa'</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">require</span> <span class="hljs-string">'pupa'</span>
 
-<span class="keyword">require</span> <span class="string">'nokogiri'</span></pre></div></div>
+<span class="hljs-keyword">require</span> <span class="hljs-string">'nokogiri'</span></pre></div></div>
             
         </li>
         
@@ -83,11 +85,11 @@ legislative body.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">Bill</span></span>
-  <span class="keyword">include</span> <span class="constant">Pupa::Model</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Bill</span></span>
+  <span class="hljs-keyword">include</span> <span class="hljs-constant">Pupa::Model</span>
 
-  attr_accessor <span class="symbol">:number</span>, <span class="symbol">:name</span>, <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span>
-  attr_reader <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
+  <span class="hljs-keyword">attr_accessor</span> <span class="hljs-symbol">:number</span>, <span class="hljs-symbol">:name</span>, <span class="hljs-symbol">:sponsor_id</span>, <span class="hljs-symbol">:organization_id</span>
+  <span class="hljs-keyword">attr_reader</span> <span class="hljs-symbol">:sponsor</span>, <span class="hljs-symbol">:organization</span></pre></div></div>
             
         </li>
         
@@ -103,7 +105,7 @@ to derive an evaluation order.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  foreign_key <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_key <span class="hljs-symbol">:sponsor_id</span>, <span class="hljs-symbol">:organization_id</span></pre></div></div>
             
         </li>
         
@@ -122,7 +124,7 @@ database, Pupa.rb will use this information to identify the foreign object.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  foreign_object <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  foreign_object <span class="hljs-symbol">:sponsor</span>, <span class="hljs-symbol">:organization</span></pre></div></div>
             
         </li>
         
@@ -139,7 +141,7 @@ Pupa.rb automatically excludes foreign objects during import.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  dump <span class="symbol">:number</span>, <span class="symbol">:name</span>, <span class="symbol">:sponsor_id</span>, <span class="symbol">:organization_id</span>, <span class="symbol">:sponsor</span>, <span class="symbol">:organization</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  dump <span class="hljs-symbol">:number</span>, <span class="hljs-symbol">:name</span>, <span class="hljs-symbol">:sponsor_id</span>, <span class="hljs-symbol">:organization_id</span>, <span class="hljs-symbol">:sponsor</span>, <span class="hljs-symbol">:organization</span></pre></div></div>
             
         </li>
         
@@ -155,22 +157,22 @@ instead of having to add it each time in the processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">sponsor=</span><span class="params">(sponsor)</span></span>
-    <span class="variable">@sponsor</span> = {<span class="symbol">_type:</span> <span class="string">'pupa/person'</span>}.merge(sponsor)
-  <span class="keyword">end</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>sponsor=(sponsor)
+    <span class="hljs-variable">@sponsor</span> = {<span class="hljs-symbol">_type:</span> <span class="hljs-string">'pupa/person'</span>}.merge(sponsor)
+  <span class="hljs-keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">organization=</span><span class="params">(organization)</span></span>
-    <span class="variable">@organization</span> = {<span class="symbol">_type:</span> <span class="string">'pupa/organization'</span>}.merge(organization)
-  <span class="keyword">end</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>organization=(organization)
+    <span class="hljs-variable">@organization</span> = {<span class="hljs-symbol">_type:</span> <span class="hljs-string">'pupa/organization'</span>}.merge(organization)
+  <span class="hljs-keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">fingerprint</span></span>
-    to_h.slice(<span class="symbol">:number</span>)
-  <span class="keyword">end</span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>fingerprint
+    to_h.slice(<span class="hljs-symbol">:number</span>)
+  <span class="hljs-keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>to_s
     name
-  <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div></div>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -185,7 +187,7 @@ instead of having to add it each time in the processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">ParliamentOfCanada</span> <span class="inheritance">&lt; <span class="parent">Pupa::Processor</span></span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ParliamentOfCanada</span> <span class="hljs-inheritance">&lt; <span class="hljs-parent">Pupa::Processor</span></span></span></pre></div></div>
             
         </li>
         
@@ -207,12 +209,12 @@ documentation for more information on the naming of scraping methods.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_people</span></span>
-    doc = get(<span class="string">'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&amp;Language=E'</span>)
-    doc.css(<span class="string">'#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)'</span>).each <span class="keyword">do</span> |row|
-      person = <span class="constant">Pupa::Person</span>.new
-      person.name = row.at_css(<span class="string">'td:eq(1)'</span>).text.match(<span class="regexp">/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/</span>)[<span class="number">1</span>..<span class="number">2</span>].
-        reverse.map{|component| component.strip.squeeze(<span class="string">' '</span>)}.join(<span class="string">' '</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scrape_people
+    doc = get(<span class="hljs-string">'http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&amp;Language=E'</span>)
+    doc.css(<span class="hljs-string">'#MasterPage_MasterPage_BodyContent_PageContent_Content_ListContent_ListContent_grdCompleteList tr:gt(1)'</span>).each <span class="hljs-keyword">do</span> |row|
+      person = <span class="hljs-constant">Pupa::Person</span>.new
+      person.name = row.at_css(<span class="hljs-string">'td:eq(1)'</span>).text.match(<span class="hljs-regexp">/\A([^,]+?), ([^(]+?)(?: \(.+\))?\z/</span>)[<span class="hljs-number">1</span>..<span class="hljs-number">2</span>].
+        reverse.map{|component| component.strip.squeeze(<span class="hljs-string">' '</span>)}.join(<span class="hljs-string">' '</span>)</pre></div></div>
             
         </li>
         
@@ -223,16 +225,16 @@ documentation for more information on the naming of scraping methods.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-9">&#182;</a>
               </div>
-              <p>Some bills omit sponsors&#39; middle names, so we add an alternate name that
+              <p>Some bills omit sponsors’ middle names, so we add an alternate name that
 omits any middle names.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      components = person.name.split(<span class="string">' '</span>)
-      person.add_name(<span class="string">"<span class="subst">#{components.first}</span> <span class="subst">#{components.last}</span>"</span>)
+            <div class="content"><div class='highlight'><pre>      components = person.name.split(<span class="hljs-string">' '</span>)
+      person.add_name(<span class="hljs-string">"<span class="hljs-subst">#{components.first}</span> <span class="hljs-subst">#{components.last}</span>"</span>)
       dispatch(person)
-    <span class="keyword">end</span>
-  <span class="keyword">end</span></pre></div></div>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -247,20 +249,20 @@ omits any middle names.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_organizations</span></span>
-    parliament = <span class="constant">Pupa::Organization</span>.new(<span class="symbol">name:</span> <span class="string">'Parliament of Canada'</span>)
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scrape_organizations
+    parliament = <span class="hljs-constant">Pupa::Organization</span>.new(<span class="hljs-symbol">name:</span> <span class="hljs-string">'Parliament of Canada'</span>)
     dispatch(parliament)
 
-    house_of_commons = <span class="constant">Pupa::Organization</span>.new(<span class="symbol">name:</span> <span class="string">'House of Commons'</span>, <span class="symbol">parent_id:</span> parliament._id)
+    house_of_commons = <span class="hljs-constant">Pupa::Organization</span>.new(<span class="hljs-symbol">name:</span> <span class="hljs-string">'House of Commons'</span>, <span class="hljs-symbol">parent_id:</span> parliament._id)
     dispatch(house_of_commons)
 
-    senate = <span class="constant">Pupa::Organization</span>.new(<span class="symbol">name:</span> <span class="string">'Senate'</span>, <span class="symbol">parent_id:</span> parliament._id)
+    senate = <span class="hljs-constant">Pupa::Organization</span>.new(<span class="hljs-symbol">name:</span> <span class="hljs-string">'Senate'</span>, <span class="hljs-symbol">parent_id:</span> parliament._id)
     dispatch(senate)
-  <span class="keyword">end</span>
+  <span class="hljs-keyword">end</span>
 
-  <span class="function"><span class="keyword">def</span> <span class="title">scrape_bills</span></span>
-    doc = get(<span class="string">'http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&amp;ParliamentSession=41-1&amp;Mode=1&amp;download=xml'</span>)
-    doc[<span class="string">'Bills'</span>][<span class="string">'Bill'</span>].each <span class="keyword">do</span> |row|</pre></div></div>
+  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scrape_bills
+    doc = get(<span class="hljs-string">'http://www.parl.gc.ca/LegisInfo/Home.aspx?language=E&amp;ParliamentSession=41-1&amp;Mode=1&amp;download=xml'</span>)
+    doc[<span class="hljs-string">'Bills'</span>][<span class="hljs-string">'Bill'</span>].each <span class="hljs-keyword">do</span> |row|</pre></div></div>
             
         </li>
         
@@ -275,11 +277,11 @@ omits any middle names.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">next</span> <span class="keyword">if</span> row[<span class="string">'BillNumber'</span>][<span class="string">'prefix'</span>] == <span class="string">'S'</span>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">next</span> <span class="hljs-keyword">if</span> row[<span class="hljs-string">'BillNumber'</span>][<span class="hljs-string">'prefix'</span>] == <span class="hljs-string">'S'</span>
 
-      bill = <span class="constant">Bill</span>.new
-      bill.number = row[<span class="string">'BillNumber'</span>][<span class="string">'prefix'</span>] + row[<span class="string">'BillNumber'</span>][<span class="string">'number'</span>]
-      bill.name = row[<span class="string">'BillTitle'</span>][<span class="string">'Title'</span>].find{|x| x[<span class="string">'language'</span>] == <span class="string">'en'</span>}[<span class="string">'__content__'</span>]</pre></div></div>
+      bill = <span class="hljs-constant">Bill</span>.new
+      bill.number = row[<span class="hljs-string">'BillNumber'</span>][<span class="hljs-string">'prefix'</span>] + row[<span class="hljs-string">'BillNumber'</span>][<span class="hljs-string">'number'</span>]
+      bill.name = row[<span class="hljs-string">'BillTitle'</span>][<span class="hljs-string">'Title'</span>].find{|x| x[<span class="hljs-string">'language'</span>] == <span class="hljs-string">'en'</span>}[<span class="hljs-string">'__content__'</span>]</pre></div></div>
             
         </li>
         
@@ -296,24 +298,24 @@ given information.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      name = row[<span class="string">'SponsorAffiliation'</span>][<span class="string">'Person'</span>][<span class="string">'FullName'</span>]
+            <div class="content"><div class='highlight'><pre>      name = row[<span class="hljs-string">'SponsorAffiliation'</span>][<span class="hljs-string">'Person'</span>][<span class="hljs-string">'FullName'</span>]
       bill.sponsor = {
-        <span class="string">'$or'</span> =&gt; [
-          {<span class="string">'name'</span> =&gt; name},
-          {<span class="string">'other_names.name'</span> =&gt; name},
+        <span class="hljs-string">'$or'</span> =&gt; [
+          {<span class="hljs-string">'name'</span> =&gt; name},
+          {<span class="hljs-string">'other_names.name'</span> =&gt; name},
         ],
       }
       bill.organization = {
-        <span class="symbol">name:</span> row[<span class="string">'BillNumber'</span>][<span class="string">'prefix'</span>] == <span class="string">'C'</span> ? <span class="string">'House of Commons'</span> <span class="symbol">:</span> <span class="string">'Senate'</span>,
+        <span class="hljs-symbol">name:</span> row[<span class="hljs-string">'BillNumber'</span>][<span class="hljs-string">'prefix'</span>] == <span class="hljs-string">'C'</span> ? <span class="hljs-string">'House of Commons'</span> <span class="hljs-symbol">:</span> <span class="hljs-string">'Senate'</span>,
       }
       dispatch(bill)
-    <span class="keyword">end</span>
-  <span class="keyword">end</span>
-<span class="keyword">end</span>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span>
 
-<span class="constant">ParliamentOfCanada</span>.add_scraping_task(<span class="symbol">:bills</span>)
-<span class="constant">ParliamentOfCanada</span>.add_scraping_task(<span class="symbol">:organizations</span>)
-<span class="constant">ParliamentOfCanada</span>.add_scraping_task(<span class="symbol">:people</span>)</pre></div></div>
+<span class="hljs-constant">ParliamentOfCanada</span>.add_scraping_task(<span class="hljs-symbol">:bills</span>)
+<span class="hljs-constant">ParliamentOfCanada</span>.add_scraping_task(<span class="hljs-symbol">:organizations</span>)
+<span class="hljs-constant">ParliamentOfCanada</span>.add_scraping_task(<span class="hljs-symbol">:people</span>)</pre></div></div>
             
         </li>
         
@@ -326,12 +328,12 @@ given information.</p>
               </div>
               <p>By default, if you run <code>bill.rb</code>, it will perform all scraping tasks and
 import all the scraped objects into the database. Use the <code>--action</code> and
-<code>--task</code> switches to control the processor&#39;s behavior.</p>
+<code>--task</code> switches to control the processor’s behavior.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">ParliamentOfCanada</span>)
-runner.run(<span class="constant">ARGV</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>runner = <span class="hljs-constant">Pupa::Runner</span>.new(<span class="hljs-constant">ParliamentOfCanada</span>)
+runner.run(<span class="hljs-constant">ARGV</span>)</pre></div></div>
             
         </li>
         

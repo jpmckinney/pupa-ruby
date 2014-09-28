@@ -58,10 +58,12 @@
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-1">&#182;</a>
               </div>
-              
+              <p>Download this example’s <a href="https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/cat.rb">Ruby code</a>
+to run locally.</p>
+
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'pupa'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">require</span> <span class="hljs-string">'pupa'</span></pre></div></div>
             
         </li>
         
@@ -76,9 +78,9 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="keyword">require</span> <span class="string">'nokogiri'</span>
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">require</span> <span class="hljs-string">'nokogiri'</span>
 
-<span class="class"><span class="keyword">class</span> <span class="title">Cat</span></span></pre></div></div>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Cat</span></span></pre></div></div>
             
         </li>
         
@@ -94,7 +96,7 @@
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">include</span> <span class="constant">Pupa::Model</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">include</span> <span class="hljs-constant">Pupa::Model</span></pre></div></div>
             
         </li>
         
@@ -107,11 +109,11 @@
               </div>
               <p>If you would like Pupa.rb to validate your objects, assign to <code>self.schema</code>
 an absolute path to a <a href="http://json-schema.org/">JSON Schema</a>. See for
-example <a href="https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo">Popolo&#39;s JSON Schema files</a>.</p>
+example <a href="https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo">Popolo’s JSON Schema files</a>.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">self</span>.schema = <span class="string">'/path/to/json-schema/cat.json'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">self</span>.schema = <span class="hljs-string">'/path/to/json-schema/cat.json'</span></pre></div></div>
             
         </li>
         
@@ -129,9 +131,9 @@ for more mixins.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="keyword">include</span> <span class="constant">Pupa::Concerns::Timestamps</span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-keyword">include</span> <span class="hljs-constant">Pupa::Concerns::Timestamps</span>
 
-  attr_accessor <span class="symbol">:image</span>, <span class="symbol">:name</span>, <span class="symbol">:breed</span>, <span class="symbol">:age</span>, <span class="symbol">:sex</span></pre></div></div>
+  <span class="hljs-keyword">attr_accessor</span> <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">:name</span>, <span class="hljs-symbol">:breed</span>, <span class="hljs-symbol">:age</span>, <span class="hljs-symbol">:sex</span></pre></div></div>
             
         </li>
         
@@ -147,7 +149,7 @@ complete. All of these properties will be imported to MongoDB.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  dump <span class="symbol">:image</span>, <span class="symbol">:name</span>, <span class="symbol">:breed</span>, <span class="symbol">:age</span>, <span class="symbol">:sex</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  dump <span class="hljs-symbol">:image</span>, <span class="hljs-symbol">:name</span>, <span class="hljs-symbol">:breed</span>, <span class="hljs-symbol">:age</span>, <span class="hljs-symbol">:sex</span></pre></div></div>
             
         </li>
         
@@ -159,16 +161,16 @@ complete. All of these properties will be imported to MongoDB.</p>
                 <a class="pilcrow" href="#section-7">&#182;</a>
               </div>
               <p>When saving an object to the database, Pupa.rb will check if the object had
-been saved in a previous run. It uses a &quot;fingerprint&quot; of the object: a
-subset of the object&#39;s properties that should uniquely identify the object
+been saved in a previous run. It uses a “fingerprint” of the object: a
+subset of the object’s properties that should uniquely identify the object
 within the context of the scraping task. In this case, the image is not an
 identifying property, because the image can change without changing the cat.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">fingerprint</span></span>
-    to_h.slice(<span class="symbol">:name</span>, <span class="symbol">:breed</span>, <span class="symbol">:age</span>, <span class="symbol">:sex</span>)
-  <span class="keyword">end</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>fingerprint
+    to_h.slice(<span class="hljs-symbol">:name</span>, <span class="hljs-symbol">:breed</span>, <span class="hljs-symbol">:age</span>, <span class="hljs-symbol">:sex</span>)
+  <span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -179,15 +181,15 @@ identifying property, because the image can change without changing the cat.</p>
               <div class="pilwrap ">
                 <a class="pilcrow" href="#section-8">&#182;</a>
               </div>
-              <p>Adds a <code>to_s</code> method so that it&#39;s easier to see which objects are being
-saved in the processor&#39;s log.</p>
+              <p>Adds a <code>to_s</code> method so that it’s easier to see which objects are being
+saved in the processor’s log.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">to_s</span></span>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>to_s
     name
-  <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div></div>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -202,7 +204,7 @@ saved in the processor&#39;s log.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="class"><span class="keyword">class</span> <span class="title">CatProcessor</span> <span class="inheritance">&lt; <span class="parent">Pupa::Processor</span></span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CatProcessor</span> <span class="hljs-inheritance">&lt; <span class="hljs-parent">Pupa::Processor</span></span></span></pre></div></div>
             
         </li>
         
@@ -218,7 +220,7 @@ saved in the processor&#39;s log.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>  <span class="function"><span class="keyword">def</span> <span class="title">scrape_objects</span></span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>  <span class="hljs-function"><span class="hljs-keyword">def</span> </span>scrape_objects</pre></div></div>
             
         </li>
         
@@ -238,8 +240,8 @@ developing and testing a processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    doc = post(<span class="string">'http://www.iams.ca/en-ca/rescue-pets/pet-finder'</span>,
-      <span class="string">'petName=Cat&amp;petLocation=H2Y 1C6&amp;nextPetSeachFlag=true'</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    doc = post(<span class="hljs-string">'http://www.iams.ca/en-ca/rescue-pets/pet-finder'</span>,
+      <span class="hljs-string">'petName=Cat&amp;petLocation=H2Y 1C6&amp;nextPetSeachFlag=true'</span>)</pre></div></div>
             
         </li>
         
@@ -254,7 +256,7 @@ developing and testing a processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>    doc.css(<span class="string">'#show-result ul:gt(1)'</span>).each <span class="keyword">do</span> |row|</pre></div></div>
+            <div class="content"><div class='highlight'><pre>    doc.css(<span class="hljs-string">'#show-result ul:gt(1)'</span>).each <span class="hljs-keyword">do</span> |row|</pre></div></div>
             
         </li>
         
@@ -269,7 +271,7 @@ developing and testing a processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      <span class="keyword">next</span> <span class="keyword">if</span> clean(row.at_css(<span class="string">'.name'</span>).text) == <span class="string">'Chatons pour adoption'</span></pre></div></div>
+            <div class="content"><div class='highlight'><pre>      <span class="hljs-keyword">next</span> <span class="hljs-keyword">if</span> clean(row.at_css(<span class="hljs-string">'.name'</span>).text) == <span class="hljs-string">'Chatons pour adoption'</span></pre></div></div>
             
         </li>
         
@@ -284,7 +286,7 @@ developing and testing a processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      cat = <span class="constant">Cat</span>.new</pre></div></div>
+            <div class="content"><div class='highlight'><pre>      cat = <span class="hljs-constant">Cat</span>.new</pre></div></div>
             
         </li>
         
@@ -299,10 +301,10 @@ developing and testing a processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>      cat.image = row.at_css(<span class="string">'img'</span>)[<span class="symbol">:src</span>]
-      cat.name = clean(row.at_css(<span class="string">'.name'</span>).text)
+            <div class="content"><div class='highlight'><pre>      cat.image = row.at_css(<span class="hljs-string">'img'</span>)[<span class="hljs-symbol">:src</span>]
+      cat.name = clean(row.at_css(<span class="hljs-string">'.name'</span>).text)
       cat.breed, cat.age, cat.sex =
-        clean(row.at_css(<span class="string">'.features'</span>).text).split(<span class="string">', '</span>)</pre></div></div>
+        clean(row.at_css(<span class="hljs-string">'.features'</span>).text).split(<span class="hljs-string">', '</span>)</pre></div></div>
             
         </li>
         
@@ -319,9 +321,9 @@ saving to disk, printing to CSV, etc.</p>
             </div>
             
             <div class="content"><div class='highlight'><pre>      dispatch(cat)
-    <span class="keyword">end</span>
-  <span class="keyword">end</span>
-<span class="keyword">end</span></pre></div></div>
+    <span class="hljs-keyword">end</span>
+  <span class="hljs-keyword">end</span>
+<span class="hljs-keyword">end</span></pre></div></div>
             
         </li>
         
@@ -338,7 +340,7 @@ processor.</p>
 
             </div>
             
-            <div class="content"><div class='highlight'><pre><span class="constant">CatProcessor</span>.add_scraping_task(<span class="symbol">:objects</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre><span class="hljs-constant">CatProcessor</span>.add_scraping_task(<span class="hljs-symbol">:objects</span>)</pre></div></div>
             
         </li>
         
@@ -354,8 +356,8 @@ command-line options. Run <code>cat.rb --help</code> to see a full list of optio
 
             </div>
             
-            <div class="content"><div class='highlight'><pre>runner = <span class="constant">Pupa::Runner</span>.new(<span class="constant">CatProcessor</span>)
-runner.run(<span class="constant">ARGV</span>)</pre></div></div>
+            <div class="content"><div class='highlight'><pre>runner = <span class="hljs-constant">Pupa::Runner</span>.new(<span class="hljs-constant">CatProcessor</span>)
+runner.run(<span class="hljs-constant">ARGV</span>)</pre></div></div>
             
         </li>
         
