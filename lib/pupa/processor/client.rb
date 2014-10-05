@@ -5,7 +5,6 @@ require 'faraday_middleware/response_middleware'
 require 'pupa/processor/middleware/logger'
 require 'pupa/processor/middleware/parse_html'
 require 'pupa/processor/middleware/parse_json'
-require 'pupa/processor/middleware/raise_error'
 require 'pupa/refinements/faraday'
 require 'pupa/refinements/faraday_middleware'
 
@@ -38,7 +37,7 @@ module Pupa
         Faraday.new do |connection|
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
-          connection.use Middleware::RaiseError # useful for breaking concurrent requests
+          connection.use Faraday::Response::RaiseError
 
           # @see http://tools.ietf.org/html/rfc4627
           connection.use Middleware::ParseJson, preserve_raw: true, content_type: /\bjson$/
