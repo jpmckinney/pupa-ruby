@@ -52,6 +52,14 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 JSON parsing is enabled by default. To enable automatic parsing of HTML and XML, require the `nokogiri` and `multi_xml` gems.
 
+### Automatic response decompression
+
+Until [Faraday Middleware](https://github.com/lostisland/faraday_middleware) releases its next version (> 0.9.1), you must use the gem from its git repository to automatically decompress responses:
+
+```ruby
+gem 'faraday_middleware', git: 'https://github.com/lostisland/faraday_middleware.git'
+```
+
 ## What it tries to solve
 
 Pupa.rb's goal is to make scraping less painful by solving common problems:
