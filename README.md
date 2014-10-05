@@ -60,6 +60,23 @@ Until [Faraday Middleware](https://github.com/lostisland/faraday_middleware) rel
 gem 'faraday_middleware', git: 'https://github.com/lostisland/faraday_middleware.git'
 ```
 
+## Performance
+
+Pupa.rb offers several ways to significantly improve performance. [Read the documentation.](https://github.com/opennorth/pupa-ruby/blob/master/PERFORMANCE.md#readme)
+
+## Integration with ODMs
+
+`Pupa::Model` is incompatible with `Mongoid::Document`. **Don't do this**:
+
+```ruby
+class Cat
+  include Pupa::Model
+  include Mongoid::Document
+end
+```
+
+Instead, have a simple scraping model that includes `Pupa::Model` and an app model that includes `Mongoid::Document` with your app's business logic.
+
 ## What it tries to solve
 
 Pupa.rb's goal is to make scraping less painful by solving common problems:
@@ -89,23 +106,6 @@ require 'pupa/refinements/opencivicdata'
 ```
 
 It is not currently possible to run the `scrape` action with one of Pupa.rb and Pupa, and to then run the `import` action with the other. Both actions must be run by the same library.
-
-## Integration with ODMs
-
-`Pupa::Model` is incompatible with `Mongoid::Document`. Don't do this:
-
-```ruby
-class Cat
-  include Pupa::Model
-  include Mongoid::Document
-end
-```
-
-Instead, have a scraping model that includes `Pupa::Model` and an app model that includes `Mongoid::Document`.
-
-## Performance
-
-Pupa.rb offers several ways to significantly improve performance. [Read the documentation.](https://github.com/opennorth/pupa-ruby/blob/master/PERFORMANCE.md#readme)
 
 ## Testing
 
