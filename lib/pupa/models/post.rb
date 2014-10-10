@@ -15,11 +15,11 @@ module Pupa
 
     foreign_key :organization_id, :area_id
 
-    # Returns the post's label and organization ID.
+    # Returns the post's label or role and organization ID.
     #
-    # @return [String] the post's label and organization ID
+    # @return [String] the post's label or role and organization ID
     def to_s
-      "#{label} in #{organization_id}"
+      "#{label || role} in #{organization_id}"
     end
 
     # A post should have a unique label within an organization, through it may
