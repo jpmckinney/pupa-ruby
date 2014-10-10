@@ -26,10 +26,14 @@ require 'pupa/models/foreign_object'
 require 'pupa/models/model'
 require 'pupa/models/contact_detail_list'
 require 'pupa/models/identifier_list'
+require 'pupa/models/area'
 require 'pupa/models/membership'
+require 'pupa/models/motion'
 require 'pupa/models/organization'
 require 'pupa/models/person'
 require 'pupa/models/post'
+require 'pupa/models/vote'
+require 'pupa/models/vote_event'
 
 module Pupa
 end
