@@ -31,15 +31,15 @@ describe Pupa::Concerns::Contactable do
     end
 
     it 'should symbolize keys' do
-      object.contact_details = [{'type' => 'email', 'value' => 'ceo@example.com', 'note' => 'work'}]
-      object.contact_details.should == [{type: 'email', value: 'ceo@example.com', note: 'work'}]
+      object.contact_details = [{'type' => 'email', 'value' => 'ceo@example.com'}]
+      object.contact_details.should == [{type: 'email', value: 'ceo@example.com'}]
     end
   end
 
   describe '#add_contact_detail' do
     it 'should add a contact detail' do
-      object.add_contact_detail('email', 'ceo@example.com', note: 'work')
-      object.contact_details.should == [{type: 'email', value: 'ceo@example.com', note: 'work'}]
+      object.add_contact_detail('email', 'ceo@example.com', label: 'Email', note: 'work', valid_from: '2010-01-01', valid_until: '2010-12-31')
+      object.contact_details.should == [{type: 'email', value: 'ceo@example.com', label: 'Email', note: 'work', valid_from: '2010-01-01', valid_until: '2010-12-31'}]
     end
 
     it 'should not add a contact detail without a type' do

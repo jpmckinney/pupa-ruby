@@ -10,10 +10,10 @@ module Pupa
     include Concerns::Contactable
     include Concerns::Linkable
 
-    attr_accessor :label, :role, :organization_id, :start_date, :end_date
-    dump :label, :role, :organization_id, :start_date, :end_date
+    attr_accessor :label, :other_label, :role, :organization_id, :area_id, :start_date, :end_date
+    dump          :label, :other_label, :role, :organization_id, :area_id, :start_date, :end_date
 
-    foreign_key :organization_id
+    foreign_key :organization_id, :area_id
 
     # Returns the post's label and organization ID.
     #

@@ -10,12 +10,10 @@ module Pupa
     include Concerns::Contactable
     include Concerns::Linkable
 
-    attr_accessor :label, :role, :person_id, :organization_id, :post_id,
-      :start_date, :end_date
-    dump :label, :role, :person_id, :organization_id, :post_id,
-      :start_date, :end_date
+    attr_accessor :label, :role, :member, :person_id, :organization_id, :post_id, :on_behalf_of_id, :area_id, :start_date, :end_date
+    dump          :label, :role, :member, :person_id, :organization_id, :post_id, :on_behalf_of_id, :area_id, :start_date, :end_date
 
-    foreign_key :person_id, :organization_id, :post_id
+    foreign_key :person_id, :organization_id, :post_id, :on_behalf_of_id, :area_id
 
     # Returns the IDs of the parties to the relationship.
     #

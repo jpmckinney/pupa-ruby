@@ -26,10 +26,22 @@ module Pupa
       # @param [String] type a type of medium, e.g. "fax" or "email"
       # @param [String] value a value, e.g. a phone number or email address
       # @param [String] note a note, e.g. for grouping contact details by physical location
-      def add_contact_detail(type, value, note: nil)
+      # @param [String] label a human-readable label for the contact detail
+      # @param [String,Date,Time] valid_from the date from which the contact detail is valid
+      # @param [String,Date,Time] valid_until the date from which the contact detail is no longer valid
+      def add_contact_detail(type, value, note: nil, label: nil, valid_from: nil, valid_until: nil)
         data = {type: type, value: value}
         if note
           data[:note] = note
+        end
+        if label
+          data[:label] = label
+        end
+        if valid_from
+          data[:valid_from] = valid_from
+        end
+        if valid_until
+          data[:valid_until] = valid_until
         end
         if type.present? && value.present?
           @contact_details << data

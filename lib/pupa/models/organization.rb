@@ -13,14 +13,12 @@ module Pupa
     include Concerns::Contactable
     include Concerns::Linkable
 
-    attr_accessor :name, :classification, :parent_id, :parent, :founding_date,
-      :dissolution_date, :image
-    dump :name, :classification, :parent_id, :parent, :founding_date,
-      :dissolution_date, :image
+    attr_accessor :name, :classification, :parent_id, :area_id, :founding_date, :dissolution_date, :image, :parent
+    dump          :name, :classification, :parent_id, :area_id, :founding_date, :dissolution_date, :image, :parent
 
-    foreign_key :parent_id
+    foreign_key :parent_id, :area_id
 
-    foreign_object :parent
+    foreign_object :parent # for testing
 
     # Returns the name of the organization.
     #

@@ -12,12 +12,10 @@ module Pupa
     include Concerns::Contactable
     include Concerns::Linkable
 
-    attr_accessor :name, :family_name, :given_name, :additional_name,
-      :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name,
-      :email, :gender, :birth_date, :death_date, :image, :summary, :biography
-    dump :name, :family_name, :given_name, :additional_name,
-      :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name,
-      :email, :gender, :birth_date, :death_date, :image, :summary, :biography
+    attr_accessor :name, :email, :gender, :birth_date, :death_date, :image, :summary, :biography, :national_identity,
+      :family_name, :given_name, :additional_name, :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name
+    dump          :name, :email, :gender, :birth_date, :death_date, :image, :summary, :biography, :national_identity,
+      :family_name, :given_name, :additional_name, :honorific_prefix, :honorific_suffix, :patronymic_name, :sort_name
 
     # Returns the person's name.
     #
