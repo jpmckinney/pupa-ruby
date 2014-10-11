@@ -11,7 +11,7 @@ module Pupa
         when 'email'
           if String === data
             address = Mail::Address.new(data)
-            unless (address.address == data && address.domain && address.__send__(:tree).domain.dot_atom_text.elements.size > 1 rescue false)
+            unless address.address == data && address.domain && address.domain.split('.').size > 1
               error_message = "The property '#{build_fragment(fragments)}' must be a valid email address (#{data})"
               validation_error(processor, error_message, fragments, current_schema, self, options[:record_errors])
             end
