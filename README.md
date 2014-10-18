@@ -12,7 +12,7 @@ Pupa.rb is a Ruby 2.x fork of Sunlight Labs' [Pupa](https://github.com/opencivic
 
 ## Usage
 
-You can scrape any sort of data with Pupa.rb using your own models. You can also use Pupa.rb to scrape people, organizations, memberships and posts according to the [Popolo](http://popoloproject.com/) open government data specification. This gem is up-to-date with Popolo's 2014-05-09 version, but omits the Motion, VoteEvent, Count, Vote and Area classes.
+You can scrape any sort of data with Pupa.rb using your own models. You can also use Pupa.rb to scrape people, organizations, memberships and posts according to the [Popolo](http://www.popoloproject.com/) open government data specification. This gem is up-to-date with Popolo's 2014-05-09 version, but omits the Motion, VoteEvent, Count, Vote and Area classes.
 
 The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows you how to:
 
@@ -97,7 +97,7 @@ Pupa.rb is extensible, so that you can add your own models, parsers, helpers, ac
 
 ## [OpenCivicData](http://opencivicdata.org/) compatibility
 
-Both Pupa.rb and Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa) implement models for people, organizations and memberships from the [Popolo](http://popoloproject.com/) open government data specification. Pupa.rb lets you use your own classes, but Pupa only supports a fixed set of classes. A consequence of Pupa.rb's flexibility is that the value of the `_type` property for `Person`, `Organization` and `Membership` objects differs between Pupa.rb and Pupa. Pupa.rb has namespaced types like `pupa/person` – to allow Ruby to load the `Person` class in the `Pupa` module – whereas Pupa has unnamespaced types like `person`.
+Both Pupa.rb and Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa) implement models for people, organizations and memberships from the [Popolo](http://www.popoloproject.com/) open government data specification. Pupa.rb lets you use your own classes, but Pupa only supports a fixed set of classes. A consequence of Pupa.rb's flexibility is that the value of the `_type` property for `Person`, `Organization` and `Membership` objects differs between Pupa.rb and Pupa. Pupa.rb has namespaced types like `pupa/person` – to allow Ruby to load the `Person` class in the `Pupa` module – whereas Pupa has unnamespaced types like `person`.
 
 To save objects to MongoDB with unnamespaced types like Sunlight Labs' Pupa – in order to benefit from other tools in the [OpenCivicData](http://opencivicdata.org/) stack – add this line to the top of your script:
 
