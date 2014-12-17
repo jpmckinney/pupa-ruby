@@ -12,7 +12,7 @@ Pupa.rb is a Ruby 2.x fork of Sunlight Labs' [Pupa](https://github.com/opencivic
 
 ## Usage
 
-You can scrape any sort of data with Pupa.rb using your own models. You can also use Pupa.rb to scrape people, organizations, memberships and posts according to the [Popolo](http://www.popoloproject.com/) open government data specification. This gem is up-to-date with Popolo's 2014-05-09 version, but omits the Motion, VoteEvent, Count, Vote and Area classes.
+You can scrape any sort of data with Pupa.rb using your own models. You can also use Pupa.rb to scrape people, organizations, memberships and posts according to the [Popolo](http://www.popoloproject.com/) open government data specification. This gem is up-to-date with Popolo's 2014-10-28 version.
 
 The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example shows you how to:
 
@@ -52,14 +52,6 @@ The [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.htm
 
 JSON parsing is enabled by default. To enable automatic parsing of HTML and XML, require the `nokogiri` and `multi_xml` gems.
 
-### Automatic response decompression
-
-Until [Faraday Middleware](https://github.com/lostisland/faraday_middleware) releases its next version (> 0.9.1), you must use the gem from its git repository to automatically decompress responses:
-
-```ruby
-gem 'faraday_middleware', git: 'https://github.com/lostisland/faraday_middleware.git'
-```
-
 ## Performance
 
 Pupa.rb offers several ways to significantly improve performance. [Read the documentation.](https://github.com/opennorth/pupa-ruby/blob/master/PERFORMANCE.md#readme)
@@ -90,6 +82,7 @@ In short, Pupa.rb lets you spend more time on the tasks that are unique to your 
 
 * Logging, to make debugging and monitoring a scraper easier
 * [Automatic response parsing](#automatic-response-parsing) of JSON, XML and HTML
+* Automatic response decompression
 * [Option parsing](http://opennorth.github.io/pupa-ruby/docs/legislator.html#section-9), to control your scraper from the command-line
 * [Object validation](http://opennorth.github.io/pupa-ruby/docs/cat.html#section-4), using [JSON Schema](http://json-schema.org/)
 
