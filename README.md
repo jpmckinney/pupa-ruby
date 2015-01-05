@@ -6,7 +6,7 @@
 [![Coverage Status](https://coveralls.io/repos/opennorth/pupa-ruby/badge.png?branch=master)](https://coveralls.io/r/opennorth/pupa-ruby)
 [![Code Climate](https://codeclimate.com/github/opennorth/pupa-ruby.png)](https://codeclimate.com/github/opennorth/pupa-ruby)
 
-Pupa.rb is a Ruby 2.x fork of Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa). It implements an Extract, Transform and Load (ETL) process to scrape data from online sources, transform it, and write it to a database.
+Pupa.rb is a Ruby 2.x fork of Python [Pupa](https://github.com/opencivicdata/pupa). It implements an Extract, Transform and Load (ETL) process to scrape data from online sources, transform it, and write it to a database.
 
     gem install pupa
 
@@ -88,17 +88,9 @@ In short, Pupa.rb lets you spend more time on the tasks that are unique to your 
 
 Pupa.rb is extensible, so that you can add your own models, parsers, helpers, actions, etc. It also offers several ways to [improve your scraper's performance](#performance).
 
-## [OpenCivicData](http://opencivicdata.org/) compatibility
+## Python [Pupa](https://github.com/opencivicdata/pupa) differences
 
-Both Pupa.rb and Sunlight Labs' [Pupa](https://github.com/opencivicdata/pupa) implement models for people, organizations and memberships from the [Popolo](http://www.popoloproject.com/) open government data specification. Pupa.rb lets you use your own classes, but Pupa only supports a fixed set of classes. A consequence of Pupa.rb's flexibility is that the value of the `_type` property for `Person`, `Organization` and `Membership` objects differs between Pupa.rb and Pupa. Pupa.rb has namespaced types like `pupa/person` – to allow Ruby to load the `Person` class in the `Pupa` module – whereas Pupa has unnamespaced types like `person`.
-
-To save objects to MongoDB with unnamespaced types like Sunlight Labs' Pupa – in order to benefit from other tools in the [OpenCivicData](http://opencivicdata.org/) stack – add this line to the top of your script:
-
-```ruby
-require 'pupa/refinements/opencivicdata'
-```
-
-It is not currently possible to run the `scrape` action with one of Pupa.rb and Pupa, and to then run the `import` action with the other. Both actions must be run by the same library.
+Both Pupa.rb and Python [Pupa](https://github.com/opencivicdata/pupa) implement models from the [Popolo](http://www.popoloproject.com/) open government data specifications, but Pupa.rb also lets you use your own classes. Pupa.rb stores data in either MongoDB (default) or PostgreSQL (experimental); Python Pupa stores data in PostgreSQL. The PostgreSQL schema of Pupa.rb and Python Pupa differ.
 
 ## Testing
 

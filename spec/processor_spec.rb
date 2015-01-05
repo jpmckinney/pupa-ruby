@@ -102,11 +102,7 @@ describe Pupa::Processor do
     end
 
     let :_type do
-      if testing_python_compatibility?
-        'organization'
-      else
-        'pupa/organization'
-      end
+      'pupa/organization'
     end
 
     let :graphable do

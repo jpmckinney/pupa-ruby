@@ -13,9 +13,9 @@ module Pupa
       @options = OpenStruct.new({
         actions:            [],
         tasks:              [],
-        output_dir:         File.expand_path('scraped_data', Dir.pwd),
+        output_dir:         File.expand_path('_data', Dir.pwd),
         pipelined:          false,
-        cache_dir:          File.expand_path('web_cache', Dir.pwd),
+        cache_dir:          File.expand_path('_cache', Dir.pwd),
         expires_in:         86400, # 1 day
         value_max_bytes:    1048576, # 1 MB
         memcached_username: nil,

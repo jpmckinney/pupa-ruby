@@ -2,11 +2,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../../spec_helper')
 
 describe Pupa::Processor::Connection::MongoDBAdapter do
   def _type
-    if testing_python_compatibility?
-      'person'
-    else
-      'pupa/person'
-    end
+    'pupa/person'
   end
 
   def connection
