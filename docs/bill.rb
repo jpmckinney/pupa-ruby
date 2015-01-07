@@ -1,7 +1,7 @@
-# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/bill.rb)
+# Download this example's [Ruby code](https://raw.githubusercontent.com/jpmckinney/pupa-ruby/gh-pages/docs/bill.rb)
 # to run locally.
 #
-# The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
+# The [cat.rb](http://jpmckinney.github.io/pupa-ruby/docs/cat.html) example goes
 # over the basics of using Pupa.rb. This covers how to relate objects and how to
 # separate scraping tasks for different types of data.
 require 'pupa'
@@ -62,7 +62,7 @@ class ParliamentOfCanada < Pupa::Processor
   # Bill data is updated more frequently than person data; we would therefore
   # run the bills task more frequently.
   #
-  # See the [`scraping_task_method`](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#L222)
+  # See the [`scraping_task_method`](https://github.com/jpmckinney/pupa-ruby/blob/master/lib/pupa/processor.rb#L222)
   # documentation for more information on the naming of scraping methods.
   def scrape_people
     doc = get('http://www.parl.gc.ca/MembersOfParliament/MainMPsCompleteList.aspx?TimePeriod=Historical&Language=E')
@@ -127,4 +127,4 @@ ParliamentOfCanada.add_scraping_task(:people)
 runner = Pupa::Runner.new(ParliamentOfCanada)
 runner.run(ARGV)
 
-# Ready for more? Check out the next example: [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html).
+# Ready for more? Check out the next example: [legislator.rb](http://jpmckinney.github.io/pupa-ruby/docs/legislator.html).

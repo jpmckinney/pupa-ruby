@@ -1,4 +1,4 @@
-# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/cat.rb)
+# Download this example's [Ruby code](https://raw.githubusercontent.com/jpmckinney/pupa-ruby/gh-pages/docs/cat.rb)
 # to run locally.
 require 'pupa'
 
@@ -7,12 +7,12 @@ require 'nokogiri'
 
 class Cat
   # All models should mixin
-  #[Pupa::Model](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/models/model.rb#files).
+  #[Pupa::Model](https://github.com/jpmckinney/pupa-ruby/blob/master/lib/pupa/models/model.rb#files).
   include Pupa::Model
 
   # If you would like Pupa.rb to validate your objects, assign to `self.schema`
   # an absolute path to a [JSON Schema](http://json-schema.org/). See for
-  # example [Popolo's JSON Schema files](https://github.com/opennorth/pupa-ruby/tree/master/schemas/popolo).
+  # example [Popolo's JSON Schema files](https://github.com/jpmckinney/pupa-ruby/tree/master/schemas/popolo).
   self.schema = '/path/to/json-schema/cat.json'
 
   # Adds the `created_at` and `updated_at` metadata properties from [Popolo](http://popoloproject.com/specs/).
@@ -43,7 +43,7 @@ class Cat
   end
 end
 
-# All processors should inherit from [Pupa::Processor](https://github.com/opennorth/pupa-ruby/blob/master/lib/pupa/processor.rb#files).
+# All processors should inherit from [Pupa::Processor](https://github.com/jpmckinney/pupa-ruby/blob/master/lib/pupa/processor.rb#files).
 class CatProcessor < Pupa::Processor
   # For simple processors like this one, you may put all your code in a generic
   # `scrape_objects` method.
@@ -90,4 +90,4 @@ CatProcessor.add_scraping_task(:objects)
 runner = Pupa::Runner.new(CatProcessor)
 runner.run(ARGV)
 
-# Ready to move on? Check out the next example: [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html).
+# Ready to move on? Check out the next example: [bill.rb](http://jpmckinney.github.io/pupa-ruby/docs/bill.html).

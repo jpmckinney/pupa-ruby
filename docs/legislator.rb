@@ -1,8 +1,8 @@
-# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/legislator.rb)
+# Download this example's [Ruby code](https://raw.githubusercontent.com/jpmckinney/pupa-ruby/gh-pages/docs/legislator.rb)
 # to run locally.
 #
-# The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html) example goes
-# over the basics of using Pupa.rb, and [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html)
+# The [cat.rb](http://jpmckinney.github.io/pupa-ruby/docs/cat.html) example goes
+# over the basics of using Pupa.rb, and [bill.rb](http://jpmckinney.github.io/pupa-ruby/docs/bill.html)
 # covers how to relate objects and how to separate scraping tasks for different
 # types of data. This will explain how to run, for example, different methods to
 # scrape legislators depending on the legislative term - particularly useful if
@@ -99,5 +99,5 @@ LegislatorProcessor.add_scraping_task(:people)
 runner = Pupa::Runner.new(LegislatorProcessor)
 runner.run(ARGV)
 
-# Tired of scraping and importing data? See [organization.rb](http://opennorth.github.io/pupa-ruby/docs/organization.html)
+# Tired of scraping and importing data? See [organization.rb](http://jpmckinney.github.io/pupa-ruby/docs/organization.html)
 # to learn how to transform scraped data with Pupa.rb.

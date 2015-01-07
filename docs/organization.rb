@@ -1,9 +1,9 @@
-# Download this example's [Ruby code](https://raw.githubusercontent.com/opennorth/pupa-ruby/gh-pages/docs/organization.rb)
+# Download this example's [Ruby code](https://raw.githubusercontent.com/jpmckinney/pupa-ruby/gh-pages/docs/organization.rb)
 # to run locally.
 #
-# The [cat.rb](http://opennorth.github.io/pupa-ruby/docs/cat.html),
-# [bill.rb](http://opennorth.github.io/pupa-ruby/docs/bill.html) and
-# [legislator.rb](http://opennorth.github.io/pupa-ruby/docs/legislator.html)
+# The [cat.rb](http://jpmckinney.github.io/pupa-ruby/docs/cat.html),
+# [bill.rb](http://jpmckinney.github.io/pupa-ruby/docs/bill.html) and
+# [legislator.rb](http://jpmckinney.github.io/pupa-ruby/docs/legislator.html)
 # examples show you how to scrape and import data. This example shows you how
 # to transform scraped data.
 require 'pupa'
