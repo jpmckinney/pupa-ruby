@@ -16,7 +16,7 @@ module Pupa
 
         set_callback(:save, :before) do |object|
           # The object may not set created_at.
-          # @see https://github.com/opennorth/pupa-ruby/issues/17
+          # @see https://github.com/jpmckinney/pupa-ruby/issues/17
           object.created_at = object.document['created_at'] if object.document
           object.updated_at = Time.now.utc
         end

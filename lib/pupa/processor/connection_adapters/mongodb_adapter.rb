@@ -66,7 +66,7 @@ module Pupa
             end
           when 1
             # Make the document available to the callbacks.
-            # @see https://github.com/opennorth/pupa-ruby/issues/17
+            # @see https://github.com/jpmckinney/pupa-ruby/issues/17
             object.document = query.first
             object.run_callbacks(:save) do
               query.update(object.to_h(persist: true).except(:_id))

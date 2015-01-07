@@ -5,9 +5,8 @@ Gem::Specification.new do |s|
   s.name        = "pupa"
   s.version     = Pupa::VERSION
   s.platform    = Gem::Platform::RUBY
-  s.authors     = ["Open North"]
-  s.email       = ["info@opennorth.ca"]
-  s.homepage    = "http://github.com/opennorth/pupa-ruby"
+  s.authors     = ["James McKinney"]
+  s.homepage    = "http://github.com/jpmckinney/pupa-ruby"
   s.summary     = %q{A data scraping framework}
   s.license     = 'MIT'
 
