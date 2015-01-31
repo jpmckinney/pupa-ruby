@@ -6,7 +6,7 @@ Gem::Specification.new do |s|
   s.version     = Pupa::VERSION
   s.platform    = Gem::Platform::RUBY
   s.authors     = ["James McKinney"]
-  s.homepage    = "http://github.com/jpmckinney/pupa-ruby"
+  s.homepage    = "https://github.com/jpmckinney/pupa-ruby"
   s.summary     = %q{A data scraping framework}
   s.license     = 'MIT'
 
