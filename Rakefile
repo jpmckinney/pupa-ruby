@@ -22,8 +22,8 @@ namespace :popolo do
 
     require 'octokit'
 
-    Octokit.contents('opennorth/popolo-spec', path: 'schemas', ref: 'gh-pages').each do |file|
-      response = Octokit.contents('opennorth/popolo-spec', path: file.path, ref: 'gh-pages')
+    Octokit.contents('popolo-project/popolo-spec', path: 'schemas', ref: 'gh-pages').each do |file|
+      response = Octokit.contents('popolo-project/popolo-spec', path: file.path, ref: 'gh-pages')
       if response.encoding == 'base64'
         content = Base64.decode64(response.content)
       else
