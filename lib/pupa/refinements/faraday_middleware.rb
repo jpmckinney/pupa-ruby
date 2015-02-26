@@ -1,3 +1,5 @@
+require 'openssl'
+
 # Caches all requests, not only GET requests.
 class FaradayMiddleware::Caching
   def call(env)
@@ -20,6 +22,6 @@ class FaradayMiddleware::Caching
       url.query = params.any? ? build_query(params) : nil
     end
     url.normalize!
-    url.scheme + '://' + url.host + url.request_uri + env[:body].to_s # XXX add for POST requests
+    url.scheme + '://' + url.host + url.request_uri + OpenSSL::Digest::MD5.hexdigest(env[:body].to_s) # XXX add for POST requests
   end
 end

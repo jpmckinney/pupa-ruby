@@ -1,4 +1,3 @@
-require 'fileutils'
 require 'forwardable'
 require 'json'
 

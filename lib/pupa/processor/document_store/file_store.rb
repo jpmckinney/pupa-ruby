@@ -1,3 +1,5 @@
+require 'fileutils'
+
 module Pupa
   class Processor
     class DocumentStore
