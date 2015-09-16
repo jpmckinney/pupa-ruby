@@ -11,4 +11,6 @@ require 'multi_xml'
 require 'nokogiri'
 require 'redis-store'
 require 'rspec'
+
+Dir["./spec/support/**/*.rb"].each {|f| require f}
 require File.dirname(__FILE__) + '/../lib/pupa'

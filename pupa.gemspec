@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('activesupport', '~> 4.0')
   s.add_runtime_dependency('colored', '~> 1.2')
   s.add_runtime_dependency('faraday_middleware', '~> 0.9.2')
-  s.add_runtime_dependency('json-schema', '~> 2.1.3')
+  s.add_runtime_dependency('json-schema', '~> 2.3')
   s.add_runtime_dependency('mail')
   s.add_runtime_dependency('moped', '~> 2.0.0.rc1')
   s.add_runtime_dependency('oj', '~> 2.1')
@@ -34,5 +34,6 @@ Gem::Specification.new do |s|
   s.add_development_dependency('nokogiri', '~> 1.6.0')
   s.add_development_dependency('octokit') # to update Popolo schema
   s.add_development_dependency('redis-store')
+  s.add_development_dependency('sqlite3')
   s.add_development_dependency('typhoeus')
 end

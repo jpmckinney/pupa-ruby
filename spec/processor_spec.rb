@@ -80,19 +80,19 @@ describe Pupa::Processor do
     it 'should dump a JSON document' do
       processor.dump_scraped_objects(:people)
       File.exist?(path).should == true
-      io.string.should_not match('http://www.popoloproject.com/schemas/person.json')
+      io.string.should_not match("The property '#/")
     end
 
     it 'should validate the object' do
       processor.make_person_invalid
       processor.dump_scraped_objects(:people)
-      io.string.should match('http://www.popoloproject.com/schemas/person.json')
+      io.string.should match("The property '#/name' of type array did not match one or more of the following types: string, null")
     end
 
     it 'should not validate the object' do
       novalidate.make_person_invalid
       novalidate.dump_scraped_objects(:people)
-      io.string.should_not match('http://www.popoloproject.com/schemas/person.json')
+      io.string.should_not match("The property '#/name' of type array did not match one or more of the following types: string, null")
     end
   end
 

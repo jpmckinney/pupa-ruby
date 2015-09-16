@@ -13,7 +13,7 @@ module Pupa
       # @return a configured connection to a database system
       def self.new(database_url)
         case URI.parse(database_url).scheme
-        when 'postgres'
+        when 'postgres', 'sqlite'
           PostgreSQLAdapter.new(database_url)
         when 'mongodb'
           MongoDBAdapter.new(database_url)
