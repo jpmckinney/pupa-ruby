@@ -85,6 +85,6 @@ describe Pupa::Processor::Middleware::ParseJson do
   end
 
   it "chokes on invalid json" do
-    expect{ process('{') }.to raise_error
+    expect{ process('{') }.to raise_error(Faraday::ParsingError)
   end
 end

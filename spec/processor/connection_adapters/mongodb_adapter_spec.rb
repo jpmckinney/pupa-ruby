@@ -13,8 +13,8 @@ describe Pupa::Processor::Connection::MongoDBAdapter do
     connection.raw_connection[:people].drop
 
     connection.save(Pupa::Person.new(_id: 'existing', name: 'existing', email: 'existing@example.com'))
-    connection.raw_connection[:people].insert(_type: 'pupa/person', name: 'non-unique')
-    connection.raw_connection[:people].insert(_type: 'pupa/person', name: 'non-unique')
+    connection.raw_connection[:people].insert_one(_type: 'pupa/person', name: 'non-unique')
+    connection.raw_connection[:people].insert_one(_type: 'pupa/person', name: 'non-unique')
   end
 
   describe '.find' do

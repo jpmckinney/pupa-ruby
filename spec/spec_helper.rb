@@ -14,3 +14,5 @@ require 'rspec'
 
 Dir["./spec/support/**/*.rb"].each {|f| require f}
 require File.dirname(__FILE__) + '/../lib/pupa'
+
+Mongo::Logger.logger.level = Logger::WARN

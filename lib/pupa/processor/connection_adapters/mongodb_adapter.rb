@@ -1,4 +1,4 @@
-require 'moped'
+require 'mongo'
 
 module Pupa
   class Processor
@@ -10,7 +10,7 @@ module Pupa
         # @param [String] database_url the database URL
         def initialize(database_url)
           uri = URI.parse(database_url)
-          @raw_connection = Moped::Session.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
+          @raw_connection = Mongo::Client.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
           @raw_connection.login(uri.user, uri.password) if uri.user && uri.password
         end
 
@@ -60,7 +60,7 @@ module Pupa
           when 0
             object.run_callbacks(:save) do
               object.run_callbacks(:create) do
-                collection.insert(object.to_h(persist: true))
+                collection.insert_one(object.to_h(persist: true))
                 [true, object._id.to_s]
               end
             end
@@ -69,7 +69,7 @@ module Pupa
             # @see https://github.com/jpmckinney/pupa-ruby/issues/17
             object.document = query.first
             object.run_callbacks(:save) do
-              query.update(object.to_h(persist: true).except(:_id))
+              query.update_one(object.to_h(persist: true).except(:_id))
               [false, object.document['_id'].to_s]
             end
           else
