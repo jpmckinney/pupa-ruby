@@ -11,7 +11,7 @@ module Pupa
         def initialize(database_url)
           uri = URI.parse(database_url)
           @raw_connection = Mongo::Client.new(["#{uri.host}:#{uri.port}"], database: uri.path[1..-1])
-          @raw_connection.login(uri.user, uri.password) if uri.user && uri.password
+          @raw_connection = @raw_connection.with(user: uri.user, password: uri.password) if uri.user && uri.password
         end
 
         # Finds a document matching the selection criteria.
