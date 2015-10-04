@@ -7,18 +7,18 @@ describe Pupa::Person do
 
   describe '#to_s' do
     it 'should return a human-readable string' do
-      object.to_s.should == 'Mr. John Q. Public, Esq.'
+      expect(object.to_s).to eq('Mr. John Q. Public, Esq.')
     end
   end
 
   describe '#fingerprint' do
     it 'should return the fingerprint' do
-      object.fingerprint.should == {
+      expect(object.fingerprint).to eq({
         '$or' => [
           {'name' => 'Mr. John Q. Public, Esq.'},
           {'other_names.name' => 'Mr. John Q. Public, Esq.'},
         ],
-      }
+      })
     end
   end
 end

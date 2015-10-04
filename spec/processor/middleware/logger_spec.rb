@@ -27,15 +27,15 @@ describe Pupa::Processor::Middleware::Logger do
     end
 
     it 'should still return output' do
-      @response.body.should == 'hello'
+      expect(@response.body).to eq('hello')
     end
 
     it 'should log the method and URL' do
-      io.string.should match('get http:/hello')
+      expect(io.string).to match('get http:/hello')
     end
 
     it 'should log request headers' do
-      io.string.should match('Accept: "text/html')
+      expect(io.string).to match('Accept: "text/html')
     end
   end
 
@@ -62,11 +62,11 @@ describe Pupa::Processor::Middleware::Logger do
       end
 
       it 'should log the method and URL' do
-        io.string.should match('get http:/hello')
+        expect(io.string).to match('get http:/hello')
       end
 
       it 'should not log request headers' do
-        io.string.should_not match('Accept: "text/html')
+        expect(io.string).not_to match('Accept: "text/html')
       end
     end
 
@@ -76,11 +76,11 @@ describe Pupa::Processor::Middleware::Logger do
       end
 
       it 'should log the method and URL' do
-        io.string.should match('post http:/hello foo=bar')
+        expect(io.string).to match('post http:/hello foo=bar')
       end
 
       it 'should not log request headers' do
-        io.string.should_not match('Accept: "text/html')
+        expect(io.string).not_to match('Accept: "text/html')
       end
     end
   end

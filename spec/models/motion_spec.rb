@@ -7,7 +7,7 @@ describe Pupa::Motion do
 
   describe '#to_s' do
     it 'should return a human-readable string' do
-      object.to_s.should == 'That the Bill is to be read a second time. in house-of-commons'
+      expect(object.to_s).to eq('That the Bill is to be read a second time. in house-of-commons')
     end
   end
 end

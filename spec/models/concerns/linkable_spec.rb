@@ -15,20 +15,20 @@ describe Pupa::Concerns::Linkable do
   describe '#links' do
     it 'should symbolize keys' do
       object.links = [{'url' => 'http://example.com', 'note' => 'homepage'}]
-      object.links.should == [{url: 'http://example.com', note: 'homepage'}]
+      expect(object.links).to eq([{url: 'http://example.com', note: 'homepage'}])
     end
   end
 
   describe '#add_link' do
     it 'should add a link' do
       object.add_link('http://example.com', note: 'homepage')
-      object.links.should == [{url: 'http://example.com', note: 'homepage'}]
+      expect(object.links).to eq([{url: 'http://example.com', note: 'homepage'}])
     end
 
     it 'should not add a link without a url' do
       object.add_link(nil)
       object.add_link('')
-      object.links.blank?.should == true
+      expect(object.links.blank?).to eq(true)
     end
   end
 end

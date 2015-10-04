@@ -28,31 +28,31 @@ describe Pupa::ContactDetailList do
 
   describe '#address' do
     it 'should return the first postal address' do
-      object.address.should == 'first'
+      expect(object.address).to eq('first')
     end
 
     it 'should return nil if no postal addresses' do
-      Pupa::ContactDetailList.new.address.should == nil
+      expect(Pupa::ContactDetailList.new.address).to eq(nil)
     end
   end
 
   describe '#email' do
     it 'should return the first email address' do
-      object.email.should == 'first'
+      expect(object.email).to eq('first')
     end
 
     it 'should return nil if no email addresses' do
-      Pupa::ContactDetailList.new.email.should == nil
+      expect(Pupa::ContactDetailList.new.email).to eq(nil)
     end
   end
 
   describe '#find_by_type' do
     it 'should return the value of the first contact detail matching the type' do
-      object.find_by_type('custom').should == 'content'
+      expect(object.find_by_type('custom')).to eq('content')
     end
 
     it 'should return nil if no contact detail matches the type' do
-      Pupa::ContactDetailList.new.find_by_type('custom').should == nil
+      expect(Pupa::ContactDetailList.new.find_by_type('custom')).to eq(nil)
     end
   end
 end

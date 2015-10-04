@@ -16,11 +16,11 @@ describe Pupa::IdentifierList do
 
   describe '#find_by_scheme' do
     it 'should return the first identifier matching the scheme' do
-      object.find_by_scheme('ISIN').should == 'US0123456789'
+      expect(object.find_by_scheme('ISIN')).to eq('US0123456789')
     end
 
     it 'should return nil if no identifier matches the scheme' do
-      Pupa::IdentifierList.new.find_by_scheme('ISIN').should == nil
+      expect(Pupa::IdentifierList.new.find_by_scheme('ISIN')).to eq(nil)
     end
   end
 end

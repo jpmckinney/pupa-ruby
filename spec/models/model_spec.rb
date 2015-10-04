@@ -39,20 +39,20 @@ describe Pupa::Model do
   describe '.dump' do
     it 'should add properties' do
       [:_id, :_type, :extras, :name, :label, :founding_date, :inactive, :label_id, :manager_id, :links].each do |property|
-        Music::Band.properties.to_a.should include(property)
+        expect(Music::Band.properties.to_a).to include(property)
       end
     end
   end
 
   describe '.foreign_key' do
     it 'should add foreign keys' do
-      Music::Band.foreign_keys.to_a.should == [:label_id, :manager_id]
+      expect(Music::Band.foreign_keys.to_a).to eq([:label_id, :manager_id])
     end
   end
 
   describe '.foreign_object' do
     it 'should add foreign objects' do
-      Music::Band.foreign_objects.to_a.should == [:label]
+      expect(Music::Band.foreign_objects.to_a).to eq([:label])
     end
   end
 
@@ -72,7 +72,7 @@ describe Pupa::Model do
     end
 
     it 'should accept a hash' do
-      Music::Band.json_schema.should == {
+      expect(Music::Band.json_schema).to eq({
         '$schema' => 'http://json-schema.org/draft-03/schema#',
         'properties' => {
           'links' => {
@@ -86,41 +86,41 @@ describe Pupa::Model do
             },
           },
         },
-      }
+      })
     end
 
     it 'should accept an absolute path' do
-      File.should_receive(:read).and_return('{}')
-      klass_with_absolute_path.json_schema.should == {}
+      expect(File).to receive(:read).and_return('{}')
+      expect(klass_with_absolute_path.json_schema).to eq({})
     end
 
     it 'should accept a relative path' do
-      File.should_receive(:read).and_return('{}')
-      klass_with_relative_path.json_schema.should == {}
+      expect(File).to receive(:read).and_return('{}')
+      expect(klass_with_relative_path.json_schema).to eq({})
     end
   end
 
   describe '#initialize' do
     it 'should set the _type' do
-      object._type.should == 'music/band'
+      expect(object._type).to eq('music/band')
     end
 
     it 'should set the _id' do
-      object._id.should match(/\A[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}\z/)
+      expect(object._id).to match(/\A[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}\z/)
     end
 
     it 'should set properties' do
-      object.name.should == 'Moderat'
-      object.label.should == {name: 'Mute'}
-      object.inactive.should == false
-      object.manager_id.should == '1'
-      object.links.should == [{url: 'http://moderat.fm/'}]
+      expect(object.name).to eq('Moderat')
+      expect(object.label).to eq({name: 'Mute'})
+      expect(object.inactive).to eq(false)
+      expect(object.manager_id).to eq('1')
+      expect(object.links).to eq([{url: 'http://moderat.fm/'}])
     end
   end
 
   describe '#[]' do
     it 'should get a property' do
-      object[:name].should == 'Moderat'
+      expect(object[:name]).to eq('Moderat')
     end
 
     it 'should raise an error if the class is missing the property' do
@@ -131,7 +131,7 @@ describe Pupa::Model do
   describe '#[]=' do
     it 'should set a property' do
       object[:name] = 'Apparat'
-      object[:name].should == 'Apparat'
+      expect(object[:name]).to eq('Apparat')
     end
 
     it 'should raise an error if the class is missing the property' do
@@ -142,38 +142,38 @@ describe Pupa::Model do
   describe '#_id=' do
     it 'should set the _id' do
       object._id = '1'
-      object._id.should == '1'
+      expect(object._id).to eq('1')
     end
 
     it 'should coerce the _id to a string' do
       object._id = BSON::ObjectId.new
-      object._id.should be_a(String)
+      expect(object._id).to be_a(String)
     end
   end
 
   describe '#links' do
     it 'should symbolize keys' do
       object.extras = {'age' => 10}
-      object.extras.should == {age: 10}
+      expect(object.extras).to eq({age: 10})
     end
   end
 
   describe '#add_extra' do
     it 'should add an extra property' do
       object.add_extra(:age, 10)
-      object.extras.should == {age: 10}
+      expect(object.extras).to eq({age: 10})
     end
   end
 
   describe '#fingerprint' do
     it 'should return the fingerprint' do
-      object.fingerprint.should == {_type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
+      expect(object.fingerprint).to eq({_type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]})
     end
   end
 
   describe '#foreign_properties' do
     it 'should return the foreign keys and foreign objects' do
-      object.foreign_properties.should == {label: {name: 'Mute'}, manager_id: '1'}
+      expect(object.foreign_properties).to eq({label: {name: 'Mute'}, manager_id: '1'})
     end
   end
 
@@ -185,11 +185,11 @@ describe Pupa::Model do
     end
 
     it 'should do nothing if the schema is not set' do
-      klass_without_schema.new.validate!.should == nil
+      expect(klass_without_schema.new.validate!).to eq(nil)
     end
 
     it 'should return true if the object is valid' do
-      object.validate!.should == true
+      expect(object.validate!).to eq(true)
     end
 
     it 'should raise an error if the object is invalid' do
@@ -200,29 +200,29 @@ describe Pupa::Model do
 
   describe '#to_h' do
     it 'should include all properties by default' do
-      object.to_h.should == {_id: object._id, _type: 'music/band', name: 'Moderat', label: {name: 'Mute'}, inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
+      expect(object.to_h).to eq({_id: object._id, _type: 'music/band', name: 'Moderat', label: {name: 'Mute'}, inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]})
     end
 
     it 'should exclude foreign objects if persisting' do
-      object.to_h(persist: true).should == {_id: object._id, _type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]}
+      expect(object.to_h(persist: true)).to eq({_id: object._id, _type: 'music/band', name: 'Moderat', inactive: false, manager_id: '1', links: [{url: 'http://moderat.fm/'}]})
     end
 
     it 'should not include blank properties' do
-      object.to_h.should_not have_key(:founding_date)
+      expect(object.to_h).not_to have_key(:founding_date)
     end
 
     it 'should include false properties' do
-      object.to_h.should have_key(:inactive)
+      expect(object.to_h).to have_key(:inactive)
     end
   end
 
   describe '#==' do
     it 'should return true if two objects are equal' do
-      object.should == Music::Band.new(properties)
+      expect(object).to eq(Music::Band.new(properties))
     end
 
     it 'should return false if two objects are unequal' do
-      object.should_not == Music::Band.new(properties.merge(name: 'Apparat'))
+      expect(object).not_to eq(Music::Band.new(properties.merge(name: 'Apparat')))
     end
   end
 end

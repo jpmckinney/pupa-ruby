@@ -37,28 +37,28 @@ describe Pupa::Processor do
 
   describe '#get' do
     it 'should send a GET request' do
-      processor.get('http://httpbin.org/get', 'foo=bar')['args'].should == {'foo' => 'bar'}
+      expect(processor.get('http://httpbin.org/get', 'foo=bar')['args']).to eq({'foo' => 'bar'})
     end
 
     it 'should automatically parse the response' do
-      processor.get('http://httpbin.org/get').should be_a(Hash)
+      expect(processor.get('http://httpbin.org/get')).to be_a(Hash)
     end
   end
 
   describe '#post' do
     it 'should send a POST request' do
-      processor.post('http://httpbin.org/post', 'foo=bar')['form'].should == {'foo' => 'bar'}
+      expect(processor.post('http://httpbin.org/post', 'foo=bar')['form']).to eq({'foo' => 'bar'})
     end
 
     it 'should automatically parse the response' do
-      processor.post('http://httpbin.org/post').should be_a(Hash)
+      expect(processor.post('http://httpbin.org/post')).to be_a(Hash)
     end
   end
 
   describe '.add_scraping_task' do
     it 'should add a scraping task and define a lazy method' do
-      PersonProcessor.tasks.should == [:people]
-      processor.should respond_to(:people)
+      expect(PersonProcessor.tasks).to eq([:people])
+      expect(processor).to respond_to(:people)
     end
   end
 
@@ -68,7 +68,7 @@ describe Pupa::Processor do
     end
 
     it 'should return the number of scraped objects by type' do
-      processor.dump_scraped_objects(:people).should == {'pupa/person' => 1}
+      expect(processor.dump_scraped_objects(:people)).to eq({'pupa/person' => 1})
     end
 
     it 'should not overwrite an existing file' do
@@ -79,20 +79,20 @@ describe Pupa::Processor do
 
     it 'should dump a JSON document' do
       processor.dump_scraped_objects(:people)
-      File.exist?(path).should == true
-      io.string.should_not match("The property '#/")
+      expect(File.exist?(path)).to eq(true)
+      expect(io.string).not_to match("The property '#/")
     end
 
     it 'should validate the object' do
       processor.make_person_invalid
       processor.dump_scraped_objects(:people)
-      io.string.should match("The property '#/name' of type array did not match one or more of the following types: string, null")
+      expect(io.string).to match("The property '#/name' of type array did not match one or more of the following types: string, null")
     end
 
     it 'should not validate the object' do
       novalidate.make_person_invalid
       novalidate.dump_scraped_objects(:people)
-      io.string.should_not match("The property '#/name' of type array did not match one or more of the following types: string, null")
+      expect(io.string).not_to match("The property '#/name' of type array did not match one or more of the following types: string, null")
     end
   end
 
@@ -161,53 +161,53 @@ describe Pupa::Processor do
     end
 
     it 'should use a dependency graph if possible' do
-      processor.should_receive(:load_scraped_objects).and_return(graphable)
+      expect(processor).to receive(:load_scraped_objects).and_return(graphable)
 
-      Pupa::Processor::DependencyGraph.any_instance.should_receive(:tsort).and_return(['2', '1'])
+      expect_any_instance_of(Pupa::Processor::DependencyGraph).to receive(:tsort).and_return(['2', '1'])
       processor.import
     end
 
     it 'should remove duplicate objects and re-assign foreign keys' do
-      processor.should_receive(:load_scraped_objects).and_return(graphable)
+      expect(processor).to receive(:load_scraped_objects).and_return(graphable)
 
       processor.import
       documents = processor.connection.raw_connection[:organizations].find.entries
-      documents.size.should == 2
-      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
-      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
+      expect(documents.size).to eq(2)
+      expect(documents[0].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '2', '_type' => _type, 'name' => 'Parent'})
+      expect(documents[1].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'})
     end
 
     it 'should not use a dependency graph if not possible' do
-      processor.should_receive(:load_scraped_objects).and_return(ungraphable)
+      expect(processor).to receive(:load_scraped_objects).and_return(ungraphable)
 
-      Pupa::Processor::DependencyGraph.any_instance.should_not_receive(:tsort)
+      expect_any_instance_of(Pupa::Processor::DependencyGraph).not_to receive(:tsort)
       processor.import
     end
 
     it 'should remove duplicate objects and resolve foreign objects' do
-      processor.should_receive(:load_scraped_objects).and_return(ungraphable)
+      expect(processor).to receive(:load_scraped_objects).and_return(ungraphable)
 
       processor.import
       documents = processor.connection.raw_connection[:organizations].find.entries
-      documents.size.should == 2
-      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '5', '_type' => _type, 'name' => 'Parent'}
-      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '4', '_type' => _type, 'name' => 'Child', 'parent_id' => '5'}
+      expect(documents.size).to eq(2)
+      expect(documents[0].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '5', '_type' => _type, 'name' => 'Parent'})
+      expect(documents[1].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '4', '_type' => _type, 'name' => 'Child', 'parent_id' => '5'})
     end
 
     it 'should resolve foreign keys on foreign objects' do
-      processor.should_receive(:load_scraped_objects).and_return(foreign_keys_on_foreign_objects)
+      expect(processor).to receive(:load_scraped_objects).and_return(foreign_keys_on_foreign_objects)
 
       processor.import
       documents = processor.connection.raw_connection[:organizations].find.entries
-      documents.size.should == 3
-      documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '9', '_type' => _type, 'name' => 'Parent'}
-      documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '7', '_type' => _type, 'name' => 'Child', 'parent_id' => '9'}
-      documents[2].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '8', '_type' => _type, 'name' => 'Grandchild', 'parent_id' => '7'}
+      expect(documents.size).to eq(3)
+      expect(documents[0].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '9', '_type' => _type, 'name' => 'Parent'})
+      expect(documents[1].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '7', '_type' => _type, 'name' => 'Child', 'parent_id' => '9'})
+      expect(documents[2].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '8', '_type' => _type, 'name' => 'Grandchild', 'parent_id' => '7'})
     end
 
     context 'with existing documents' do
       before :each do
-        processor.should_receive(:load_scraped_objects).and_return(graphable)
+        expect(processor).to receive(:load_scraped_objects).and_return(graphable)
         processor.import
       end
 
@@ -307,39 +307,39 @@ describe Pupa::Processor do
       end
 
       it 'should resolve foreign keys' do
-        processor.should_receive(:load_scraped_objects).and_return(resolvable_foreign_key)
+        expect(processor).to receive(:load_scraped_objects).and_return(resolvable_foreign_key)
 
         processor.import
         documents = processor.connection.raw_connection[:organizations].find.entries
-        documents.size.should == 2
-        documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
-        documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
+        expect(documents.size).to eq(2)
+        expect(documents[0].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '2', '_type' => _type, 'name' => 'Parent'})
+        expect(documents[1].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'})
       end
 
       it 'should raise an error if a foreign key cannot be resolved' do
-        processor.should_receive(:load_scraped_objects).and_return(unresolvable_foreign_key)
+        expect(processor).to receive(:load_scraped_objects).and_return(unresolvable_foreign_key)
         expect{processor.import}.to raise_error(Pupa::Errors::UnprocessableEntity)
       end
 
       it 'should raise an error if a foreign object cannot be resolved' do
-        processor.should_receive(:load_scraped_objects).and_return(unresolvable_foreign_object)
+        expect(processor).to receive(:load_scraped_objects).and_return(unresolvable_foreign_object)
         expect{processor.import}.to raise_error(Pupa::Errors::UnprocessableEntity)
       end
 
       it 'should raise an error if a duplicate was inadvertently saved' do
-        processor.should_receive(:load_scraped_objects).and_return(duplicate_documents)
+        expect(processor).to receive(:load_scraped_objects).and_return(duplicate_documents)
         expect{processor.import}.to raise_error(Pupa::Errors::DuplicateDocumentError)
       end
 
       it 'should resolve foreign keys on foreign objects' do
-        processor.should_receive(:load_scraped_objects).and_return(resolvable_foreign_keys_on_foreign_objects)
+        expect(processor).to receive(:load_scraped_objects).and_return(resolvable_foreign_keys_on_foreign_objects)
 
         processor.import
         documents = processor.connection.raw_connection[:organizations].find.entries
-        documents.size.should == 3
-        documents[0].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '2', '_type' => _type, 'name' => 'Parent'}
-        documents[1].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'}
-        documents[2].slice('_id', '_type', 'name', 'parent_id').should == {'_id' => 'b', '_type' => _type, 'name' => 'Grandchild', 'parent_id' => '1'}
+        expect(documents.size).to eq(3)
+        expect(documents[0].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '2', '_type' => _type, 'name' => 'Parent'})
+        expect(documents[1].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => '1', '_type' => _type, 'name' => 'Child', 'parent_id' => '2'})
+        expect(documents[2].slice('_id', '_type', 'name', 'parent_id')).to eq({'_id' => 'b', '_type' => _type, 'name' => 'Grandchild', 'parent_id' => '1'})
       end
     end
   end

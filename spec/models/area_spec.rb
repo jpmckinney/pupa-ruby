@@ -7,7 +7,7 @@ describe Pupa::Area do
 
   describe '#to_s' do
     it 'should return a human-readable string' do
-      object.to_s.should == 'Boston Ward 1'
+      expect(object.to_s).to eq('Boston Ward 1')
     end
   end
 end

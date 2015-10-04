@@ -21,11 +21,11 @@ describe Pupa::Processor::Yielder do
       yielder.each do |n|
         array << n
       end
-      array.should == (0..9).to_a
+      expect(array).to eq((0..9).to_a)
     end
 
     it 'should be composable with other iterators' do
-      yielder.each.map{|n| n}.should == (0..9).to_a
+      expect(yielder.each.map{|n| n}).to eq((0..9).to_a)
     end
   end
 
@@ -35,7 +35,7 @@ describe Pupa::Processor::Yielder do
       10.times do |n|
         array << yielder.next
       end
-      array.should == (0..9).to_a
+      expect(array).to eq((0..9).to_a)
     end
 
     it 'should raise an error if the enumerator is at the end' do
@@ -45,7 +45,7 @@ describe Pupa::Processor::Yielder do
 
   describe '#to_enum' do
     it 'should return an enumerator' do
-      yielder.to_enum.should be_a(Enumerator)
+      expect(yielder.to_enum).to be_a(Enumerator)
     end
 
     it 'should return a lazy enumerator' do

@@ -7,7 +7,7 @@ describe Pupa::Vote do
 
   describe '#to_s' do
     it 'should return a human-readable string' do
-      object.to_s.should == 'yes by john-q-public in vote-42'
+      expect(object.to_s).to eq('yes by john-q-public in vote-42')
     end
   end
 end

@@ -20,14 +20,14 @@ describe Pupa::Concerns::Timestamps do
   it 'should set created_at and updated_at on create' do
     object = klass.new
     object.save
-    object.created_at.should be_within(1).of(Time.now.utc)
-    object.updated_at.should be_within(1).of(Time.now.utc)
+    expect(object.created_at).to be_within(1).of(Time.now.utc)
+    expect(object.updated_at).to be_within(1).of(Time.now.utc)
   end
 
   it 'should set updated_at on save' do
     object = klass.new(created_at: Time.new(2000))
     object.save
-    object.created_at.should == Time.new(2000)
-    object.updated_at.should be_within(1).of(Time.now.utc)
+    expect(object.created_at).to eq(Time.new(2000))
+    expect(object.updated_at).to be_within(1).of(Time.now.utc)
   end
 end

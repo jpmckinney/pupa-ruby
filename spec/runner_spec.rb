@@ -26,13 +26,13 @@ describe Pupa::Runner do
 
   describe '#initialize' do
     it 'should accept default options' do
-      dry_runner.options.level.should_not == 'INFO'
+      expect(dry_runner.options.level).not_to eq('INFO')
     end
   end
 
   describe '#add_action' do
     it 'should add an action' do
-      dry_runner.actions.last.to_h.should == {name: 'example', description: 'An example action'}
+      expect(dry_runner.actions.last.to_h).to eq({name: 'example', description: 'An example action'})
     end
   end
 
@@ -47,17 +47,17 @@ describe Pupa::Runner do
 
     it 'should accept overridden options' do
       dry_run(['--quiet'], level: 'ERROR')
-      dry_runner.options.level.should == 'ERROR'
+      expect(dry_runner.options.level).to eq('ERROR')
     end
 
     it 'should use default actions if none set' do
       dry_run
-      dry_runner.options.actions.should == %w(scrape import)
+      expect(dry_runner.options.actions).to eq(%w(scrape import))
     end
 
     it 'should use default tasks if none set' do
       dry_run
-      dry_runner.options.tasks.should == %i(people organizations)
+      expect(dry_runner.options.tasks).to eq(%i(people organizations))
     end
 
     # Unlike an action, it's not possible for a task to be undefined, because
@@ -71,14 +71,14 @@ describe Pupa::Runner do
     end
 
     it 'should run actions' do
-      TestProcessor.any_instance.should_receive(:dump_scraped_objects).twice
-      TestProcessor.any_instance.should_receive(:import)
+      expect_any_instance_of(TestProcessor).to receive(:dump_scraped_objects).twice
+      expect_any_instance_of(TestProcessor).to receive(:import)
       runner.run([])
     end
 
     it 'should run tasks' do
-      TestProcessor.any_instance.should_receive(:people).and_return([])
-      TestProcessor.any_instance.should_receive(:organizations).and_return([])
+      expect_any_instance_of(TestProcessor).to receive(:people).and_return([])
+      expect_any_instance_of(TestProcessor).to receive(:organizations).and_return([])
       runner.run([])
     end
   end

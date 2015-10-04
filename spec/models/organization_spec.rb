@@ -7,18 +7,18 @@ describe Pupa::Organization do
 
   describe '#to_s' do
     it 'should return a human-readable string' do
-      object.to_s.should == 'ABC, Inc.'
+      expect(object.to_s).to eq('ABC, Inc.')
     end
   end
 
   describe '#fingerprint' do
     it 'should return the fingerprint' do
-      object.fingerprint.should == {
+      expect(object.fingerprint).to eq({
         '$or' => [
           {'name' => 'ABC, Inc.', classification: 'Corporation', parent_id: 'holding-company-corp'},
           {'other_names.name' => 'ABC, Inc.', classification: 'Corporation', parent_id: 'holding-company-corp'},
         ],
-      }
+      })
     end
   end
 end

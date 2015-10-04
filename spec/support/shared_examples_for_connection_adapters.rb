@@ -32,11 +32,11 @@ shared_examples 'SQL adapter' do |database_url|
     end
 
     it 'should return nil if no matches' do
-      connection.find(_type: _type, name: 'nonexistent').should == nil
+      expect(connection.find(_type: _type, name: 'nonexistent')).to eq(nil)
     end
 
     it 'should return a document if one match' do
-      connection.find(_type: _type, name: 'existing').should be_a(Hash)
+      expect(connection.find(_type: _type, name: 'existing')).to be_a(Hash)
     end
 
     it 'should raise an error if many matches' do
@@ -50,13 +50,13 @@ shared_examples 'SQL adapter' do |database_url|
     end
 
     it 'should insert a document if no matches' do
-      connection.save(Pupa::Person.new(_id: 'new', name: 'new', email: 'new@example.com')).should == [true, 'new']
-      connection.find(_type: _type, name: 'new')['email'].should == 'new@example.com'
+      expect(connection.save(Pupa::Person.new(_id: 'new', name: 'new', email: 'new@example.com'))).to eq([true, 'new'])
+      expect(connection.find(_type: _type, name: 'new')['email']).to eq('new@example.com')
     end
 
     it 'should update a document if one match' do
-      connection.save(Pupa::Person.new(_id: 'changed', name: 'existing', email: 'changed@example.com')).should == [false, 'existing']
-      connection.find(_type: _type, name: 'existing')['email'].should == 'changed@example.com'
+      expect(connection.save(Pupa::Person.new(_id: 'changed', name: 'existing', email: 'changed@example.com'))).to eq([false, 'existing'])
+      expect(connection.find(_type: _type, name: 'existing')['email']).to eq('changed@example.com')
     end
 
     it 'should raise an error if many matches' do

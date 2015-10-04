@@ -15,20 +15,20 @@ describe Pupa::Concerns::Sourceable do
   describe '#sources' do
     it 'should symbolize keys' do
       object.sources = [{'url' => 'http://example.com', 'note' => 'homepage'}]
-      object.sources.should == [{url: 'http://example.com', note: 'homepage'}]
+      expect(object.sources).to eq([{url: 'http://example.com', note: 'homepage'}])
     end
   end
 
   describe '#add_source' do
     it 'should add a source' do
       object.add_source('http://example.com', note: 'homepage')
-      object.sources.should == [{url: 'http://example.com', note: 'homepage'}]
+      expect(object.sources).to eq([{url: 'http://example.com', note: 'homepage'}])
     end
 
     it 'should not add a source without a url' do
       object.add_source(nil)
       object.add_source('')
-      object.sources.blank?.should == true
+      expect(object.sources.blank?).to eq(true)
     end
   end
 end
