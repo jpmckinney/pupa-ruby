@@ -54,9 +54,7 @@ module Pupa
           end
 
           # Must come after the parser middlewares.
-          if FaradayMiddleware.const_defined?(:Gzip)
-            connection.use FaradayMiddleware::Gzip
-          end
+          connection.use FaradayMiddleware::Gzip
 
           if cache_dir
             connection.response :caching do
