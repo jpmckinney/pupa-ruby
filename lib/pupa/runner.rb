@@ -23,6 +23,7 @@ module Pupa
         database_url:       'mongodb://localhost:27017/pupa',
         validate:           true,
         level:              'INFO',
+        faraday_options:    {},
         dry_run:            false,
       }.merge(defaults))
 
@@ -160,6 +161,7 @@ module Pupa
         database_url: options.database_url,
         validate: options.validate,
         level: options.level,
+        faraday_options: options.faraday_options,
         options: Hash[*rest])
 
       options.actions.each do |action|

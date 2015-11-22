@@ -32,9 +32,10 @@ module Pupa
       # @param [String] memcached_password the Memcached password
       # @param [String] level the log level
       # @param [String,IO] logdev the log device
+      # @param [Hash] faraday_options Faraday initialization options
       # @return [Faraday::Connection] a configured Faraday HTTP client
-      def self.new(cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, memcached_username: nil, memcached_password: nil, level: 'INFO', logdev: STDOUT) # 1 day
-        Faraday.new do |connection|
+      def self.new(cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, memcached_username: nil, memcached_password: nil, level: 'INFO', logdev: STDOUT, faraday_options: {}) # 1 day
+        Faraday.new(faraday_options) do |connection|
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
           connection.use Faraday::Response::RaiseError
