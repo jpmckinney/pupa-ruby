@@ -14,6 +14,12 @@ rescue LoadError
   # pass
 end
 
+begin
+  require 'faraday-cookie_jar'
+rescue LoadError
+  # pass
+end
+
 module Pupa
   class Processor
     # An HTTP client factory.
@@ -35,6 +41,8 @@ module Pupa
       # @param [Hash] faraday_options Faraday initialization options
       # @return [Faraday::Connection] a configured Faraday HTTP client
       def self.new(cache_dir: nil, expires_in: 86400, value_max_bytes: 1048576, memcached_username: nil, memcached_password: nil, level: 'INFO', logdev: STDOUT, faraday_options: {}) # 1 day
+        follow_redirects = faraday_options.delete(:follow_redirects)
+
         Faraday.new(faraday_options) do |connection|
           connection.request :url_encoded
           connection.use Middleware::Logger, Logger.new('faraday', level: level)
@@ -52,6 +60,14 @@ module Pupa
           # @see http://tools.ietf.org/html/rfc3023
           if defined?(MultiXml)
             connection.use FaradayMiddleware::ParseXml, preserve_raw: true, content_type: /\bxml$/
+          end
+
+          if follow_redirects
+            connection.use FaradayMiddleware::FollowRedirects
+          end
+
+          if Faraday.const_defined?('CookieJar')
+            connection.use Faraday::CookieJar
           end
 
           # Must come after the parser middlewares.
