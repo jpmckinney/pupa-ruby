@@ -63,7 +63,7 @@ module Pupa
           end
 
           if follow_redirects
-            connection.use FaradayMiddleware::FollowRedirects
+            connection.use FaradayMiddleware::FollowRedirects, follow_redirects
           end
 
           if Faraday.const_defined?('CookieJar')
