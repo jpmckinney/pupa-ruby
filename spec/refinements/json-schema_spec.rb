@@ -1,6 +1,6 @@
 require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 
-describe Pupa::Refinements do
+describe JSON::Validator do
   let(:schema) do
     {
       'properties' => {

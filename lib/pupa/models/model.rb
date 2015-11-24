@@ -6,8 +6,6 @@ require 'active_support/callbacks'
 require 'active_support/core_ext/object/try'
 require 'json-schema'
 
-require 'pupa/refinements/json-schema'
-
 module Pupa
   # Adds methods expected by Pupa processors.
   module Model
@@ -87,6 +85,7 @@ module Pupa
         else
           JSON.load(File.read(File.expand_path(File.join('..', '..', '..', 'schemas', "#{value}.json"), __dir__)))
         end
+
         self.validator = JSON::Validator.new(self.json_schema, {}, {
           # Keep the cache.
           clear_cache: false,

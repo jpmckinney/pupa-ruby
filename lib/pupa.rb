@@ -8,6 +8,8 @@ require 'active_support/core_ext/hash/slice'
 require 'active_support/core_ext/object/blank'
 require 'active_support/inflector'
 
+require 'mail'
+
 require 'pupa/models/concerns/indifferent_access'
 require 'pupa/models/concerns/contactable'
 require 'pupa/models/concerns/identifiable'
@@ -65,3 +67,20 @@ class String
   # @see http://api.rubyonrails.org/classes/String.html#method-i-blank-3F
   alias_method :blank?, :empty?
 end
+
+# @see https://github.com/ruby-json-schema/json-schema/tree/master/lib/json-schema/attributes/formats
+JSON::Validator.register_format_validator('email', lambda{|data|
+  return unless data.is_a?(String)
+  address = Mail::Address.new(data)
+  unless address.address == data && address.domain && address.domain.split('.').size > 1
+    raise JSON::Schema::CustomFormatError.new("must be a valid email address (#{data})")
+  end
+})
+
+JSON::Validator.register_format_validator('uri', lambda{|data|
+  return unless data.is_a?(String)
+  re = URI::DEFAULT_PARSER.regexp[:ABS_URI]
+  unless re.match(data)
+    raise JSON::Schema::CustomFormatError.new("must be a valid email URI (#{data})")
+  end
+})
