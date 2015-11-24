@@ -8,8 +8,6 @@ require 'json-schema'
 
 require 'pupa/refinements/json-schema'
 
-JSON::Validator.cache_schemas = true
-
 module Pupa
   # Adds methods expected by Pupa processors.
   module Model
@@ -22,6 +20,7 @@ module Pupa
       define_callbacks :create, :save
 
       class_attribute :json_schema
+      class_attribute :validator
       class_attribute :properties
       class_attribute :foreign_keys
       class_attribute :foreign_objects
@@ -88,6 +87,12 @@ module Pupa
         else
           JSON.load(File.read(File.expand_path(File.join('..', '..', '..', 'schemas', "#{value}.json"), __dir__)))
         end
+        self.validator = JSON::Validator.new(self.json_schema, {}, {
+          # Keep the cache.
+          clear_cache: false,
+          # It's safe to skip data parsing if the data is a `Hash`.
+          parse_data: false,
+        })
       end
     end
 
@@ -169,7 +174,12 @@ module Pupa
     # @raises [JSON::Schema::ValidationError] if the object is invalid
     def validate!
       if self.class.json_schema
-        JSON::Validator.validate!(self.class.json_schema, stringify_keys(to_h(persist: true)))
+        # @see https://github.com/ruby-json-schema/json-schema/blob/fa316dc9d39b922935aed8ec9fa0e4139b724ef5/lib/json-schema/validator.rb#L40
+        self.class.validator.instance_variable_set('@errors', [])
+        # @see https://github.com/ruby-json-schema/json-schema/blob/fa316dc9d39b922935aed8ec9fa0e4139b724ef5/lib/json-schema/validator.rb#L53
+        self.class.validator.instance_variable_set('@data', stringify_keys(to_h(persist: true)))
+        self.class.validator.validate
+        true
       end
     end
 
