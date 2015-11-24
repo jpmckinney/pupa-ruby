@@ -3,6 +3,7 @@ require File.expand_path(File.dirname(__FILE__) + '/../spec_helper')
 describe JSON::Validator do
   let(:schema) do
     {
+      '$schema' => 'http://json-schema.org/draft-04/schema#',
       'properties' => {
         'email' => {
           'type' => ['string', 'null'],
