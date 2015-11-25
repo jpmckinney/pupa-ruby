@@ -87,9 +87,7 @@ module Pupa
         end
 
         self.validator = JSON::Validator.new(self.json_schema, {}, {
-          # Keep the cache.
           clear_cache: false,
-          # It's safe to skip data parsing if the data is a `Hash`.
           parse_data: false,
         })
       end
@@ -173,9 +171,7 @@ module Pupa
     # @raises [JSON::Schema::ValidationError] if the object is invalid
     def validate!
       if self.class.json_schema
-        # @see https://github.com/ruby-json-schema/json-schema/blob/fa316dc9d39b922935aed8ec9fa0e4139b724ef5/lib/json-schema/validator.rb#L40
         self.class.validator.instance_variable_set('@errors', [])
-        # @see https://github.com/ruby-json-schema/json-schema/blob/fa316dc9d39b922935aed8ec9fa0e4139b724ef5/lib/json-schema/validator.rb#L53
         self.class.validator.instance_variable_set('@data', stringify_keys(to_h(persist: true)))
         self.class.validator.validate
         true
