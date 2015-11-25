@@ -83,6 +83,9 @@ module Pupa
         opts.on('-c', '--cache_dir PATH', 'The directory or Memcached address (e.g. memcached://localhost:11211) in which to cache HTTP requests') do |v|
           options.cache_dir = v
         end
+        opts.on('--no-cache', 'Disable HTTP request caching') do |v|
+          options.cache_dir = nil
+        end
         opts.on('-e', '--expires_in SECONDS', "The cache's expiration time in seconds") do |v|
           options.expires_in = v
         end
