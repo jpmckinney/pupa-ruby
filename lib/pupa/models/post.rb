@@ -3,7 +3,7 @@ module Pupa
   class Post
     include Model
 
-    self.schema = 'schemas/popolo/post.json'
+    self.schema = File.expand_path(File.join('..', '..', '..', 'schemas', 'popolo', 'post.json'), __dir__)
 
     include Concerns::Timestamps
     include Concerns::Sourceable

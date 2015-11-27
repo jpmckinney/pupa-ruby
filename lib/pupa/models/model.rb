@@ -78,14 +78,7 @@ module Pupa
       # @param [Hash,String] value a hash or a relative or absolute path
       # @note `JSON::Validator#initialize_schema` runs fastest if given a hash.
       def schema=(value)
-        self.json_schema = if Hash === value
-          value
-        elsif Pathname.new(value).absolute?
-          JSON.load(File.read(value))
-        else
-          value
-        end
-
+        self.json_schema = value
         self.validator = JSON::Validator.new(self.json_schema, {}, {
           clear_cache: false,
           parse_data: false,

@@ -3,7 +3,7 @@ module Pupa
   class Motion
     include Model
 
-    self.schema = 'schemas/popolo/motion.json'
+    self.schema = File.expand_path(File.join('..', '..', '..', 'schemas', 'popolo', 'motion.json'), __dir__)
 
     include Concerns::Timestamps
     include Concerns::Sourceable

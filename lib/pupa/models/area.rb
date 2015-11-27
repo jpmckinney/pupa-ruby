@@ -3,7 +3,7 @@ module Pupa
   class Area
     include Model
 
-    self.schema = 'schemas/popolo/area.json'
+    self.schema = File.expand_path(File.join('..', '..', '..', 'schemas', 'popolo', 'area.json'), __dir__)
 
     include Concerns::Timestamps
     include Concerns::Sourceable

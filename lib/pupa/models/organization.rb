@@ -4,7 +4,7 @@ module Pupa
   class Organization
     include Model
 
-    self.schema = 'schemas/popolo/organization.json'
+    self.schema = File.expand_path(File.join('..', '..', '..', 'schemas', 'popolo', 'organization.json'), __dir__)
 
     include Concerns::Timestamps
     include Concerns::Sourceable

@@ -3,7 +3,7 @@ module Pupa
   class Vote
     include Model
 
-    self.schema = 'schemas/popolo/vote.json'
+    self.schema = File.expand_path(File.join('..', '..', '..', 'schemas', 'popolo', 'vote.json'), __dir__)
 
     include Concerns::Timestamps
     include Concerns::Sourceable
