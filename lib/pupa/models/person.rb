@@ -3,7 +3,7 @@ module Pupa
   class Person
     include Model
 
-    self.schema = 'popolo/person'
+    self.schema = 'schemas/popolo/person.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

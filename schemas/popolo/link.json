@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-03/schema#",
-  "id": "http://www.popoloproject.com/schemas/link.json#",
+  "id": "link.json#",
   "title": "Link",
   "description": "A URL",
   "type": "object",

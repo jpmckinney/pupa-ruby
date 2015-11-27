@@ -3,7 +3,7 @@ module Pupa
   class Area
     include Model
 
-    self.schema = 'popolo/area'
+    self.schema = 'schemas/popolo/area.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

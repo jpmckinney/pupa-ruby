@@ -3,7 +3,7 @@ module Pupa
   class VoteEvent
     include Model
 
-    self.schema = 'popolo/vote_event'
+    self.schema = 'schemas/popolo/vote_event.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

@@ -4,7 +4,7 @@ module Pupa
   class Organization
     include Model
 
-    self.schema = 'popolo/organization'
+    self.schema = 'schemas/popolo/organization.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

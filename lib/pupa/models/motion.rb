@@ -3,7 +3,7 @@ module Pupa
   class Motion
     include Model
 
-    self.schema = 'popolo/motion'
+    self.schema = 'schemas/popolo/motion.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

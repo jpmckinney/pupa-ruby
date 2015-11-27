@@ -3,7 +3,7 @@ module Pupa
   class Post
     include Model
 
-    self.schema = 'popolo/post'
+    self.schema = 'schemas/popolo/post.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

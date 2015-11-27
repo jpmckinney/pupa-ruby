@@ -96,7 +96,7 @@ describe Pupa::Model do
 
     it 'should accept a relative path' do
       expect(File).to receive(:read).and_return('{}')
-      expect(klass_with_relative_path.json_schema).to eq({})
+      expect(klass_with_relative_path.json_schema).to eq('schema')
     end
   end
 

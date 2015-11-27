@@ -3,7 +3,7 @@ module Pupa
   class Membership
     include Model
 
-    self.schema = 'popolo/membership'
+    self.schema = 'schemas/popolo/membership.json'
 
     include Concerns::Timestamps
     include Concerns::Sourceable

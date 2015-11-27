@@ -83,7 +83,7 @@ module Pupa
         elsif Pathname.new(value).absolute?
           JSON.load(File.read(value))
         else
-          JSON.load(File.read(File.expand_path(File.join('..', '..', '..', 'schemas', "#{value}.json"), __dir__)))
+          value
         end
 
         self.validator = JSON::Validator.new(self.json_schema, {}, {
