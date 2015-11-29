@@ -67,7 +67,7 @@ describe Pupa::Model do
     let :klass_with_relative_path do
       Class.new do
         include Pupa::Model
-        self.schema = 'schema'
+        self.schema = 'schema.json'
       end
     end
 
@@ -91,12 +91,12 @@ describe Pupa::Model do
 
     it 'should accept an absolute path' do
       expect(File).to receive(:read).and_return('{}')
-      expect(klass_with_absolute_path.json_schema).to eq({})
+      expect(klass_with_absolute_path.json_schema).to eq('/path/to/schema.json')
     end
 
     it 'should accept a relative path' do
       expect(File).to receive(:read).and_return('{}')
-      expect(klass_with_relative_path.json_schema).to eq('schema')
+      expect(klass_with_relative_path.json_schema).to eq('schema.json')
     end
   end
 

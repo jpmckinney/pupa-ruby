@@ -37,21 +37,29 @@ describe Pupa::Processor do
 
   describe '#get' do
     it 'should send a GET request' do
-      expect(processor.get('http://httpbin.org/get', 'foo=bar')['args']).to eq({'foo' => 'bar'})
+      VCR.use_cassette('get_params') do
+        expect(processor.get('http://httpbin.org/get', 'foo=bar')['args']).to eq({'foo' => 'bar'})
+      end
     end
 
     it 'should automatically parse the response' do
-      expect(processor.get('http://httpbin.org/get')).to be_a(Hash)
+      VCR.use_cassette('get') do
+        expect(processor.get('http://httpbin.org/get')).to be_a(Hash)
+      end
     end
   end
 
   describe '#post' do
     it 'should send a POST request' do
-      expect(processor.post('http://httpbin.org/post', 'foo=bar')['form']).to eq({'foo' => 'bar'})
+      VCR.use_cassette('post_params') do
+        expect(processor.post('http://httpbin.org/post', 'foo=bar')['form']).to eq({'foo' => 'bar'})
+      end
     end
 
     it 'should automatically parse the response' do
-      expect(processor.post('http://httpbin.org/post')).to be_a(Hash)
+      VCR.use_cassette('post') do
+        expect(processor.post('http://httpbin.org/post')).to be_a(Hash)
+      end
     end
   end
 

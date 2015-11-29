@@ -1,0 +1,45 @@
+---
+http_interactions:
+- request:
+    method: post
+    uri: http://httpbin.org/post
+    body:
+      encoding: UTF-8
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.1
+      Content-Type:
+      - application/x-www-form-urlencoded
+      Accept-Encoding:
+      - gzip,deflate
+  response:
+    status:
+      code: 200
+      message: 
+    headers:
+      server:
+      - nginx
+      date:
+      - Sun, 29 Nov 2015 03:42:23 GMT
+      content-type:
+      - application/json
+      content-length:
+      - '380'
+      connection:
+      - close
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {}, \n  \"data\": \"\", \n  \"files\": {}, \n  \"form\":
+        {}, \n  \"headers\": {\n    \"Accept\": \"*/*\", \n    \"Accept-Encoding\":
+        \"gzip,deflate\", \n    \"Content-Length\": \"0\", \n    \"Content-Type\":
+        \"application/x-www-form-urlencoded\", \n    \"Host\": \"httpbin.org\", \n
+        \   \"User-Agent\": \"Faraday v0.9.1\"\n  }, \n  \"json\": null, \n  \"origin\":
+        \"124.111.242.66\", \n  \"url\": \"http://httpbin.org/post\"\n}\n"
+    http_version: 
+  recorded_at: Sun, 29 Nov 2015 03:42:23 GMT
+recorded_with: VCR 3.0.0

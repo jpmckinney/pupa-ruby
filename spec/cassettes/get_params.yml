@@ -1,0 +1,41 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://httpbin.org/get?foo=bar
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      User-Agent:
+      - Faraday v0.9.1
+      Accept-Encoding:
+      - gzip,deflate
+  response:
+    status:
+      code: 200
+      message: 
+    headers:
+      server:
+      - nginx
+      date:
+      - Sun, 29 Nov 2015 03:42:21 GMT
+      content-type:
+      - application/json
+      content-length:
+      - '258'
+      connection:
+      - close
+      access-control-allow-origin:
+      - "*"
+      access-control-allow-credentials:
+      - 'true'
+    body:
+      encoding: UTF-8
+      string: "{\n  \"args\": {\n    \"foo\": \"bar\"\n  }, \n  \"headers\": {\n    \"Accept\":
+        \"*/*\", \n    \"Accept-Encoding\": \"gzip,deflate\", \n    \"Host\": \"httpbin.org\",
+        \n    \"User-Agent\": \"Faraday v0.9.1\"\n  }, \n  \"origin\": \"124.111.242.66\",
+        \n  \"url\": \"http://httpbin.org/get?foo=bar\"\n}\n"
+    http_version: 
+  recorded_at: Sun, 29 Nov 2015 03:42:21 GMT
+recorded_with: VCR 3.0.0
