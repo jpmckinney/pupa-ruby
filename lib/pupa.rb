@@ -81,6 +81,6 @@ JSON::Validator.register_format_validator('uri', lambda{|data|
   return unless data.is_a?(String)
   re = URI::DEFAULT_PARSER.regexp[:ABS_URI]
   unless re.match(data)
-    raise JSON::Schema::CustomFormatError.new("must be a valid email URI (#{data})")
+    raise JSON::Schema::CustomFormatError.new("must be a valid URI (#{data})")
   end
 })
