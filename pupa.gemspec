@@ -31,7 +31,7 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency('dalli')
   s.add_development_dependency('multi_xml')
-  s.add_development_dependency('nokogiri', '~> 1.6.0')
+  s.add_development_dependency('nokogiri', '~> 1.6')
   s.add_development_dependency('octokit') # to update Popolo schema
   s.add_development_dependency('redis-store')
   s.add_development_dependency('sqlite3')
