@@ -2,7 +2,6 @@
 
 [![Gem Version](https://badge.fury.io/rb/pupa.svg)](https://badge.fury.io/rb/pupa)
 [![Build Status](https://secure.travis-ci.org/jpmckinney/pupa-ruby.png)](https://travis-ci.org/jpmckinney/pupa-ruby)
-[![Dependency Status](https://gemnasium.com/jpmckinney/pupa-ruby.png)](https://gemnasium.com/jpmckinney/pupa-ruby)
 [![Coverage Status](https://coveralls.io/repos/jpmckinney/pupa-ruby/badge.png?branch=master)](https://coveralls.io/r/jpmckinney/pupa-ruby)
 [![Code Climate](https://codeclimate.com/github/jpmckinney/pupa-ruby.png)](https://codeclimate.com/github/jpmckinney/pupa-ruby)
 
