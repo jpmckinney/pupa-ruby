@@ -23,7 +23,7 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency('mongo', '~> 2.0')
   s.add_runtime_dependency('oj', '~> 2.1')
   s.add_runtime_dependency('sequel', '~> 4.10.0')
-  s.add_runtime_dependency('pg', '~> 0.17.0')
+  s.add_runtime_dependency('pg', '~> 1.0')
 
   s.add_development_dependency('coveralls')
   s.add_development_dependency('rake')
