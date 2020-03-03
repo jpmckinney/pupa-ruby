@@ -17,7 +17,7 @@ module Pupa
         #   [pipelining](http://redis.io/topics/pipelining)
         def initialize(address, pipelined: false)
           @pipelined = pipelined
-          options = {marshalling: false}
+          options = {serializer: nil}
           options.update(driver: :hiredis) if defined?(Hiredis)
           @redis = Redis::Store::Factory.create(address, options)
         end
