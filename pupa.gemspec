@@ -15,9 +15,9 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency('activesupport', '~> 4.0')
+  s.add_runtime_dependency('activesupport', '~> 5.0')
   s.add_runtime_dependency('colored', '~> 1.2')
-  s.add_runtime_dependency('faraday_middleware', '~> 0.10.0')
+  s.add_runtime_dependency('faraday_middleware', '~> 0.10')
   s.add_runtime_dependency('json-schema', '~> 2.3')
   s.add_runtime_dependency('mail')
   s.add_runtime_dependency('mongo', '~> 2.0')
